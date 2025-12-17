@@ -1,0 +1,640 @@
+---
+title: "Cam and Follower Mechanism - Parametric CAD Design"
+description: "Design a cam and follower mechanism for programmed motion control with rise-dwell-return profiles in FreeCAD"
+contributors: "sam-macharia,sila-mulwa"
+pubDate: 2025-12-17
+tags: ["freecad", "cam", "follower", "motion-control", "parametric-design", "mechanism-design"]
+excerpt: "Create a fully parametric cam and follower system with custom motion profiles, learning curve-based sketching and contact-driven motion design."
+---
+
+import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+# Cam and Follower Mechanism - Parametric CAD Design
+
+## Engineering Context
+
+### Why This Mechanism Matters
+
+Cam and follower mechanisms convert continuous rotary motion into precisely controlled reciprocating or oscillating motion. They're fundamental to timing and sequencing in mechanical systems.
+
+**Real-world applications:**
+- Engine valve trains (opening/closing valves at precise times)
+- Automated assembly machines (pick-and-place motion)
+- CNC machine tool changers
+- Textile machinery (needle control)
+- Printing presses (paper feed timing)
+- Packaging equipment (synchronized cutting/sealing)
+
+### Engineering Problem
+
+**Given:** Continuous rotating motion (motor drive)
+**Required:** Specific follower motion profile (rise, dwell, return, dwell)
+**Constraint:** Motion must be smooth, repeatable, and precisely timed
+
+### Cam Mechanism Principle
+
+**Motion Programming Through Geometry:**
+
+The cam profile directly determines follower motion. As the cam rotates, its surface pushes the follower according to the cam's shape.
+
+**Key concept:** Cam profile = motion program encoded as geometry
+
+### Motion Profiles
+
+A complete cam cycle typically includes:
+
+1. **Rise:** Follower moves outward (lift)
+2. **Dwell:** Follower remains stationary while cam continues rotating
+3. **Return:** Follower moves inward (descent)
+4. **Dwell:** Follower remains at bottom
+
+### Types of Followers
+
+- **Flat-faced follower:** Flat contact surface
+- **Roller follower:** Rolling contact (reduces friction)
+- **Knife-edge follower:** Point contact (theoretical, impractical due to wear)
+
+For this lesson: Roller follower (most common).
+
+### Types of Cams
+
+- **Plate cam (disk cam):** Rotating disk with profiled edge
+- **Cylindrical cam:** Grooved cylinder
+- **Linear cam:** Reciprocating cam
+
+For this lesson: Plate cam.
+
+### Key Parameters
+
+- **Base circle radius (R_b):** Minimum cam radius (determines minimum follower position)
+- **Lift (L):** Maximum follower displacement
+- **Prime circle radius (R_p):** Base circle + lift
+- **Cam rotation angle:** 360° for one complete cycle
+- **Rise angle, dwell angles, return angle:** Define timing
+
+---
+
+## What You'll Learn
+
+By completing this lesson, you will:
+
+- Design curve-based cam profiles
+- Use datum axes and reference geometry
+- Create motion-defining geometry
+- Control follower motion through cam shape
+- Design for smooth transitions (avoid sudden acceleration)
+- Model rotating and translating parts together
+- Generate clear motion-focused technical drawings
+
+**This lesson assumes no prior FreeCAD knowledge** - all concepts introduced from scratch.
+
+---
+
+## Part 1: FreeCAD Setup
+
+### Starting the Project
+
+1. Launch FreeCAD
+2. File → New (Ctrl+N)
+3. Save as "CamFollower.FCStd"
+
+### Workbenches
+
+- **Part Design** - Parts creation
+- **Sketcher** - Cam profile sketching
+- **Spreadsheet** - Parameters
+- **Assembly** - Combining cam and follower
+- **TechDraw** - Motion documentation
+
+---
+
+## Part 2: Design Strategy
+
+### Our Cam Profile
+
+We'll design a simple cam with:
+- 120° rise (follower lifts)
+- 60° dwell (follower stays at max lift)
+- 120° return (follower descends)
+- 60° dwell (follower stays at bottom)
+
+Total: 360° (one revolution)
+
+### Motion Law
+
+For smooth motion, we'll use:
+- **Rise/Return:** Simple harmonic motion (smooth acceleration)
+- **Dwell:** Constant radius (circular arc)
+
+### Parameters
+
+```
+BaseCircleRadius = 40 mm
+Lift = 20 mm
+RollerRadius = 10 mm
+CamThickness = 15 mm
+ShaftDiameter = 20 mm
+```
+
+---
+
+## Part 3: Parameter Spreadsheet
+
+<InArticleAd />
+
+
+### Creating Parameters
+
+1. **Part Design workbench**
+
+2. **Insert Spreadsheet**
+
+3. **Enter parameters:**
+
+```
+A1: Parameter           B1: Value    C1: Unit
+A2: BaseCircleRadius    B2: 40       C2: mm
+A3: Lift                B3: 20       C3: mm
+A4: PrimeCircleRadius   B4: =B2+B3   C4: mm
+A5: RollerRadius        B5: 10       C5: mm
+A6: CamThickness        B6: 15       C6: mm
+A7: ShaftDiameter       B7: 20       C7: mm
+A8: ShaftRadius         B8: =B7/2    C8: mm
+A9: RiseAngle           B9: 120      C9: deg
+A10: DwellAngle1        B10: 60      C10: deg
+A11: ReturnAngle        B11: 120     C11: deg
+A12: DwellAngle2        B12: 60      C12: deg
+```
+
+4. **Create aliases** for all values in column B
+
+5. **Close spreadsheet**
+
+---
+
+## Part 4: Designing the Cam Profile
+
+### Understanding Cam Profile Design
+
+The cam profile must be designed relative to the follower position. For a roller follower, we design the **pitch curve** (path of roller center), then the cam surface is offset inward by the roller radius.
+
+**Simplified approach for this lesson:**
+
+We'll sketch the cam profile directly, using arcs and curves that create the desired motion.
+
+### Step-by-Step: Cam Profile Sketch
+
+#### 1. Create Body
+
+- Part Design workbench
+- Create Body
+- Rename: "Cam"
+
+#### 2. Create Sketch on XY_Plane
+
+We'll use polar coordinates (angles) to define the profile.
+
+#### 3. Draw Base Circle
+
+- Circle tool
+- Center at origin
+- Radius: ƒx → `Spreadsheet.BaseCircleRadius`
+
+This is the minimum cam radius (dwell at bottom).
+
+#### 4. Draw Rise Section (0° to 120°)
+
+For simple harmonic motion rise, the radius varies as:
+
+```
+r(θ) = R_b + L × [1 - cos(θ × 180 / RiseAngle)] / 2
+```
+
+**In FreeCAD:** We'll approximate this with a smooth curve (B-spline) or use multiple arcs.
+
+**Simplified method - Use construction lines and points:**
+
+- Draw construction rays from origin at 0°, 30°, 60°, 90°, 120°
+- Calculate radii at each angle using the formula above
+- Place points at those radii along each ray
+- Connect points with smooth spline
+
+**Calculated radii (for RiseAngle=120°, Lift=20mm, R_b=40mm):**
+
+| Angle | Radius |
+|-------|--------|
+| 0°    | 40 mm  |
+| 30°   | 42.68 mm |
+| 60°   | 50 mm  |
+| 90°   | 57.32 mm |
+| 120°  | 60 mm  |
+
+**Draw the rise:**
+
+- Construction lines at angles 0°, 30°, 60°, 90°, 120° from horizontal
+- Place points at calculated radii
+- B-spline tool (S key) to connect points smoothly
+
+#### 5. Draw First Dwell (120° to 180°)
+
+- Arc tool
+- Center: origin
+- Radius: ƒx → `Spreadsheet.PrimeCircleRadius` (60mm)
+- Start: 120°
+- End: 180°
+
+This keeps follower at maximum lift.
+
+#### 6. Draw Return Section (180° to 300°)
+
+Mirror of rise section:
+
+- Points at 180°, 210°, 240°, 270°, 300°
+- Radii descend from 60mm back to 40mm
+- B-spline connecting points
+
+**Or:** Use symmetry to mirror the rise curve.
+
+#### 7. Draw Second Dwell (300° to 360°)
+
+- Arc tool
+- Center: origin
+- Radius: BaseCircleRadius (40mm)
+- Start: 300°
+- End: 360° (0°)
+
+#### 8. Close the Profile
+
+The cam profile should be a closed curve (starts and ends at 0°/360°).
+
+#### 9. Add Shaft Hole
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.ShaftRadius`
+
+#### 10. Check and Close Sketch
+
+- Profile should be fully constrained
+- Close sketch
+
+### Simplified Alternative
+
+If B-splines are complex, use **circular arc approximation**:
+
+- Rise: Single large arc from (0°, 40mm) to (120°, 60mm)
+- Dwell: Circular arc at 60mm
+- Return: Arc from (180°, 60mm) to (300°, 40mm)
+- Dwell: Circular arc at 40mm
+
+This gives approximate motion (not true harmonic, but functional).
+
+#### 3. Pad the Cam
+
+- Select sketch
+- Pad tool
+- Length: ƒx → `Spreadsheet.CamThickness`
+- OK
+
+Cam complete!
+
+---
+
+## Part 5: Creating the Follower
+
+### Follower Design Intent
+
+Roller follower consists of:
+- Roller (cylinder in contact with cam)
+- Follower stem (translates vertically)
+- Mounting base
+
+### Step-by-Step: Roller
+
+#### 1. Create Body
+
+- Create Body → "Roller"
+
+#### 2. Create Sketch on XZ_Plane (vertical plane)
+
+Why XZ? The follower moves vertically (Z-axis) and roller rotates about Y-axis.
+
+#### 3. Draw Roller Profile
+
+- Circle
+- Center at appropriate position (e.g., X=0, Z=60) - above cam
+- Radius: ƒx → `Spreadsheet.RollerRadius`
+
+#### 4. Revolve (Not Pad!)
+
+Rollers are cylindrical, created by revolving a circle about an axis:
+
+- Select sketch
+- **Revolve** tool (not Pad)
+- Axis: Z-axis
+- Angle: 360°
+- OK
+
+Roller created!
+
+### Step-by-Step: Follower Stem
+
+#### 1. Create Body
+
+- Create Body → "FollowerStem"
+
+#### 2. Create Sketch on XZ_Plane
+
+#### 3. Draw Stem
+
+- Rectangle
+- Vertical orientation
+- Width: 15mm
+- Height: 80mm (long enough for full stroke + extra)
+- Positioned above cam, aligned with roller
+
+#### 4. Pad
+
+- Direction: Perpendicular to XZ (Y-direction)
+- Length: 10mm
+
+---
+
+## Part 6: Creating the Base Frame
+
+### Frame Design
+
+Fixed frame with:
+- Cam shaft bearing mount
+- Follower guide rails
+
+### Step-by-Step: Frame
+
+#### 1. Create Body
+
+- Body: "Frame"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Base Plate
+
+- Rectangle
+- Width: 150mm
+- Height: 100mm
+- Centered at origin
+
+**Cam shaft hole:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.ShaftRadius` + clearance (e.g., +0.5mm)
+
+**Follower guide:**
+
+- Vertical slot or two parallel edges
+- Position to align with follower stem
+- Width = stem width + clearance
+
+#### 4. Pad
+
+- Thickness: 20mm
+
+---
+
+## Part 7: Assembly
+
+<InArticleAd />
+
+
+### Assembly Strategy
+
+- Fix frame
+- Cam rotates about shaft (Z-axis) on frame
+- Follower translates vertically, guided by frame
+- Roller contacts cam profile
+
+### Step-by-Step: Assembly
+
+#### 1. Assembly Workbench
+
+#### 2. Add Parts
+
+- Frame
+- Cam
+- FollowerStem
+- Roller
+
+#### 3. Apply Constraints
+
+**Fix frame:**
+
+- Frame: Fixed
+
+**Cam rotation:**
+
+- Cam shaft hole axis → Frame shaft hole axis: Axial align
+- This allows cam to rotate about Z-axis
+
+**Follower translation:**
+
+- Follower stem → Frame guide: Constrain to allow only Z-direction motion
+- Use Plane constraints or Linear constraint
+
+**Roller to stem:**
+
+- Position roller at bottom of stem
+- Fixed or allow rotation (if modeling roller rotation)
+
+**Contact (conceptual):**
+
+FreeCAD assembly doesn't simulate continuous contact automatically. Position the follower such that roller just touches the cam at base circle.
+
+### Manual Motion Test
+
+- Rotate cam incrementally
+- Manually adjust follower height to maintain roller contact with cam
+- Observe rise-dwell-return-dwell cycle
+
+---
+
+## Part 8: Technical Drawing
+
+### Creating Cam Profile Drawing
+
+#### 1. TechDraw Workbench
+
+#### 2. Create Page
+
+- A3_Landscape
+
+#### 3. Add Cam View
+
+- Top view (shows profile)
+- Section view (shows thickness)
+
+#### 4. Annotate Motion Zones
+
+Add labels and angular dimensions:
+
+```
+0° - 120°: Rise (Lift = 20mm)
+120° - 180°: Dwell (High)
+180° - 300°: Return
+300° - 360°: Dwell (Low)
+```
+
+#### 5. Add Follower Displacement Diagram
+
+Create a separate diagram showing:
+- X-axis: Cam rotation angle (0° to 360°)
+- Y-axis: Follower displacement (0 to 20mm)
+- Plot the motion profile
+
+This can be a hand-drawn annotation or separate sketch.
+
+#### 6. Export
+
+- PDF export
+
+---
+
+## Part 9: Testing Parametric Control
+
+### Change Lift
+
+1. Open Spreadsheet
+2. Change Lift from 20 to 30mm
+3. Recompute
+4. Cam profile updates (if designed parametrically with expressions)
+
+### Change Base Circle Radius
+
+- Try BaseCircleRadius = 50mm
+- Larger cam
+
+### Change Rise Angle
+
+- Try RiseAngle = 90° (faster rise)
+- Would require redrawing profile with new angle divisions
+
+---
+
+## Learning Outcomes
+
+By completing this lesson, you have:
+
+- ✅ Designed a curve-based cam profile
+- ✅ Used angular constraints and polar geometry
+- ✅ Created contact-driven motion systems
+- ✅ Modeled both rotating and translating parts
+- ✅ Generated motion-focused technical drawings
+- ✅ Understood motion programming through geometry
+- ✅ Applied rise-dwell-return motion principles
+
+---
+
+## Design Verification
+
+<InArticleAd />
+
+
+1. **Does the cam profile close (starts and ends at same point)?**
+2. **Is the rise section smooth (no sharp corners)?**
+3. **Do dwell sections maintain constant radius?**
+4. **When cam rotates 360°, does follower complete full cycle?**
+5. **Is the roller radius appropriate (not too large or small)?**
+
+---
+
+## Advanced: Calculating Cam Profile Mathematically
+
+### Follower Displacement Function
+
+For simple harmonic motion rise:
+
+```
+s(θ) = L × [1 - cos(π × θ / θ_rise)] / 2
+
+Where:
+s = displacement from base position
+θ = cam angle
+θ_rise = total rise angle (e.g., 120°)
+L = total lift
+```
+
+### Cam Radius at Angle θ
+
+```
+R(θ) = R_b + s(θ) + R_roller
+
+Where:
+R_b = base circle radius
+R_roller = roller radius (for roller follower)
+```
+
+Use these equations to calculate exact point positions for your cam profile.
+
+---
+
+## Challenges for Further Practice
+
+1. **Design a cycloidal motion cam** (smoother acceleration than harmonic)
+2. **Add a return spring** to keep follower in contact with cam
+3. **Create a positive-drive cam** (groove cam, no spring needed)
+4. **Design a conjugate cam** (two cams on same shaft for balanced forces)
+5. **Model wear analysis** (contact stress zones)
+6. **Create an adjustable lift mechanism** (eccentric mounting)
+
+---
+
+## Common Issues and Solutions
+
+### "Cam profile has sharp corners"
+
+- **Cause:** Abrupt transitions between sections
+- **Solution:** Use smooth curves (B-splines) or transition arcs
+- **Fix:** Blend rise/dwell and return/dwell with tangent arcs
+
+### "Follower jumps or vibrates"
+
+- **Cause:** Excessive acceleration (sudden velocity change)
+- **Solution:** Use smooth motion laws (harmonic, cycloidal)
+- **Fix:** Avoid abrupt changes in cam profile slope
+
+### "Roller doesn't maintain contact"
+
+- **Cause:** Insufficient spring force (in real mechanism)
+- **Solution:** Add return spring or use positive-drive cam
+- **Fix:** In CAD, manually position for contact verification
+
+### "Cannot create B-spline smoothly"
+
+- **Solution:** Use multiple circular arcs as approximation
+- **Tip:** 3-5 arcs can approximate harmonic motion acceptably
+
+---
+
+## Next Steps
+
+In the next lesson on **Geneva Mechanism**, we'll explore:
+
+- Intermittent motion control
+- Indexing accuracy
+- Polar pattern-based design
+- Locking geometry
+- Angular constraints and precision
+
+<InArticleAd />
+<ParametricMechanicalCadFreecadComments />
+<TawkWidget />
+<Copyright />

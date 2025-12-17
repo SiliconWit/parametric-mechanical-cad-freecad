@@ -1,0 +1,715 @@
+---
+title: "Scotch Yoke Mechanism - Parametric CAD Design"
+description: "Design a Scotch yoke mechanism for sinusoidal motion conversion with parametric stroke control in FreeCAD"
+contributors: "sam-macharia,sila-mulwa"
+pubDate: 2025-12-17
+tags: ["freecad", "scotch-yoke", "sinusoidal-motion", "parametric-design", "mechanism-design"]
+excerpt: "Create a fully parametric Scotch yoke mechanism with adjustable stroke and robust sliding contact geometry for pure sinusoidal motion."
+---
+
+import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+# Scotch Yoke Mechanism - Parametric CAD Design
+
+## Engineering Context
+
+### Why This Mechanism Matters
+
+The Scotch yoke mechanism converts rotary motion to linear motion with a perfect sinusoidal profile. Unlike the slider-crank which produces approximate sinusoidal motion, the Scotch yoke creates mathematically pure sinusoidal displacement, velocity, and acceleration.
+
+**Real-world applications:**
+- Control valve actuators (precise modulation)
+- Solenoid replacement in low-speed applications
+- Testing machines (sinusoidal loading)
+- Reciprocating pumps (oil-free compressors)
+- Wave motion simulators
+- Educational demonstrations of simple harmonic motion
+
+### Engineering Problem
+
+**Given:** Constant rotational motion input
+**Required:** Linear reciprocating output with pure sinusoidal characteristics
+**Constraint:** Compact design, low mechanical complexity
+
+### Scotch Yoke Principle
+
+**Mechanism:**
+
+1. **Rotating crank:** Circular disk with eccentric pin
+2. **Yoke (slider):** Block with horizontal slot
+3. **Pin-in-slot connection:** Pin slides within yoke slot as crank rotates
+4. **Guide:** Constrains yoke to linear motion only
+
+**Motion relationship:**
+
+```
+Displacement: x(t) = r × sin(ωt)
+Velocity: v(t) = r × ω × cos(ωt)
+Acceleration: a(t) = -r × ω² × sin(ωt)
+
+Where:
+r = crank radius (eccentricity)
+ω = angular velocity
+t = time
+```
+
+**Key characteristic:** The yoke displacement is exactly proportional to sin(θ), where θ is crank angle.
+
+### Comparison with Slider-Crank
+
+| Feature | Scotch Yoke | Slider-Crank |
+|---------|-------------|--------------|
+| Motion profile | Pure sinusoidal | Approximate sinusoidal |
+| Complexity | Simpler (no connecting rod) | More complex |
+| Stroke | Stroke = 2r (compact) | Stroke = 2r (requires longer rod) |
+| Side forces | Minimal (guides handle them) | Significant (on cylinder walls) |
+| Wear | Sliding contact (higher) | Pivoting contacts (lower) |
+
+### Key Parameters
+
+- **Crank radius (r):** Determines stroke (Stroke = 2r)
+- **Slot length:** Must accommodate full pin travel
+- **Slot width:** Pin diameter + clearance
+- **Guide length:** Ensures yoke stays aligned throughout stroke
+
+---
+
+## What You'll Learn
+
+By completing this lesson, you will:
+
+- Design slot-driven mechanisms
+- Create clearance-aware sliding contacts
+- Implement stroke-based parameterization
+- Model both rotational and linear sliding motion
+- Design functional clearances
+- Test mechanisms through full motion range
+- Document sliding contact systems
+
+**This lesson assumes no prior FreeCAD knowledge** - all concepts introduced from scratch.
+
+---
+
+## Part 1: FreeCAD Setup
+
+### Starting the Project
+
+1. Launch FreeCAD
+2. File → New (Ctrl+N)
+3. Save as "ScotchYoke.FCStd"
+
+### Workbenches
+
+- **Part Design** - Parts creation
+- **Sketcher** - Slot and crank geometry
+- **Spreadsheet** - Parameters
+- **Assembly** - Combining crank, yoke, guides
+- **TechDraw** - Documentation
+
+---
+
+## Part 2: Design Strategy
+
+### Our Scotch Yoke Configuration
+
+We'll design with:
+- Crank radius = 40mm (stroke = 80mm)
+- Horizontal yoke motion
+- Clearances for smooth operation
+- Robust guides
+
+### Parameter-Driven Design
+
+Control everything through:
+- Crank radius (determines stroke)
+- Slot dimensions (calculated from crank radius + clearances)
+- Yoke size (appropriate for structural integrity)
+
+### Motion Verification
+
+We'll verify that:
+- Yoke travels exactly 2 × crank radius
+- Motion is smooth throughout 360° crank rotation
+- No binding occurs at extreme positions
+
+---
+
+## Part 3: Parameter Spreadsheet
+
+<InArticleAd />
+
+
+### Creating Parameters
+
+1. **Part Design workbench**
+
+2. **Insert Spreadsheet**
+
+3. **Enter parameters:**
+
+```
+A1: Parameter           B1: Value       C1: Unit    D1: Notes
+A2: CrankRadius         B2: 40          C2: mm      D2: Eccentricity
+A3: Stroke              B3: =B2*2       C3: mm      D3: Total travel (2r)
+A4: PinDiameter         B4: 12          C4: mm      D4: Crank pin
+A5: PinRadius           B5: =B4/2       C5: mm
+A6: SlotWidth           B6: =B4+2       C6: mm      D6: Pin dia + clearance
+A7: SlotLength          B7: =B2*2+30    C7: mm      D7: Stroke + extra
+A8: YokeWidth           B8: 60          C8: mm      D8: Yoke body width
+A9: YokeHeight          B9: 80          C9: mm      D9: Yoke body height
+A10: YokeThickness      B10: 20         C10: mm     D10: Yoke body thickness
+A11: CrankDiskRadius    B11: =B2+20     C11: mm     D11: Crank disk size
+A12: CrankThickness     B12: 15         C12: mm
+A13: ShaftDiameter      B13: 20         C13: mm
+A14: ShaftRadius        B14: =B13/2     C14: mm
+A15: GuideLength        B15: 200        C15: mm     D15: Linear guide length
+```
+
+4. **Create aliases** for all B column values
+
+5. **Close spreadsheet**
+
+---
+
+## Part 4: Creating the Crank
+
+### Crank Design Intent
+
+Rotating disk with:
+- Central shaft hole
+- Eccentric pin at radius r from center
+
+### Step-by-Step: Crank
+
+#### 1. Create Body
+
+- Part Design workbench
+- Create Body → "Crank"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Crank Disk
+
+**Main disk:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.CrankDiskRadius`
+
+**Shaft hole:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.ShaftRadius`
+
+**Eccentric pin:**
+
+- Circle offset from origin
+- Position: Horizontal, distance = ƒx → `Spreadsheet.CrankRadius`
+- Radius: ƒx → `Spreadsheet.PinRadius`
+
+**Constrain pin position:**
+
+- Horizontal constraint: Pin center and origin on same horizontal line
+- Distance from origin to pin center: ƒx → `Spreadsheet.CrankRadius`
+
+#### 4. Close and Pad
+
+- Close sketch
+- Pad: ƒx → `Spreadsheet.CrankThickness`
+
+#### 5. Add Protruding Pin (Optional)
+
+**Create pin as separate feature:**
+
+- New sketch on crank face
+- Circle at pin position
+- Pad: 15mm (protrudes from crank to engage yoke slot)
+
+Or model pin as separate part.
+
+---
+
+## Part 5: Creating the Yoke
+
+### Yoke Design Intent
+
+Sliding block with:
+- Horizontal slot for crank pin
+- Rectangular body
+- Provisions for guide engagement
+
+### Step-by-Step: Yoke
+
+#### 1. Create Body
+
+- Create Body → "Yoke"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Yoke Body
+
+**Outer rectangle:**
+
+- Rectangle centered at origin
+- Width (horizontal): ƒx → `Spreadsheet.YokeWidth`
+- Height (vertical): ƒx → `Spreadsheet.YokeHeight`
+- Use Symmetric constraints to center about origin
+
+#### 4. Draw Horizontal Slot
+
+**Slot as rectangle:**
+
+- Rectangle (horizontal orientation)
+- Width: ƒx → `Spreadsheet.SlotLength`
+- Height: ƒx → `Spreadsheet.SlotWidth`
+- Centered horizontally and vertically on yoke
+
+**Constrain slot:**
+
+- Symmetric about both X and Y axes
+- This places slot through center of yoke
+
+**Round slot ends (optional):**
+
+For smooth pin travel, round the slot ends:
+
+- Add circles (radius = SlotWidth/2) at each slot end
+- Tangent to slot sides
+
+#### 5. Close and Pad
+
+- Close sketch
+- Pad: ƒx → `Spreadsheet.YokeThickness`
+
+The yoke now has a horizontal slot through it!
+
+---
+
+## Part 6: Creating the Guide Rails
+
+### Guide Design Intent
+
+Two parallel rails that constrain yoke to linear motion, preventing rotation or lateral movement.
+
+### Step-by-Step: Guide Rails
+
+#### 1. Create Body
+
+- Create Body → "GuideRail_Left"
+
+#### 2. Create Sketch on XZ_Plane (Vertical plane)
+
+#### 3. Draw Rail Profile
+
+**Rectangular profile:**
+
+- Rectangle
+- Width: 15mm (rail width)
+- Height: 25mm (rail height)
+- Position appropriate to yoke edge
+
+#### 4. Extrude (Pad)
+
+- Pad direction: Along Y-axis
+- Length: ƒx → `Spreadsheet.GuideLength`
+
+#### 5. Create Second Rail
+
+Repeat for "GuideRail_Right":
+- Mirror geometry or create separately
+- Position on opposite side of yoke path
+
+---
+
+## Part 7: Creating the Base Frame
+
+<InArticleAd />
+
+
+### Frame Design Intent
+
+Fixed mounting with:
+- Crank shaft bearing mount
+- Guide rail mounting surfaces
+- Stable base
+
+### Step-by-Step: Frame
+
+#### 1. Create Body
+
+- Body: "Frame"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Base Plate
+
+- Rectangle
+- Width: 250mm
+- Height: 150mm
+- Centered at origin
+
+**Crank shaft hole:**
+
+- Circle at appropriate position
+- Radius: ƒx → `Spreadsheet.ShaftRadius` + clearance
+
+Position the shaft hole considering:
+- Yoke centerline height
+- Crank pin height when at top/bottom of rotation
+
+**Guide mounting features:**
+
+- Flat surfaces or mounting holes for guide rails
+- Position to align with yoke sides
+
+#### 4. Close and Pad
+
+- Pad: 20mm (frame thickness)
+
+---
+
+## Part 8: Assembly
+
+### Assembly Strategy
+
+1. Fix frame
+2. Crank rotates about shaft on frame
+3. Yoke slides horizontally, guided by rails
+4. Crank pin engages yoke slot
+
+### Step-by-Step: Assembly
+
+#### 1. Assembly Workbench
+
+#### 2. Add Parts
+
+- Frame
+- Crank
+- Yoke
+- GuideRail_Left
+- GuideRail_Right
+
+#### 3. Apply Constraints
+
+**Fix frame:**
+
+- Frame: Fixed
+
+**Crank rotation:**
+
+- Crank shaft hole → Frame shaft hole: Axial align
+- Allows crank to rotate about vertical axis
+
+**Yoke linear motion:**
+
+- Yoke → Guide rails: Constrain to allow only horizontal translation
+- Use Plane constraints or Linear movement constraint
+- No rotation allowed
+
+**Pin-in-slot connection (conceptual):**
+
+In FreeCAD assembly, continuous sliding contact isn't automatically simulated. Position yoke such that crank pin is within the slot.
+
+### Test Motion
+
+**Manual verification:**
+
+1. **Crank at 0°:** Pin at rightmost position, yoke at maximum right
+2. **Crank at 90°:** Pin at top, yoke at center
+3. **Crank at 180°:** Pin at left, yoke at maximum left
+4. **Crank at 270°:** Pin at bottom, yoke at center
+5. **Crank at 360°:** Returns to start
+
+Verify yoke travels exactly from -CrankRadius to +CrankRadius (total = Stroke).
+
+---
+
+## Part 9: Technical Drawing
+
+### Creating Scotch Yoke Drawing
+
+#### 1. TechDraw Workbench
+
+#### 2. Create Page
+
+- A3_Landscape
+
+#### 3. Add Assembly Views
+
+**Front view:**
+
+- Shows yoke, crank, guides
+- Clear view of slot and pin engagement
+
+**Side view:**
+
+- Shows thickness of components
+
+**Section view:**
+
+- Section through slot showing pin clearance
+
+#### 4. Add Motion Diagram
+
+Create diagram showing 4 positions:
+
+```
+θ = 0°: x = 0 (center)
+θ = 90°: x = +r (max right)
+θ = 180°: x = 0 (center)
+θ = 270°: x = -r (max left)
+```
+
+Plot sinusoidal curve: x vs. θ
+
+#### 5. Dimension Critical Features
+
+- Stroke (80mm)
+- Crank radius (40mm)
+- Slot width and length
+- Clearances
+
+#### 6. Add Functional Notes
+
+- "Motion: Pure sinusoidal"
+- "Stroke = 2 × Crank Radius"
+- "Slot clearance: 2mm"
+
+#### 7. Export
+
+- PDF
+
+---
+
+## Part 10: Testing Parametric Control
+
+### Change Crank Radius
+
+1. Open Spreadsheet
+2. Change CrankRadius from 40 to 50mm
+3. Recompute
+
+**Automatic updates:**
+- Stroke increases to 100mm
+- Slot length increases
+- Crank pin position updates
+
+### Change Slot Clearance
+
+- Modify the formula for SlotWidth
+- Try: =B4+3 (3mm clearance instead of 2mm)
+- Looser fit
+
+### Verify Stroke
+
+**Manual check:**
+
+At θ = 0°: yoke at x = 0
+At θ = 90°: yoke should be at x = CrankRadius
+
+Measure in assembly to verify!
+
+---
+
+## Learning Outcomes
+
+<InArticleAd />
+
+
+By completing this lesson, you have:
+
+- ✅ Designed slot-driven motion mechanisms
+- ✅ Created clearance-aware sliding contact geometry
+- ✅ Implemented stroke-based parametric control
+- ✅ Modeled rotational and linear sliding motion together
+- ✅ Designed functional clearances for smooth operation
+- ✅ Tested mechanism through full motion range
+- ✅ Documented sliding contact systems with clearances
+- ✅ Understood sinusoidal motion generation through geometry
+
+---
+
+## Design Verification
+
+1. **Does the slot accommodate full pin travel (stroke = 2r)?**
+2. **Is slot width = pin diameter + adequate clearance?**
+3. **When CrankRadius changes, does stroke update correctly (Stroke = 2r)?**
+4. **Can the crank rotate 360° without pin binding in slot?**
+5. **Are guide rails long enough for full yoke travel?**
+
+---
+
+## Mathematical Analysis
+
+### Motion Equations
+
+**Displacement:**
+```
+x(θ) = r × sin(θ)
+
+Where:
+x = yoke position from center
+r = crank radius
+θ = crank angle
+```
+
+**Velocity:**
+```
+v(θ) = r × ω × cos(θ)
+
+Where:
+ω = angular velocity of crank (rad/s)
+```
+
+**Acceleration:**
+```
+a(θ) = -r × ω² × sin(θ)
+```
+
+**Key insight:** Acceleration is proportional and opposite to displacement, characteristic of simple harmonic motion!
+
+### Force Analysis
+
+**Sliding friction force:**
+```
+F_friction = μ × N
+
+Where:
+μ = coefficient of friction (slot/pin interface)
+N = normal force from pin on slot sides
+```
+
+To reduce friction:
+- Use low-friction materials (bronze bushings)
+- Lubrication
+- Roller bearings in slot (advanced design)
+
+---
+
+## Challenges for Further Practice
+
+1. **Add roller bearings** in slot ends for reduced friction
+2. **Design a double Scotch yoke** (two opposing yokes for balance)
+3. **Create a variable-stroke version** (adjustable crank radius)
+4. **Add a flywheel** to crank for smooth operation
+5. **Model with FEM analysis** (stress in yoke at extreme positions)
+6. **Design a 90° Scotch yoke** (vertical yoke, horizontal crank axis)
+7. **Add lubrication ports** in slot
+
+---
+
+## Common Issues and Solutions
+
+### "Pin binds in slot"
+
+- **Cause:** Insufficient slot clearance or slot too short
+- **Solution:** Increase SlotWidth (add 1-2mm clearance)
+- **Fix:** Ensure SlotLength > Stroke + margin
+
+### "Yoke rotates instead of sliding linearly"
+
+- **Cause:** Guides not constraining rotation
+- **Solution:** Add guide constraints in assembly
+- **Fix:** Ensure yoke has contact surfaces for guide rails
+
+### "Slot width inconsistent"
+
+- **Cause:** Slot not properly dimensioned or constrained
+- **Solution:** Use Symmetric constraint to center slot
+- **Fix:** Link SlotWidth to PinDiameter via spreadsheet formula
+
+### "Crank pin doesn't stay in slot during rotation"
+
+- **Cause:** In CAD assembly, continuous contact not auto-maintained
+- **Solution:** This is expected in static CAD assembly
+- **Note:** In real mechanism, pin is physically captured in slot
+- **For verification:** Position yoke manually at several crank angles to verify geometry
+
+---
+
+## Comparison: Scotch Yoke vs. Slider-Crank
+
+### When to Use Scotch Yoke
+
+**Advantages:**
+- Pure sinusoidal motion (important for some applications)
+- Simpler mechanism (no connecting rod)
+- Compact design
+- Lower side forces
+
+**Disadvantages:**
+- Sliding friction (higher wear)
+- Requires precise guides
+- Less common (fewer standard parts)
+
+### When to Use Slider-Crank
+
+**Advantages:**
+- Pivoting joints (lower friction than sliding)
+- Well-established design
+- Standard parts available
+- Scalable to high speeds
+
+**Disadvantages:**
+- Side forces on guides
+- Slightly more complex
+- Motion not exactly sinusoidal
+
+---
+
+## Congratulations!
+
+You've completed all 8 lessons in the **Parametric Mechanical CAD with FreeCAD** course!
+
+### What You've Achieved
+
+You've designed a complete library of fundamental mechanisms:
+
+1. ✅ **Slider Crank** - Rotary to linear conversion
+2. ✅ **Four-Bar Linkage** - Controlled motion paths
+3. ✅ **Scissor Lift** - Motion amplification
+4. ✅ **Toggle Clamp** - Over-center locking
+5. ✅ **Pantograph** - Motion scaling
+6. ✅ **Cam and Follower** - Programmed motion
+7. ✅ **Geneva Mechanism** - Intermittent indexing
+8. ✅ **Scotch Yoke** - Pure sinusoidal motion
+
+### Skills Mastered
+
+- Parametric design thinking
+- Constraint-based sketching
+- Master sketch methodology
+- Assembly with motion
+- Technical drawing generation
+- Design verification and testing
+
+### Next Steps
+
+**Apply your skills:**
+- Design your own mechanisms
+- Combine mechanisms into complex machines
+- Explore FreeCAD's advanced features (FEM analysis, rendering, etc.)
+- Join the FreeCAD community and share your designs
+
+**Resources:**
+- FreeCAD Forum: [forum.freecadweb.org](https://forum.freecadweb.org/)
+- FreeCAD Wiki: [wiki.freecadweb.org](https://wiki.freecadweb.org/)
+- YouTube tutorials and courses
+
+Thank you for completing this course! Happy designing!
+
+<InArticleAd />
+<ParametricMechanicalCadFreecadComments />
+<TawkWidget />
+<Copyright />

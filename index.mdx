@@ -1,127 +1,161 @@
 ---
 title: "Parametric Mechanical CAD with FreeCAD"
 description: "Learn parametric 3D CAD modeling for mechanical engineering using FreeCAD open-source software"
-contributors: "sam-macharia,jack-kojiro"
 pubDate: 2025-12-17
 tags: ["freecad", "cad", "parametric-design", "3d-modeling", "mechanical-engineering"]
 excerpt: "Master parametric mechanical CAD design using FreeCAD, covering part design, assemblies, technical drawings, and real-world engineering applications."
 ---
 
-import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
-import TawkWidget from '../../../../components/TawkWidget.astro';
-import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
 import Copyright from '../../../../components/Copyright.astro';
-import { Card, CardGrid, Badge } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps } from '@astrojs/starlight/components';
 
-<UniversalContentContributors
-  contributors={frontmatter.contributors}
-/>
+**Parametric Mechanical CAD with FreeCAD** teaches parametric mechanical CAD by designing **complete, functional mechanical mechanisms** that appear repeatedly in real engineering machines.
 
-# Parametric Mechanical CAD with FreeCAD
+Rather than learning FreeCAD tools in isolation, each lesson is built around **one fundamental mechanical mechanism**, taken from real-world engineering practice. The CAD skills, theory, and workflow required to design that mechanism are introduced **within the same lesson**, with no assumed prior experience.
 
-Welcome to the comprehensive course on parametric mechanical CAD design using FreeCAD, the powerful open-source 3D modeling software.
+## Lesson Structure & Approach
 
-## 🎯 Course Overview
+Each lesson follows a mechanism-first pedagogical approach:
 
-This course teaches you professional parametric CAD modeling techniques using FreeCAD, covering everything from basic sketching to complex assemblies and technical drawings.
+<Steps>
+1. **🔧 Engineering Context**
+   Begin with the real-world mechanism and understand why it matters in engineering practice.
 
-### What You'll Learn
+2. **📚 Mechanical Theory**
+   Learn the fundamental principles of how the mechanism works—kinematics, motion relationships, and key parameters.
+
+3. **🎯 CAD Implementation**
+   Apply FreeCAD tools step-by-step to model the mechanism parametrically from scratch.
+
+4. **🛠️ Assembly & Documentation**
+   Create proper assemblies with motion constraints and generate technical drawings suitable for manufacturing.
+</Steps>
+
+## Learning Path
+
+<Steps>
+1. **Master FreeCAD Fundamentals**
+   Learn sketching, constraints, and Part Design workflow through practical mechanism design.
+
+2. **Build Parametric Thinking**
+   Develop the habit of thinking in terms of design intent, constraints, and parametric control.
+
+3. **Create Reusable Designs**
+   Build a library of mechanisms that change correctly when parameters are modified.
+
+4. **Apply Engineering Practice**
+   Use assemblies, technical drawings, and documentation as done in professional engineering.
+</Steps>
+
+## Course Structure
+
+### Every Lesson Includes
 
 <CardGrid>
-  <Card title="Part Design" icon="pencil">
-    Master sketching, constraints, and parametric modeling fundamentals
+  <Card title="Engineering Purpose" icon="rocket">
+    Why this mechanism matters and where it's used in real machines
   </Card>
 
-  <Card title="Assemblies" icon="puzzle">
-    Create complex multi-part assemblies with proper constraints
+  <Card title="Mechanical Theory" icon="document">
+    The kinematics and fundamental principles behind the mechanism
+  </Card>
+
+  <Card title="CAD Fundamentals" icon="pencil">
+    FreeCAD skills introduced as needed to model the mechanism
+  </Card>
+
+  <Card title="Parametric Model" icon="setting">
+    A fully parametric FreeCAD design controlled by a parameter table
+  </Card>
+
+  <Card title="Proper Assembly" icon="puzzle">
+    Multi-part assembly with constraints that allow motion testing
   </Card>
 
   <Card title="Technical Drawings" icon="document">
-    Generate professional engineering drawings and documentation
-  </Card>
-
-  <Card title="Real Applications" icon="rocket">
-    Apply CAD skills to real mechanical engineering projects
+    Engineering drawings suitable for documentation or manufacturing
   </Card>
 </CardGrid>
 
-## 📚 Course Structure
+## Lessons
 
-### Module 1: FreeCAD Fundamentals
-- Introduction to FreeCAD interface and workbenches
-- Sketching basics and constraints
-- Creating your first parametric part
+<Steps>
+1. **[Slider Crank Mechanism](./slider-crank-mechanism)**
+   The most common motion-conversion mechanism, used in engines, compressors, and pumps. Learn FreeCAD interface, sketching, constraints, part design, parameter tables, basic assemblies, and technical drawings.
 
-### Module 2: Advanced Part Design
-- Complex geometries and patterns
-- Multi-body design
-- Design tables and configurations
+2. **[Four-Bar Linkage Mechanism](./four-bar-linkage-mechanism)**
+   Fundamental to hinges, folding systems, and mechanical linkages. Master construction geometry, master-sketch driven design, spreadsheet parameter control, and pin-jointed assemblies.
 
-### Module 3: Assemblies
-- Assembly workbench introduction
-- Constraints and mates
-- Motion simulation
+3. **[Scissor Lift Mechanism](./scissor-lift-mechanism)**
+   Used in lifts, adjustable platforms, and deployable structures. Build repeating parametric geometry, manage symmetry, control stage count via parameters, and understand motion amplification.
 
-### Module 4: Technical Drawings
-- Creating drawing views
-- Dimensioning and annotations
-- Drawing standards and best practices
+4. **[Toggle Clamp Mechanism](./toggle-clamp-mechanism)**
+   Widely used in manufacturing fixtures for locking and force amplification. Design with angle-based constraints, clearance-aware geometry, motion limits, and over-center locking behavior.
 
-### Module 5: Practical Applications
-- Mechanical components design
-- Sheet metal design
-- Design for manufacturing
+5. **[Pantograph Mechanism](./pantograph-mechanism)**
+   Scales motion in copying and tracing mechanisms. Implement ratio-driven parameter relationships, similar triangle geometry, and expression-linked dimensions across assemblies.
 
-## 🛠️ Prerequisites
+6. **[Cam and Follower Mechanism](./cam-and-follower-mechanism)**
+   Fundamental to timed motion in engines and automated machinery. Master curve-based sketching, datum axes, parametric cam profile control, and motion-defining geometry documentation.
 
-<Badge text="No prior CAD experience required" variant="tip" />
+7. **[Geneva Mechanism](./geneva-mechanism)**
+   Provides precise intermittent motion and indexing. Design with polar geometry, pattern-based features, angular constraints, and locking geometry for intermittent motion control.
+
+8. **[Scotch Yoke Mechanism](./scotch-yoke-mechanism)**
+   Offers compact rotation-to-linear conversion with pure sinusoidal characteristics. Create slot-driven motion geometry, clearance considerations, and stroke-based parameterization.
+
+9. **[Python Scripting for Advanced CAD](./python-scripting-advanced-cad)**
+   Unlock FreeCAD's computational power with Python scripting. Generate mathematically-perfect gears, create lattice structures, automate design optimization, and perform batch operations impossible with GUI alone. Learn algorithmic design for research and advanced engineering.
+</Steps>
+
+## Pedagogical Philosophy
+
+<Card title="🎯 Core Principles" icon="star">
+- **Mechanism-first, tool-second**: Learn CAD by doing real design
+- **Complete designs, not partial exercises**: Every lesson produces a functional mechanism
+- **Parametric thinking from the start**: Build models that change correctly
+- **Engineering intent over visual appearance**: Focus on function and correctness
+- **Reusable designs over one-off models**: Create a library of mechanisms you can use
+</Card>
+
+Each lesson can be taken independently, yet together they form a coherent progression from simpler geometry and motion to more complex kinematic behavior.
+
+By the end of the course, learners will not just know how to use FreeCAD. They will have designed a **library of reusable mechanical elements** and developed the habit of thinking in terms of **design intent, constraints, and parametric control**.
+
+This mirrors real engineering practice, where CAD is not about drawing shapes, but about building **systems that change correctly**.
+
+## Software Requirements
+
+<Badge text="FreeCAD 0.21 or later" variant="tip" />
+
+**Download:** [www.freecadweb.org](https://www.freecadweb.org/)
+- Free and open-source
+- Cross-platform (Windows, Mac, Linux)
+- Professional-grade parametric 3D CAD
+
+## Prerequisites
+
+<Badge text="No prior CAD experience required" variant="note" />
 
 **Recommended background:**
 - Basic understanding of engineering drawings
 - Familiarity with 3D concepts
-- Access to a computer (Windows, Mac, or Linux)
+- Interest in mechanical design
 
-## 💻 Software Requirements
+**What you'll gain:**
+- Professional CAD modeling skills
+- Parametric design methodology
+- Engineering mechanism knowledge
+- Technical documentation abilities
 
-- **FreeCAD** (Latest stable version)
-  - Download: [www.freecadweb.org](https://www.freecadweb.org/)
-  - Free and open-source
-  - Cross-platform support
+## Getting Started
 
-## 🚀 Getting Started
-
+<Steps>
 1. **Install FreeCAD** from the official website
-2. **Start with Module 1** to learn the interface
-3. **Practice regularly** with provided exercises
-4. **Join the community** for help and discussion
+2. **Start with Lesson 1** (Slider Crank Mechanism)
+3. **Work through lessons sequentially** for best results
+4. **Practice modifying parameters** to understand parametric control
+5. **Build your mechanism library** as you progress
+</Steps>
 
-## 📖 Learning Path
-
-This course is designed to be completed sequentially. Each lesson builds on previous concepts, so following the order is recommended for best results.
-
-**Estimated Time:** 40-50 hours total
-
-## 🎓 Course Outcomes
-
-By completing this course, you will be able to:
-
-- ✅ Create parametric 3D models of mechanical parts
-- ✅ Design and assemble complex mechanical systems
-- ✅ Generate professional technical drawings
-- ✅ Apply CAD skills to real engineering projects
-- ✅ Work efficiently with the FreeCAD interface
-- ✅ Understand parametric design principles
-
-## 🤝 Community and Support
-
-- **Discussion Forum:** Use the comments section below
-- **FreeCAD Forum:** [forum.freecadweb.org](https://forum.freecadweb.org/)
-- **Documentation:** [wiki.freecadweb.org](https://wiki.freecadweb.org/)
-
----
-
-Ready to start? Begin with the first lesson in Module 1!
-
-<ParametricMechanicalCadFreecadComments />
-<TawkWidget />
 <Copyright />

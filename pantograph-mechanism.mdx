@@ -1,0 +1,658 @@
+---
+title: "Pantograph Mechanism - Parametric CAD Design"
+description: "Design a pantograph mechanism for motion scaling and copying with ratio-driven parametric control in FreeCAD"
+contributors: "sam-macharia,sila-mulwa"
+pubDate: 2025-12-17
+tags: ["freecad", "pantograph", "motion-scaling", "parametric-design", "mechanism-design"]
+excerpt: "Create a fully parametric pantograph mechanism with adjustable scaling ratio, learning similar triangle geometry and expression-driven design."
+---
+
+import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+# Pantograph Mechanism - Parametric CAD Design
+
+## Engineering Context
+
+### Why This Mechanism Matters
+
+A pantograph is a mechanical linkage that scales motion - it can enlarge, reduce, or exactly copy a path traced by one point as output at another point. This elegant mechanism based on similar triangles has been used for centuries.
+
+**Real-world applications:**
+- Engraving and routing machines (copying patterns)
+- Drafting tools (enlarging or reducing drawings)
+- Train pantographs (power collection, different use but same name)
+- Motion scaling in manufacturing
+- Educational math demonstrators (similar triangles)
+- Robotic manipulators (coordinated motion)
+
+### Engineering Problem
+
+**Given:** A path traced by an input stylus or pointer
+**Required:** Reproduce that path at a different scale
+**Constraint:** Maintain geometric similarity and smooth motion
+
+### Pantograph Principle
+
+A pantograph consists of four links forming a parallelogram-like structure with specific length ratios. Key principle:
+
+**Similar Triangles:**
+
+If links are arranged such that:
+- One pivot is fixed (O)
+- Input point (I) traces a path
+- Output point (P) is positioned on an extension of link OI
+
+Then: **OP / OI = constant ratio (k)**
+
+This ratio k is the **scaling factor**:
+- k > 1: Enlargement (output motion larger than input)
+- k = 1: Exact copy (1:1 pantograph)
+- k < 1: Reduction (output smaller than input)
+
+### Geometric Requirements
+
+For a pantograph with scaling ratio k:
+
+```
+Link arrangement:
+- OA and OB are two links from fixed pivot O
+- A and B are moving pivots
+- AB is a connecting link
+- I (input) is on link OA
+- P (output) is on link OB extended
+
+Length relationships:
+OA / OI = OB / OP = AB / IP = k
+```
+
+The parallelogram OAIB ensures that triangles OIA and OPB remain similar as the mechanism moves.
+
+---
+
+## What You'll Learn
+
+By completing this lesson, you will:
+
+- Design mechanisms based on ratio relationships
+- Use expressions to link multiple dimensions
+- Create similar triangle geometry
+- Implement scaling factor control
+- Design for smooth planar motion
+- Reuse parametric parts across assemblies
+- Document ratio-based mechanisms
+
+**This lesson assumes no prior FreeCAD knowledge** - all concepts explained from scratch.
+
+---
+
+## Part 1: FreeCAD Setup
+
+### Starting Fresh
+
+1. Launch FreeCAD
+2. File → New (Ctrl+N)
+3. Save as "Pantograph.FCStd"
+
+### Workbenches
+
+- **Part Design** - Individual parts
+- **Sketcher** - Constrained sketches
+- **Spreadsheet** - Parameters and ratios
+- **Assembly** - Combining links
+- **TechDraw** - Documentation
+
+---
+
+## Part 2: Design Strategy
+
+### Our Pantograph Configuration
+
+We'll build a classic 4-bar pantograph with:
+- Fixed pivot O at origin
+- Scaling ratio k = 2:1 (output is 2× input)
+- Input stylus at point I
+- Output tracer at point P
+
+### Link Naming
+
+- **Link 1:** Fixed base (ground)
+- **Link OA:** From fixed pivot O to moving pivot A
+- **Link OB:** From fixed pivot O to moving pivot B
+- **Link AB:** Connecting moving pivots A and B
+- **Arm OI:** From O through A to input point I
+- **Arm OP:** From O through B to output point P
+
+### Parameter Strategy
+
+Control everything with:
+- Base link length (OA and OB lengths)
+- Scaling ratio k
+- All other dimensions calculated from these
+
+---
+
+## Part 3: Parameter Spreadsheet
+
+### Creating the Spreadsheet
+
+1. **Part Design workbench**
+
+2. **Insert Spreadsheet**
+
+3. **Enter parameters:**
+
+```
+A1: Parameter        B1: Value         C1: Unit    D1: Formula/Note
+A2: ScalingRatio     B2: 2             C2: ratio   D2: k (output/input)
+A3: BaseLength       B3: 100           C3: mm      D3: Length OA = OB
+A4: InputLength      B4: =B3*B2        C4: mm      D4: OI = BaseLength × k
+A5: OutputLength     B5: =B3*B2*B2     C5: mm      D5: OP = BaseLength × k²
+A6: CrossLink        B6: =B3*B2        C6: mm      D6: AB = IP = InputLength
+A7: LinkWidth        B7: 20            C7: mm
+A8: LinkThickness    B8: 6             C8: mm
+A9: PinDiameter      B9: 6             C9: mm
+A10: PinRadius       B10: =B9/2        C10: mm
+```
+
+**Note the expressions in column B:**
+- InputLength = BaseLength × ScalingRatio
+- OutputLength = BaseLength × ScalingRatio²
+- CrossLink = InputLength
+
+These ensure the similar triangle relationships are maintained!
+
+4. **Create aliases:**
+   - B2: `ScalingRatio`
+   - B3: `BaseLength`
+   - B4: `InputLength`
+   - B5: `OutputLength`
+   - B6: `CrossLink`
+   - B7: `LinkWidth`
+   - B8: `LinkThickness`
+   - B10: `PinRadius`
+
+5. **Close spreadsheet**
+
+---
+
+## Part 4: Master Sketch
+
+<InArticleAd />
+
+
+### Why Master Sketch for Pantograph?
+
+The pantograph's geometric relationships are critical. A master sketch ensures all link lengths maintain proper ratios.
+
+### Step-by-Step: Master Sketch
+
+#### 1. Create Standalone Sketch
+
+- Part Design workbench
+- Create sketch on XY_Plane
+- This won't belong to a body
+
+#### 2. Draw Fixed Pivot O
+
+- Point at origin (0, 0)
+- This is our fixed pivot
+
+#### 3. Draw Link OA
+
+- Line tool
+- Start at origin
+- Draw at 45° upward-right
+- Length constraint: ƒx → `Spreadsheet.BaseLength`
+- Angle constraint: 45° from horizontal
+
+Label endpoint as "A"
+
+#### 4. Draw Link OB
+
+- Line tool
+- Start at origin
+- Draw horizontally right
+- Length constraint: ƒx → `Spreadsheet.BaseLength`
+- Horizontal constraint
+
+Label endpoint as "B"
+
+#### 5. Draw Cross Link AB
+
+- Line tool
+- Connect points A and B
+- Length constraint: ƒx → `Spreadsheet.CrossLink`
+
+This forms triangle OAB.
+
+#### 6. Extend OA to Input Point I
+
+- Line tool
+- Continue from A along the same angle as OA
+- Or: Draw line from O through A
+- Total length from O to I: ƒx → `Spreadsheet.InputLength`
+
+Use Construction line for the full length OI.
+
+#### 7. Extend OB to Output Point P
+
+- Line tool
+- Continue from B along same direction as OB
+- Total length from O to P: ƒx → `Spreadsheet.OutputLength`
+
+Construction line for full length OP.
+
+#### 8. Mark Key Points
+
+Add small circles at O, A, B, I, P (radius 2mm, just for visualization).
+
+#### 9. Make All Construction Geometry
+
+- Select all lines
+- Press G to toggle construction mode
+- Lines turn blue/dashed
+
+#### 10. Check Constraints
+
+Should be fully constrained:
+- O is at origin
+- OA length and angle defined
+- OB length and horizontal
+- AB length defined
+- OI length defined
+- OP length defined
+
+#### 11. Close Sketch
+
+Master sketch complete!
+
+---
+
+## Part 5: Creating Link OA
+
+### Design Intent
+
+Link from fixed pivot O to moving pivot A.
+
+### Step-by-Step: Link OA
+
+#### 1. Create Body
+
+- Create Body → "Link_OA"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Reference Master Sketch
+
+- External Geometry tool (E)
+- Select master sketch from tree
+- Click points O and A
+- They appear as purple reference points
+
+#### 4. Draw Link
+
+- Circle at O: radius = PinRadius
+- Circle at A: radius = PinRadius
+- Rectangle connecting them, symmetric about OA line
+- Width = LinkWidth
+
+#### 5. Close and Pad
+
+- Pad: LinkThickness
+
+---
+
+## Part 6: Creating Link OB
+
+Same process as Link OA:
+
+1. Body: "Link_OB"
+2. Sketch: Reference O and B from master sketch
+3. Circles at O and B, rectangle
+4. Pad: LinkThickness
+
+---
+
+## Part 7: Creating Link AB
+
+1. Body: "Link_AB"
+2. Sketch: Reference A and B
+3. Circles at both ends, rectangle body
+4. Pad: LinkThickness
+
+---
+
+## Part 8: Creating Input Arm (OI)
+
+This arm extends from O through A to I (input stylus).
+
+### Step-by-Step: Input Arm
+
+#### 1. Create Body
+
+- Body: "InputArm"
+
+#### 2. Create Sketch
+
+- Reference O, A, and I from master sketch
+
+#### 3. Draw Arm
+
+- Long rectangle from O to I
+- Holes at O and A (for pins)
+- Width = LinkWidth (or slightly narrower to avoid interference)
+- Add stylus holder at I (small protrusion or hole)
+
+#### 4. Pad
+
+- Thickness: LinkThickness
+
+---
+
+## Part 9: Creating Output Arm (OP)
+
+<InArticleAd />
+
+
+This arm extends from O through B to P (output tracer).
+
+Similar to input arm:
+
+1. Body: "OutputArm"
+2. Sketch: Reference O, B, P
+3. Rectangle from O to P with holes at O and B
+4. Tracer mount at P (can be a protruding pin)
+5. Pad: LinkThickness
+
+---
+
+## Part 10: Creating the Base
+
+### Base Design Intent
+
+Fixed mounting plate with pivot holes for O pivot.
+
+### Step-by-Step: Base
+
+#### 1. Create Body
+
+- Body: "Base"
+
+#### 2. Create Sketch
+
+- Rectangle centered at origin
+- Width = 150mm, Height = 100mm
+- Symmetric constraints
+
+**Pivot hole:**
+
+- Circle at origin
+- Radius = PinRadius
+
+**Mounting holes:**
+
+- 4 corner holes for bolts
+
+#### 3. Pad
+
+- Thickness: 15mm
+
+---
+
+## Part 11: Assembly
+
+### Assembly Strategy
+
+- Fix base
+- Both Link_OA and Link_OB pivot at O
+- InputArm and OutputArm also pivot at O (coaxial with links)
+- Link AB connects A and B
+- Mechanism should move smoothly in a plane
+
+### Step-by-Step: Assembly
+
+#### 1. Assembly Workbench
+
+#### 2. Add Parts
+
+- Add Base
+- Add Link_OA
+- Add Link_OB
+- Add Link_AB
+- Add InputArm
+- Add OutputArm
+
+#### 3. Apply Constraints
+
+**Fix base:**
+
+- Base: Fixed constraint
+
+**Pivot at O:**
+
+All four links (OA, OB, InputArm, OutputArm) pivot at O:
+
+- Link_OA hole at O → Base hole at O: Axial align
+- Link_OB hole at O → Base hole at O: Axial align
+- InputArm hole at O → Base hole at O: Axial align
+- OutputArm hole at O → Base hole at O: Axial align
+
+**Joint at A:**
+
+- Link_OA hole at A → Link_AB hole at A: Axial align
+- InputArm hole at A → Link_OA hole at A: Axial align
+
+**Joint at B:**
+
+- Link_OB hole at B → Link_AB hole at B: Axial align
+- OutputArm hole at B → Link_OB hole at B: Axial align
+
+### Test Motion
+
+Drag the input arm (point I) - the output point P should trace a path that is 2× larger!
+
+---
+
+## Part 12: Verifying the Scaling Ratio
+
+### Manual Test
+
+1. **Mark a starting position:**
+   - Note position of I and P
+
+2. **Move input point I by 10mm horizontally**
+   - Measure new position
+
+3. **Check output point P**
+   - Should have moved 20mm horizontally (2× input)
+
+### Parametric Test
+
+1. Open Spreadsheet
+2. Change ScalingRatio from 2 to 3
+3. Recompute
+4. All link lengths update automatically!
+5. Test motion again - now output should be 3× input
+
+---
+
+## Part 13: Technical Drawing
+
+### Creating Pantograph Drawing
+
+#### 1. TechDraw Workbench
+
+#### 2. Create Page
+
+- A3_Landscape
+
+#### 3. Add Assembly View
+
+- Front view showing full mechanism
+
+#### 4. Add Dimensional Analysis
+
+Create a detail callout showing:
+
+```
+Scaling Ratio k = 2:1
+
+Link Lengths:
+OA = OB = 100 mm
+OI = 200 mm (k × OA)
+OP = 400 mm (k² × OA)
+AB = 200 mm (k × OA)
+```
+
+#### 5. Add Motion Diagram
+
+Show two positions:
+- Position 1: Input at I₁, output at P₁
+- Position 2: Input at I₂, output at P₂
+- Dimension: ΔI = 10mm, ΔP = 20mm
+
+#### 6. Export
+
+- PDF export
+
+---
+
+## Part 14: Testing Parametric Control
+
+<InArticleAd />
+
+
+### Experiment 1: Change Scaling Ratio
+
+**k = 1 (1:1 copy):**
+```
+ScalingRatio = 1
+All lengths become equal to BaseLength
+```
+
+**k = 3 (3× enlargement):**
+```
+ScalingRatio = 3
+InputLength = 300mm
+OutputLength = 900mm
+```
+
+### Experiment 2: Change Base Size
+
+- BaseLength from 100 to 150
+- Entire mechanism scales up proportionally
+- Scaling ratio remains constant
+
+---
+
+## Learning Outcomes
+
+By completing this lesson, you have:
+
+- ✅ Designed a ratio-driven mechanism
+- ✅ Used expressions to link multiple dimensions
+- ✅ Created similar triangle geometry
+- ✅ Implemented parametric scaling control
+- ✅ Designed for smooth planar motion
+- ✅ Reused parametric parts across assembly
+- ✅ Documented ratio-based mechanisms
+- ✅ Verified motion scaling through testing
+
+---
+
+## Design Verification
+
+1. **Does the output point move smoothly as input moves?**
+2. **Is the scaling ratio correct? (Test with measurements)**
+3. **When you change ScalingRatio parameter, do all links update correctly?**
+4. **Does the mechanism maintain similar triangle geometry throughout motion?**
+5. **Are there any binding points or dead spots?**
+
+---
+
+## Mathematical Verification
+
+### Calculating Output Position
+
+For a pantograph with scaling ratio k:
+
+```
+If input point I is at (x, y) relative to O,
+Then output point P is at (k×x, k×y) relative to O
+```
+
+**Example:**
+- Input moves to I = (50, 50)
+- With k = 2
+- Output should be at P = (100, 100)
+
+Test this in your assembly!
+
+---
+
+## Challenges for Further Practice
+
+1. **Design a reduction pantograph** (k = 0.5, output smaller than input)
+2. **Add a stylus holder** at input point (removable, adjustable)
+3. **Add a pen/pencil holder** at output point
+4. **Create a locking mechanism** to fix position
+5. **Design a trammel attachment** (for drawing ellipses)
+6. **Build a 3D pantograph** (scales motion in XY plane vertically)
+
+---
+
+## Common Issues and Solutions
+
+### "Output doesn't scale correctly"
+
+- **Cause:** Incorrect link length ratios
+- **Solution:** Verify expressions in spreadsheet
+- **Fix:** InputLength must = BaseLength × k
+- **Fix:** OutputLength must = BaseLength × k²
+
+### "Mechanism binds or locks up"
+
+- **Cause:** Links interfering, or over-constrained assembly
+- **Solution:** Check clearances, ensure only Base is Fixed
+- **Fix:** May need to offset arms in Z-direction
+
+### "Scaling ratio parameter doesn't update links"
+
+- **Cause:** Dimensions not using formulas
+- **Solution:** Check that InputLength cell has `=B3*B2` not a hardcoded value
+- **Fix:** Recreate spreadsheet formulas
+
+### "Parts misalign in assembly"
+
+- **Cause:** Not referencing master sketch consistently
+- **Solution:** All part sketches must use External Geometry from same master sketch
+- **Fix:** Rebuild parts referencing master sketch points
+
+---
+
+## Next Steps
+
+In the next lesson on **Cam and Follower Mechanism**, we'll explore:
+
+- Motion programming through geometry
+- Curve-based sketching
+- Rise-dwell-return profiles
+- Contact-driven motion
+- Datum axes and reference geometry
+
+<InArticleAd />
+<ParametricMechanicalCadFreecadComments />
+<TawkWidget />
+<Copyright />

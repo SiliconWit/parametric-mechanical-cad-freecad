@@ -1,0 +1,616 @@
+---
+title: "Geneva Mechanism - Parametric CAD Design"
+description: "Design a Geneva mechanism for precise intermittent motion and indexing with parametric slot control in FreeCAD"
+contributors: "sam-macharia,sila-mulwa"
+pubDate: 2025-12-17
+tags: ["freecad", "geneva-mechanism", "indexing", "intermittent-motion", "parametric-design"]
+excerpt: "Create a fully parametric Geneva mechanism for intermittent rotary motion, learning polar patterns, indexing, and locking geometry design."
+---
+
+import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
+import TawkWidget from '../../../../components/TawkWidget.astro';
+import UniversalContentContributors from '../../../../components/UniversalContentContributors.astro';
+import InArticleAd from '../../../../components/InArticleAd.astro';
+import Copyright from '../../../../components/Copyright.astro';
+import BionicText from '../../../../components/BionicText.astro';
+import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+
+<UniversalContentContributors 
+  contributors={frontmatter.contributors}
+/>
+
+# Geneva Mechanism - Parametric CAD Design
+
+## Engineering Context
+
+### Why This Mechanism Matters
+
+The Geneva mechanism (also called Maltese cross mechanism) provides precise, intermittent rotary motion - the driven wheel indexes (steps) to exact positions while the driver rotates continuously. It's elegant, reliable, and self-locking.
+
+**Real-world applications:**
+- Film projectors (advancing film frame-by-frame)
+- Movie cameras (frame advance)
+- Automatic machine tool changers
+- Conveyor indexing systems
+- Rotary tables in manufacturing
+- Turret lathes (tool position indexing)
+- Packaging machinery (precise positioning)
+
+### Engineering Problem
+
+**Given:** Continuous rotation input
+**Required:** Intermittent, precise angular output with exact dwell periods
+**Constraint:** Must lock in position during dwell (no creep or drift)
+
+### Geneva Mechanism Principle
+
+**Components:**
+
+1. **Driver (Crank):** Rotates continuously, has a pin protruding from it
+2. **Driven wheel (Geneva wheel):** Has radial slots, indexes when pin engages slot
+3. **Locking arc:** Circular arc on driver that locks driven wheel during dwell
+
+**Operation:**
+
+1. **Dwell phase:** Driver's locking arc engages driven wheel's periphery, preventing rotation
+2. **Index phase:** Driver pin enters driven wheel slot, rotating it to next position
+3. **Dwell phase:** Locking arc re-engages, holding driven wheel stationary
+
+### Key Parameters
+
+- **Number of slots (n):** Typically 4, 5, 6, or 8
+- **Index angle:** θ = 360° / n (angle driven wheel rotates per index)
+- **Driver radius (R_d):** Radius to driving pin center
+- **Driven wheel radius (R_g):** Distance from center to slot entry
+- **Dwell ratio:** Fraction of driver rotation where driven wheel is stationary
+
+**Geometric relationships:**
+
+For an external Geneva mechanism with n slots:
+
+```
+R_g = R_d × tan(180° / n)
+Slot center angle: 360° / n
+Slot width: Designed to accommodate pin with clearance
+```
+
+### Common Configurations
+
+- **4-slot:** 90° indexing, 1:4 gear ratio effect
+- **6-slot:** 60° indexing, 1:6 ratio (we'll use this)
+- **8-slot:** 45° indexing, 1:8 ratio
+
+---
+
+## What You'll Learn
+
+By completing this lesson, you will:
+
+- Design using polar geometry and patterns
+- Create parameter-driven angular features
+- Apply circular patterns in sketches
+- Design locking geometry for intermittent motion
+- Use angular constraints precisely
+- Generate indexed position technical drawings
+
+**This lesson assumes no prior FreeCAD knowledge** - all concepts introduced from scratch.
+
+---
+
+## Part 1: FreeCAD Setup
+
+### Starting Fresh
+
+1. Launch FreeCAD
+2. File → New (Ctrl+N)
+3. Save as "GenevaMechanism.FCStd"
+
+### Workbenches
+
+- **Part Design** - Parts
+- **Sketcher** - Polar geometry
+- **Spreadsheet** - Parameters
+- **Assembly** - Combining driver and driven wheel
+- **TechDraw** - Documentation
+
+---
+
+## Part 2: Design Strategy
+
+### Our Geneva Configuration
+
+We'll design a **6-slot external Geneva mechanism**:
+
+- 6 slots on driven wheel
+- Index angle: 360° / 6 = 60°
+- Driver rotates continuously
+- Driven wheel dwells while driver completes 240° (4/6 of rotation)
+- Driven wheel indexes 60° while driver completes 120° (2/6 of rotation)
+
+### Parameter Strategy
+
+Everything controlled by:
+- Number of slots (n = 6)
+- Driver center distance
+- Pin diameter
+- From these, all other dimensions calculated
+
+---
+
+## Part 3: Parameter Spreadsheet
+
+<InArticleAd />
+
+
+### Creating Parameters
+
+1. **Part Design workbench**
+
+2. **Insert Spreadsheet**
+
+3. **Enter parameters:**
+
+```
+A1: Parameter               B1: Value           C1: Unit    D1: Notes
+A2: NumSlots                B2: 6               C2: count   D2: Number of slots
+A3: DriverCenterDistance    B3: 80              C3: mm      D3: Between centers
+A4: PinDiameter             B4: 10              C4: mm      D4: Driving pin
+A5: PinRadius               B5: =B4/2           C5: mm
+A6: IndexAngle              B6: =360/B2         C6: deg     D6: Rotation per index
+A7: SlotAngle               B7: =360/B2         C7: deg     D7: Angular spacing
+A8: DriverRadius            B8: =B3/2           C8: mm      D8: To pin center (simplified)
+A9: DrivenRadius            B9: =B8*TAN(180/B2) C9: mm      D9: Geneva radius (calculated)
+A10: WheelThickness         B10: 15             C10: mm
+A11: ShaftDiameter          B11: 20             C11: mm
+A12: ShaftRadius            B12: =B11/2         C12: mm
+A13: SlotWidth              B13: =B5*2.5        C13: mm     D13: Pin diameter × 1.25 (clearance)
+```
+
+**Note:** Cell B9 uses TAN function to calculate driven wheel radius geometrically.
+
+**Important:** In FreeCAD spreadsheet, angle functions use degrees if you specify the angle in degrees, but verify. Use `RADIANS()` if needed.
+
+4. **Create aliases** for all B column values
+
+5. **Close spreadsheet**
+
+---
+
+## Part 4: Creating the Driver (Crank)
+
+### Driver Design Intent
+
+Disk with:
+- Central shaft hole
+- Driving pin at radius R_d
+- Locking arc on periphery
+
+### Step-by-Step: Driver
+
+#### 1. Create Body
+
+- Part Design workbench
+- Create Body → "Driver"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Driver Disk
+
+**Main circle:**
+
+- Circle at origin
+- Radius: We'll use a value slightly larger than DriverRadius for the body
+- Try: 50mm
+
+**Shaft hole:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.ShaftRadius`
+
+**Driving pin position:**
+
+- Circle (for pin hole or pin body)
+- Center position: Distance from origin = ƒx → `Spreadsheet.DriverRadius`
+- Place on horizontal axis (0° angle)
+- Radius: ƒx → `Spreadsheet.PinRadius`
+
+**Constrain pin position:**
+
+- Horizontal distance from origin to pin center = DriverRadius
+- Vertical coordinate = 0
+
+**Locking arc (as reference):**
+
+We'll add the locking arc in a separate step or as part of the periphery shape.
+
+For simplicity, the driver disk itself acts as the locking element.
+
+#### 4. Close and Pad
+
+- Close sketch
+- Pad: ƒx → `Spreadsheet.WheelThickness`
+
+#### 5. Add Driving Pin (Optional separate part)
+
+**Alternative:** Create pin as separate feature:
+
+- New sketch on top face of driver
+- Circle at pin position
+- Pad upward (protrudes from driver face)
+
+---
+
+## Part 5: Creating the Driven Wheel (Geneva Wheel)
+
+### Geneva Wheel Design Intent
+
+Disk with:
+- n radial slots (6 for our design)
+- Central shaft hole
+- Locking periphery (circular with cutouts at slots)
+
+### Step-by-Step: Geneva Wheel
+
+#### 1. Create Body
+
+- Create Body → "GenevaWheel"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Base Circle
+
+**Main wheel circle:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.DrivenRadius` (calculated as R_d × tan(180/n))
+
+**Shaft hole:**
+
+- Circle at origin
+- Radius: ƒx → `Spreadsheet.ShaftRadius`
+
+#### 4. Draw One Slot
+
+**Slot as radial rectangle:**
+
+- Rectangle
+- Oriented radially from wheel center
+- Width (perpendicular to radius): ƒx → `Spreadsheet.SlotWidth`
+- Length (radial): Extends from near center to periphery
+- Position at 0° (horizontal right)
+
+**Constrain slot:**
+
+- Symmetric about horizontal axis (or positioned at exact angle)
+- Distance from center to slot start: appropriate clearance
+- Distance from center to slot end: near or at wheel edge
+
+**Slot entry shape (optional refinement):**
+
+For smooth pin entry, the slot entry can be rounded or shaped. For simplicity, rectangular slot is acceptable.
+
+#### 5. Pattern the Slot
+
+**Polar pattern:**
+
+- Select the slot rectangle
+- Use **Polar Pattern** constraint or tool
+- Center: Origin
+- Number of instances: ƒx → `Spreadsheet.NumSlots` (6)
+- Angular spacing: ƒx → `Spreadsheet.SlotAngle` (60°)
+
+This creates 6 equally spaced slots!
+
+#### 6. Create Locking Periphery
+
+The wheel periphery between slots should be circular (for locking arc engagement), with cutouts only at slot openings.
+
+**Method:**
+- The base circle provides the locking surface
+- Slots cut into it
+
+The sketch should now show:
+- Central shaft hole
+- 6 radial slots evenly spaced
+- Circular periphery between slots
+
+#### 7. Close and Pad
+
+- Close sketch
+- Pad: ƒx → `Spreadsheet.WheelThickness`
+
+The Geneva wheel is complete!
+
+---
+
+## Part 6: Creating the Base Frame
+
+### Frame Design Intent
+
+Fixed mounting with:
+- Shaft bearings for both driver and Geneva wheel
+- Proper center distance
+
+### Step-by-Step: Frame
+
+#### 1. Create Body
+
+- Body: "Frame"
+
+#### 2. Create Sketch on XY_Plane
+
+#### 3. Draw Base Plate
+
+- Rectangle
+- Width: 200mm
+- Height: 120mm
+- Centered
+
+#### 4. Add Shaft Holes
+
+**Driver shaft hole:**
+
+- Circle at origin
+- Radius: ShaftRadius + clearance
+
+**Geneva wheel shaft hole:**
+
+- Circle at distance = DriverCenterDistance
+- Position on horizontal axis (right of origin)
+- Radius: ShaftRadius + clearance
+
+**Constrain:**
+
+- Horizontal distance between centers = ƒx → `Spreadsheet.DriverCenterDistance`
+
+#### 5. Mounting Holes
+
+Add 4 corner bolt holes for mounting frame.
+
+#### 6. Close and Pad
+
+- Pad: 20mm
+
+---
+
+## Part 7: Assembly
+
+<InArticleAd />
+
+
+### Assembly Strategy
+
+- Fix frame
+- Driver rotates about left shaft
+- Geneva wheel rotates about right shaft
+- Driver pin engages Geneva wheel slots
+
+### Step-by-Step: Assembly
+
+#### 1. Assembly Workbench
+
+#### 2. Add Parts
+
+- Frame
+- Driver
+- GenevaWheel
+
+#### 3. Apply Constraints
+
+**Fix frame:**
+
+- Frame: Fixed
+
+**Driver rotation:**
+
+- Driver shaft hole → Frame driver shaft hole: Axial align
+- Allows driver to rotate about its axis
+
+**Geneva wheel rotation:**
+
+- Geneva wheel shaft hole → Frame Geneva shaft hole: Axial align
+- Allows Geneva wheel to rotate about its axis
+
+**Initial positioning:**
+
+Position driver such that pin is entering one of the Geneva wheel slots.
+
+### Test Motion
+
+Manually rotate driver:
+
+1. **Dwell:** Driver rotates, Geneva wheel locked (pin not in slot)
+2. **Index:** Driver pin enters slot, rotates Geneva wheel 60°
+3. **Dwell:** Pin exits, Geneva wheel locked again
+
+Repeat through 6 positions.
+
+---
+
+## Part 8: Technical Drawing
+
+### Creating Geneva Mechanism Drawing
+
+#### 1. TechDraw Workbench
+
+#### 2. Create Page
+
+- A3_Landscape
+
+#### 3. Add Top View
+
+- Shows both wheels in plan view
+- Clearly visible: pin, slots, center distance
+
+#### 4. Add Multiple Position Views
+
+Create 3 views showing different phases:
+
+- **View 1:** Driver at 0° (pin entering slot 1)
+- **View 2:** Driver at 60° (mid-index, Geneva rotating)
+- **View 3:** Driver at 120° (pin exited, dwell begins)
+
+#### 5. Dimension Key Features
+
+- Center distance
+- Slot angle (60°)
+- Pin diameter
+- Number of slots (note: 6)
+
+#### 6. Add Timing Diagram
+
+Sketch a diagram showing:
+- X-axis: Driver rotation (0° to 360°)
+- Y-axis: Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°)
+- Show dwell periods (horizontal lines) and index periods (vertical jumps)
+
+#### 7. Export
+
+- PDF
+
+---
+
+## Part 9: Testing Parametric Control
+
+### Change Number of Slots
+
+1. Open Spreadsheet
+2. Change NumSlots from 6 to 4
+3. Recompute
+
+All geometry updates:
+- Slots now 90° apart
+- Index angle = 90°
+- Driven radius recalculated
+- 4 slots appear on Geneva wheel
+
+**Test different values:**
+- NumSlots = 8 (45° indexing)
+- NumSlots = 5 (72° indexing)
+
+### Change Center Distance
+
+- Increase DriverCenterDistance to 100mm
+- Larger mechanism
+- All ratios maintain
+
+---
+
+## Learning Outcomes
+
+By completing this lesson, you have:
+
+- ✅ Designed with polar geometry and angular patterns
+- ✅ Created parameter-driven angular features
+- ✅ Applied circular patterns for repeated features
+- ✅ Designed intermittent motion mechanism
+- ✅ Used angular constraints precisely
+- ✅ Generated indexed position documentation
+- ✅ Understood locking geometry principles
+
+---
+
+## Design Verification
+
+<InArticleAd />
+
+
+1. **Do all slots align radially from center?**
+2. **Are slots evenly spaced (60° apart for 6-slot)?**
+3. **Does driving pin fit into slots with clearance?**
+4. **When NumSlots changes, does geometry update correctly?**
+5. **Is the center distance appropriate for smooth pin engagement?**
+
+---
+
+## Mathematical Background
+
+### Geneva Wheel Radius Calculation
+
+For an external Geneva mechanism:
+
+```
+R_g = R_d × tan(180° / n)
+
+Where:
+R_g = Geneva wheel radius (center to slot entry)
+R_d = Driver radius (center to pin)
+n = Number of slots
+```
+
+**For n = 6:**
+
+```
+R_g = R_d × tan(30°)
+R_g = R_d × 0.577
+```
+
+If R_d = 40mm, then R_g ≈ 23mm.
+
+### Dwell vs. Index Time
+
+**Dwell angle:** 360° × (n - 2) / n
+
+**Index angle:** 360° / n
+
+**For 6-slot Geneva:**
+- Dwell: 360° × 4/6 = 240° of driver rotation
+- Index: 360° × 1/6 = 60° of driver rotation
+
+---
+
+## Challenges for Further Practice
+
+1. **Design an internal Geneva mechanism** (pin inside driven wheel)
+2. **Add a safety guard** covering moving parts
+3. **Create a double-Geneva** (two Geneva wheels on same driver)
+4. **Design a spherical Geneva** (3D version for spatial indexing)
+5. **Add position sensors** (mounting for optical sensors to detect index positions)
+6. **Model wear analysis** (contact stress at pin/slot interface)
+
+---
+
+## Common Issues and Solutions
+
+### "Slots not evenly spaced"
+
+- **Cause:** Polar pattern not set to correct angle or count
+- **Solution:** Verify SlotAngle = 360 / NumSlots
+- **Fix:** Check pattern constraints reference spreadsheet parameters
+
+### "Pin doesn't fit in slot"
+
+- **Cause:** Slot width too narrow
+- **Solution:** SlotWidth should be 1.2-1.5 × PinDiameter
+- **Fix:** Adjust SlotWidth parameter
+
+### "Geneva wheel radius seems wrong"
+
+- **Cause:** Incorrect TAN formula or units
+- **Solution:** Verify formula: =B8*TAN(180°/B2)
+- **Fix:** Check that TAN function uses degrees (or convert with RADIANS())
+
+### "Mechanism binds during motion"
+
+- **Cause:** Center distance incorrect or slot angle wrong
+- **Solution:** Recalculate center distance using correct geometry
+- **Fix:** Verify all geometric relationships
+
+---
+
+## Next Steps
+
+In the final lesson on **Scotch Yoke Mechanism**, we'll explore:
+
+- Slot-driven motion
+- Sinusoidal motion profiles
+- Sliding contact geometry
+- Clearance considerations
+- Stroke-based parameterization
+
+<InArticleAd />
+<ParametricMechanicalCadFreecadComments />
+<TawkWidget />
+<Copyright />
