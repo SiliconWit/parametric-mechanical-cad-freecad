@@ -122,11 +122,12 @@ A scissor mechanism consists of crossed links working in harmony:
   <TabItem label="Motion Analysis">
 
     **Height Relationship:**
-    ```
-    Collapsed height: H_min = 2N × L × sin(θ_min)
-    Extended height:  H_max = 2N × L × sin(θ_max)
-    Lift ratio:       H_max / H_min = sin(θ_max) / sin(θ_min)
-    ```
+
+    $$H_{\min} = 2N \times L \times \sin(\theta_{\min})$$
+
+    $$H_{\max} = 2N \times L \times \sin(\theta_{\max})$$
+
+    $$\frac{H_{\max}}{H_{\min}} = \frac{\sin(\theta_{\max})}{\sin(\theta_{\min})}$$
 
     **Design Guidelines:**
     - N ≥ 2 for significant lift height
@@ -141,9 +142,6 @@ A scissor mechanism consists of crossed links working in harmony:
 </Tabs>
 
 ## 🎯 What You'll Build
-
-<InArticleAd />
-
 
 By completing this lesson, you'll create:
 
@@ -191,16 +189,25 @@ This is industrial-strength parametric methodology.
 
 ### Design Workflow
 
-```
-Step 1: Create Spreadsheet (parameter table)
-Step 2: Design Scissor Arm (one link, three holes)
-Step 3: Create Base Platform (mount points)
-Step 4: Create Top Platform (load carrier)
-Step 5: Assemble single stage with constraints
-Step 6: Test parametric control
-Step 7: Create technical drawing
-Step 8: Extension - add second stage
-```
+<Steps>
+
+1. **Create Spreadsheet** (parameter table)
+
+2. **Design Scissor Arm** (one link, three holes)
+
+3. **Create Base Platform** (mount points)
+
+4. **Create Top Platform** (load carrier)
+
+5. **Assemble single stage** with constraints
+
+6. **Test parametric control**
+
+7. **Create technical drawing**
+
+8. **Extension** - add second stage
+
+</Steps>
 
 :::note[Why Symmetric Design Matters]
 Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetrically about a centerline and using midpoint constraints, we ensure the mechanism will function correctly no matter how we change the parameters.

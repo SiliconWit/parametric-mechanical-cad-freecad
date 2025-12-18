@@ -88,16 +88,16 @@ The Scotch yoke delivers pure sinusoidal motion where precision matters:
 
 **Perfect Sinusoidal Relationship:**
 
-```
-Displacement: x(t) = r × sin(ωt)
-Velocity:     v(t) = r × ω × cos(ωt)
-Acceleration: a(t) = -r × ω² × sin(ωt)
+$$x(t) = r \times \sin(\omega t)$$
+
+$$v(t) = r \times \omega \times \cos(\omega t)$$
+
+$$a(t) = -r \times \omega^2 \times \sin(\omega t)$$
 
 Where:
-r = crank radius (eccentricity)
-ω = angular velocity
-t = time
-```
+- $r$ = crank radius (eccentricity)
+- $\omega$ = angular velocity
+- $t$ = time
 
 **Key Characteristic:** Yoke displacement is exactly proportional to sin(θ), where θ is crank angle.
 
@@ -285,16 +285,25 @@ Change crank radius → entire mechanism updates with proper clearances maintain
 
 ### Design Workflow
 
-```
-Step 1: Create parameter spreadsheet (with formulas!)
-Step 2: Create rotating crank with eccentric pin
-Step 3: Create yoke with horizontal slot
-Step 4: Create guide rails for linear constraint
-Step 5: Create base frame
-Step 6: Assemble with motion constraints
-Step 7: Create technical drawing
-Step 8: Test parametric updates and verify stroke
-```
+<Steps>
+
+1. **Create parameter spreadsheet** (with formulas!)
+
+2. **Create rotating crank** with eccentric pin
+
+3. **Create yoke** with horizontal slot
+
+4. **Create guide rails** for linear constraint
+
+5. **Create base frame**
+
+6. **Assemble** with motion constraints
+
+7. **Create technical drawing**
+
+8. **Test parametric updates** and verify stroke
+
+</Steps>
 
 :::note[Why Formulas Matter]
 By using spreadsheet formulas for dependent dimensions (Stroke = 2r, SlotWidth = PinDia + clearance), we ensure geometric relationships remain correct when parameters change. This is intelligent design automation!
@@ -1549,70 +1558,60 @@ Use this checklist to verify your design:
 
 **Position of yoke as function of crank angle:**
 
-```
-x(θ) = r × sin(θ)
+$$x(\theta) = r \times \sin(\theta)$$
 
 Where:
-x = yoke position from center (mm)
-r = crank radius (40mm)
-θ = crank angle (radians or degrees)
-```
+- $x$ = yoke position from center (mm)
+- $r$ = crank radius (40mm)
+- $\theta$ = crank angle (radians or degrees)
 
 **Example calculations:**
 
-| θ (degrees) | θ (radians) | x = 40 × sin(θ) |
+| $\theta$ (degrees) | $\theta$ (radians) | $x = 40 \times \sin(\theta)$ |
 |-------------|-------------|-----------------|
 | 0° | 0 | 0 mm |
-| 30° | π/6 | 20 mm |
-| 90° | π/2 | 40 mm |
-| 180° | π | 0 mm |
-| 270° | 3π/2 | -40 mm |
+| 30° | $\pi/6$ | 20 mm |
+| 90° | $\pi/2$ | 40 mm |
+| 180° | $\pi$ | 0 mm |
+| 270° | $3\pi/2$ | -40 mm |
 
 </TabItem>
 <TabItem label="Velocity">
 
 **Velocity of yoke (derivative of displacement):**
 
-```
-v(θ) = dx/dt = r × ω × cos(θ)
+$$v(\theta) = \frac{dx}{dt} = r \times \omega \times \cos(\theta)$$
 
 Where:
-ω = angular velocity of crank (rad/s)
-```
+- $\omega$ = angular velocity of crank (rad/s)
 
-**At constant crank speed ω = 2 rad/s (about 19 RPM):**
+**At constant crank speed $\omega = 2$ rad/s (about 19 RPM):**
 
-| θ | v = 40 × 2 × cos(θ) |
+| $\theta$ | $v = 40 \times 2 \times \cos(\theta)$ |
 |---|---------------------|
 | 0° | 80 mm/s (max velocity) |
 | 90° | 0 mm/s (zero at extreme) |
 | 180° | -80 mm/s (max, opposite direction) |
 
-**Key insight:** Velocity is maximum at center position (θ = 0°, 180°) and zero at extremes (θ = 90°, 270°)!
+**Key insight:** Velocity is maximum at center position ($\theta = 0°, 180°$) and zero at extremes ($\theta = 90°, 270°$)!
 
 </TabItem>
 <TabItem label="Acceleration">
 
 **Acceleration of yoke (derivative of velocity):**
 
-```
-a(θ) = dv/dt = -r × ω² × sin(θ)
+$$a(\theta) = \frac{dv}{dt} = -r \times \omega^2 \times \sin(\theta)$$
 
 Where:
-ω = angular velocity (rad/s)
-```
+- $\omega$ = angular velocity (rad/s)
 
-**At ω = 2 rad/s:**
+**At $\omega = 2$ rad/s:**
 
-```
-a(θ) = -40 × 4 × sin(θ) = -160 × sin(θ) mm/s²
-```
+$$a(\theta) = -40 \times 4 \times \sin(\theta) = -160 \times \sin(\theta) \text{ mm/s}^2$$
 
 **Critical observation:**
 
-```
-a(θ) = -ω² × x(θ)
-```
+$$a(\theta) = -\omega^2 \times x(\theta)$$
 
 Acceleration is proportional and opposite to displacement. This is the defining characteristic of **simple harmonic motion**!
 
@@ -1626,13 +1625,11 @@ This is the same physics as:
 
 **Sliding friction in slot:**
 
-```
-F_friction = μ × N
+$$F_{\text{friction}} = \mu \times N$$
 
 Where:
-μ = coefficient of friction (slot/pin interface)
-N = normal force from pin on slot sides
-```
+- $\mu$ = coefficient of friction (slot/pin interface)
+- $N$ = normal force from pin on slot sides
 
 **Normal force depends on:**
 - Crank torque
@@ -1646,7 +1643,7 @@ N = normal force from pin on slot sides
 
 **Why Scotch yoke has higher friction than slider-crank:**
 - Continuous sliding contact vs. pivoting joints
-- Sliding velocity = r × ω × cos(θ) (not zero)
+- Sliding velocity = $r \times \omega \times \cos(\theta)$ (not zero)
 
 </TabItem>
 </Tabs>
@@ -1879,10 +1876,6 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## 🎉 Congratulations!
-
-You've completed **Lesson 8: Scotch Yoke Mechanism** and the entire **Parametric Mechanical CAD with FreeCAD** course!
-
 ### What You've Achieved in This Lesson
 
 <CardGrid>
@@ -1905,7 +1898,7 @@ You've completed **Lesson 8: Scotch Yoke Mechanism** and the entire **Parametric
 
 ### Complete Mechanism Library
 
-You've now designed eight fundamental mechanisms:
+🎉 Congratulations! You've now designed eight fundamental mechanisms:
 
 1. ✅ **Slider Crank** - Rotary to linear conversion
 2. ✅ **Four-Bar Linkage** - Controlled motion paths

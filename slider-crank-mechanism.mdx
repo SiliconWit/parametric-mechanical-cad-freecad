@@ -122,9 +122,10 @@ A slider crank consists of four elements working together:
   <TabItem label="Motion Analysis">
 
     **Stroke Relationship:**
-    ```
-    Stroke (S) = 2 × Crank radius (r)
-    ```
+
+    $$S = 2r$$
+
+    where $S$ is the stroke and $r$ is the crank radius.
 
     **Design Guidelines:**
     - l/r ≥ 3 for minimal side forces
@@ -277,16 +278,25 @@ This is the power of parametric design.
 
 ### Design Workflow
 
-```
-Step 1: Create Spreadsheet (parameter table)
-Step 2: Create Crank (Part 1)
-Step 3: Create Connecting Rod (Part 2)
-Step 4: Create Slider (Part 3)
-Step 5: Create Frame (Part 4)
-Step 6: Assemble with constraints
-Step 7: Create technical drawing
-Step 8: Test parametric control
-```
+<Steps>
+
+1. **Create Spreadsheet** - Parameter table
+
+2. **Create Crank** - Part 1
+
+3. **Create Connecting Rod** - Part 2
+
+4. **Create Slider** - Part 3
+
+5. **Create Frame** - Part 4
+
+6. **Assemble with constraints**
+
+7. **Create technical drawing**
+
+8. **Test parametric control**
+
+</Steps>
 
 :::note[Why Start with Spreadsheet?]
 By defining parameters **first**, we can reference them throughout our design. The spreadsheet becomes the single source of truth—change it once, everything updates. This is the foundation of intelligent parametric control.

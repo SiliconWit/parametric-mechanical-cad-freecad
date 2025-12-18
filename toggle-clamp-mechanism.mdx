@@ -1176,23 +1176,41 @@ The mechanism must achieve **geometric locking** where the links pass dead cente
 
 ### Change Handle Length
 
+<Steps>
+
 1. Open Spreadsheet
+
 2. Change HandleLength from 120 to 150
+
 3. Recompute
+
 4. Longer handle = greater mechanical advantage!
+
+</Steps>
 
 ### Change Over-Center Angle
 
+<Steps>
+
 1. Try OverCenterAngle = 175° (barely over-center)
    - Weaker locking
+
 2. Try 190° (far over-center)
    - Stronger locking but harder to close
+
+</Steps>
 
 ### Verify Motion Limits
 
 The mechanism should have clear end stops:
-- Fully open: Handle hits stop
-- Fully closed: Over-center locked
+
+<Steps>
+
+1. Fully open: Handle hits stop
+
+2. Fully closed: Over-center locked
+
+</Steps>
 
 ---
 
@@ -1226,9 +1244,7 @@ By completing this lesson, you have:
 
 For a toggle clamp:
 
-```
-MA = (HandleLength / ClampArmEffectiveLength) × sin(θ)
-```
+$$MA = \frac{\text{Handle Length}}{\text{Clamp Arm Effective Length}} \times \sin(\theta)$$
 
 Where θ is the angle between main link and clamp arm.
 
@@ -1250,25 +1266,25 @@ As θ approaches 180° (dead center), MA approaches infinity.
 
 ## Common Issues and Solutions
 
-### "Mechanism doesn't lock"
+### ``Mechanism doesn't lock"
 
 - **Cause:** Not achieving over-center (angle < 180°)
 - **Solution:** Increase OverCenterAngle parameter
 - **Fix:** Adjust pivot positions to allow greater angle
 
-### "Too hard to close"
+### ``Too hard to close"
 
 - **Cause:** Over-center angle too large, or friction
 - **Solution:** Reduce OverCenterAngle closer to 180°
 - **Fix:** Check pin clearances
 
-### "Handle hits clamp arm"
+### ``Handle hits clamp arm"
 
 - **Cause:** Insufficient clearance
 - **Solution:** Offset handle vertically (different Z position) or adjust geometry
 - **Fix:** Use clearance-aware design, check interference in assembly
 
-### "Cannot achieve full motion range"
+### ``Cannot achieve full motion range"
 
 - **Cause:** Link lengths incompatible with desired positions
 - **Solution:** Recalculate link lengths using kinematic equations

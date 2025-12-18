@@ -21,7 +21,7 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
-Master advanced CAD design through Python scripting—create mathematically-perfect gears, generate lattice structures, optimize designs iteratively, and automate workflows that would take hours manually. Unlock FreeCAD's true computational power. #PythonCAD #GenerativeDesign #ParametricOptimization
+Master advanced CAD design through Python scripting, create mathematically-perfect gears, generate lattice structures, optimize designs iteratively, and automate workflows that would take hours manually. Unlock FreeCAD's true computational power. #PythonCAD #GenerativeDesign #ParametricOptimization
 
 ## 🎯 Learning Objectives
 
@@ -181,9 +181,9 @@ While GUI-based CAD is perfect for manually designing individual parts, Python s
 
 <Card title="💡 Paradigm Change" icon="star">
 
-**GUI CAD:** You are the designer—you create every feature manually
+**GUI CAD:** You are the designer, you create every feature manually
 
-**Python CAD:** You are the programmer—you teach the computer how to design
+**Python CAD:** You are the programmer, you teach the computer how to design
 
 **Result:** The computer can now explore thousands of design variants, handle mathematical complexity you couldn't calculate by hand, and automate workflows that would take weeks manually.
 
@@ -315,7 +315,7 @@ import numpy as np
 
 
 <BionicText method="advanced" intensity="medium" class="highlight">
-Involute gears are the industry standard for power transmission—used in automotive transmissions, industrial gearboxes, and precision machinery. Creating mathematically-perfect involute profiles manually is tedious and error-prone. Python generates them flawlessly from equations.
+Involute gears are the industry standard for power transmission, used in automotive transmissions, industrial gearboxes, and precision machinery. Creating mathematically-perfect involute profiles manually is tedious and error-prone. Python generates them flawlessly from equations.
 </BionicText>
 
 ### Why Involute Gears?
@@ -339,14 +339,15 @@ The involute of a circle is the curve traced by a point on a taut string unwindi
 
 **Parametric equations:**
 
-```python
-x(θ) = r_b × (cos(θ) + θ × sin(θ))
-y(θ) = r_b × (sin(θ) - θ × cos(θ))
-```
+$$x(\theta) = r_b \left( \cos\theta + \theta \sin\theta \right)$$
+
+
+$$y(\theta) = r_b \left( \sin\theta - \theta \cos\theta \right)$$
 
 Where:
-- r_b = base circle radius
-- θ = unwinding angle parameter
+- $$ r_b $$ is the base circle radius
+- $$ \theta $$ is the unwinding angle parameter
+
 
 ### Python Gear Generator
 
@@ -1603,8 +1604,11 @@ def create_gear(module, num_teeth):
 - Predicted bone ingrowth improvement: 40%
 
 **Code:** 500 lines of Python
+
 **Design variants tested:** 1,000+
+
 **Computation time:** 48 hours (automated)
+
 **Manual equivalent:** Months of work
 
 **Publication:** Journal of Biomechanical Engineering, 2024

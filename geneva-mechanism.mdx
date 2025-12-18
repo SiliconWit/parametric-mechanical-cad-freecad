@@ -144,9 +144,8 @@ For an external Geneva mechanism with n slots:
   <TabItem label="Geometric Formula">
 
     **Driven wheel radius calculation:**
-    ```
-    R_g = R_d × tan(180° / n)
-    ```
+
+    $$R_g = R_d \times \tan\left(\frac{180°}{n}\right)$$
 
     **Where:**
     - R_g = Geneva wheel radius (center to slot entry)
@@ -154,27 +153,23 @@ For an external Geneva mechanism with n slots:
     - n = Number of slots
 
     **Slot spacing:**
-    ```
-    Slot center angle = 360° / n
-    ```
+
+    $$\text{Slot center angle} = \frac{360°}{n}$$
 
 </TabItem>
   <TabItem label="Timing Analysis">
 
     **Index angle per step:**
-    ```
-    θ = 360° / n
-    ```
+
+    $$\theta = \frac{360°}{n}$$
 
     **Dwell angle:**
-    ```
-    Dwell = 360° × (n - 2) / n
-    ```
+
+    $$\text{Dwell} = \frac{360° \times (n - 2)}{n}$$
 
     **Index duration:**
-    ```
-    Index = 360° / n
-    ```
+
+    $$\text{Index} = \frac{360°}{n}$$
 
     :::note[Example: 6-Slot Geneva]
     - Index angle: 360° / 6 = 60° per step
@@ -331,15 +326,22 @@ We'll design a **6-slot external Geneva mechanism**:
   <TabItem label="Design Workflow">
 
     **Build Sequence:**
-    ```
-    Step 1: Create Spreadsheet (with formulas!)
-    Step 2: Create Driver Wheel (with pin)
-    Step 3: Create Geneva Wheel (with polar slot pattern)
-    Step 4: Create Frame (mounting base)
-    Step 5: Assemble with rotation constraints
-    Step 6: Create technical drawing with timing diagram
-    Step 7: Test parametric control (change slot count!)
-    ```
+    <Steps>
+    1. Create Spreadsheet (with formulas!)
+    
+    2. Create Driver Wheel (with pin)
+    
+    3. Create Geneva Wheel (with polar slot pattern)
+    
+    4. Create Frame (mounting base)
+    
+    5. Assemble with rotation constraints
+    
+    6. Create technical drawing with timing diagram
+    
+    7. Test parametric control (change slot count!)
+    </Steps>
+
 
 </TabItem>
   <TabItem label="Why This Configuration?">
@@ -1104,42 +1106,33 @@ Assembly is where the Geneva mechanism comes alive! You'll see discrete indexing
 
 ### Creating Geneva Mechanism Drawing
 
-#### 1. TechDraw Workbench
+<Steps>
 
-#### 2. Create Page
+1. **TechDraw Workbench**
+   Switch to TechDraw workbench from the dropdown
 
-- A3_Landscape
+2. **Create Page**
+   Insert → New Page and select A3_Landscape template
 
-#### 3. Add Top View
+3. **Add Top View**
+   Insert view showing both wheels in plan view with clearly visible pin, slots, and center distance
 
-- Shows both wheels in plan view
-- Clearly visible: pin, slots, center distance
+4. **Add Multiple Position Views**
+   Create 3 additional views showing different phases:
+   - View 1: Driver at 0° (pin entering slot 1)
+   - View 2: Driver at 60° (mid-index, Geneva rotating)
+   - View 3: Driver at 120° (pin exited, dwell begins)
 
-#### 4. Add Multiple Position Views
+5. **Dimension Key Features**
+   Add dimensions for center distance, slot angle (60°), pin diameter, and number of slots
 
-Create 3 views showing different phases:
+6. **Add Timing Diagram**
+   Sketch a diagram showing X-axis as driver rotation (0° to 360°), Y-axis as Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°), and mark dwell periods (horizontal lines) and index periods (vertical jumps)
 
-- **View 1:** Driver at 0° (pin entering slot 1)
-- **View 2:** Driver at 60° (mid-index, Geneva rotating)
-- **View 3:** Driver at 120° (pin exited, dwell begins)
+7. **Export to PDF**
+   File → Export → Select PDF format
 
-#### 5. Dimension Key Features
-
-- Center distance
-- Slot angle (60°)
-- Pin diameter
-- Number of slots (note: 6)
-
-#### 6. Add Timing Diagram
-
-Sketch a diagram showing:
-- X-axis: Driver rotation (0° to 360°)
-- Y-axis: Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°)
-- Show dwell periods (horizontal lines) and index periods (vertical jumps)
-
-#### 7. Export
-
-- PDF
+</Steps>
 
 ---
 
@@ -1202,33 +1195,34 @@ By completing this lesson, you have:
 
 For an external Geneva mechanism:
 
-```
-R_g = R_d × tan(180° / n)
+$$R_g = R_d \times \tan\left(\frac{180°}{n}\right)$$
 
 Where:
-R_g = Geneva wheel radius (center to slot entry)
-R_d = Driver radius (center to pin)
-n = Number of slots
-```
+- $R_g$ = Geneva wheel radius (center to slot entry)
+- $R_d$ = Driver radius (center to pin)
+- $n$ = Number of slots
 
 **For n = 6:**
 
-```
-R_g = R_d × tan(30°)
-R_g = R_d × 0.577
-```
+$$R_g = R_d \times \tan(30°)$$
 
-If R_d = 40mm, then R_g ≈ 23mm.
+$$R_g = R_d \times 0.577$$
+
+If $R_d = 40 \text{ mm}$, then $R_g \approx 23 \text{ mm}$.
 
 ### Dwell vs. Index Time
 
-**Dwell angle:** 360° × (n - 2) / n
+**Dwell angle:**
 
-**Index angle:** 360° / n
+$$\text{Dwell} = \frac{360° \times (n - 2)}{n}$$
+
+**Index angle:**
+
+$$\text{Index} = \frac{360°}{n}$$
 
 **For 6-slot Geneva:**
-- Dwell: 360° × 4/6 = 240° of driver rotation
-- Index: 360° × 1/6 = 60° of driver rotation
+- Dwell: $\frac{360° \times 4}{6} = 240°$ of driver rotation
+- Index: $\frac{360° \times 1}{6} = 60°$ of driver rotation
 
 ---
 
@@ -1245,25 +1239,25 @@ If R_d = 40mm, then R_g ≈ 23mm.
 
 ## Common Issues and Solutions
 
-### "Slots not evenly spaced"
+### ``Slots not evenly spaced"
 
 - **Cause:** Polar pattern not set to correct angle or count
 - **Solution:** Verify SlotAngle = 360 / NumSlots
 - **Fix:** Check pattern constraints reference spreadsheet parameters
 
-### "Pin doesn't fit in slot"
+### ``Pin doesn't fit in slot"
 
 - **Cause:** Slot width too narrow
 - **Solution:** SlotWidth should be 1.2-1.5 × PinDiameter
 - **Fix:** Adjust SlotWidth parameter
 
-### "Geneva wheel radius seems wrong"
+### ``Geneva wheel radius seems wrong"
 
 - **Cause:** Incorrect TAN formula or units
 - **Solution:** Verify formula: =B8*TAN(180°/B2)
 - **Fix:** Check that TAN function uses degrees (or convert with RADIANS())
 
-### "Mechanism binds during motion"
+### ``Mechanism binds during motion"
 
 - **Cause:** Center distance incorrect or slot angle wrong
 - **Solution:** Recalculate center distance using correct geometry

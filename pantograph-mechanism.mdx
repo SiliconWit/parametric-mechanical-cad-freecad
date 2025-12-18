@@ -80,9 +80,7 @@ The pantograph appears in diverse engineering applications:
 
     **Magic Relationship:**
 
-    ```
-    OP / OI = constant ratio (k)
-    ```
+    $$\frac{OP}{OI} = k \text{ (constant ratio)}$$
 
     This ratio k is the **scaling factor**!
 
@@ -123,9 +121,7 @@ The pantograph appears in diverse engineering applications:
 
     **Critical Length Relationships:**
 
-    ```
-    OA / OI = OB / OP = AB / IP = k
-    ```
+    $$\frac{OA}{OI} = \frac{OB}{OP} = \frac{AB}{IP} = k$$
 
     :::tip[Why This Works]
     The parallelogram OAIB ensures that triangles OIA and OPB remain similar as the mechanism moves. This geometric similarity is what maintains the constant scaling ratio throughout the entire range of motion!
@@ -232,9 +228,11 @@ We'll control the **entire pantograph mechanism** with just two parameters:
 
 All other dimensions calculated automatically using expressions!
 
-**InputLength** = BaseLength × ScalingRatio
-**OutputLength** = BaseLength × ScalingRatio²
-**CrossLink** = BaseLength × ScalingRatio
+$$\text{InputLength} = \text{BaseLength} \times \text{ScalingRatio}$$
+
+$$\text{OutputLength} = \text{BaseLength} \times \text{ScalingRatio}^2$$
+
+$$\text{CrossLink} = \text{BaseLength} \times \text{ScalingRatio}$$
 
 This is parametric design at its most powerful.
 
@@ -248,7 +246,7 @@ This is parametric design at its most powerful.
     **Our Pantograph Configuration:**
 
     - Fixed pivot O at origin
-    - Scaling ratio k = 2:1 (output is 2× input)
+    - Scaling ratio $$k = 2:1$$ (output is 2× input)
     - Input stylus at point I
     - Output tracer at point P
 
@@ -264,18 +262,29 @@ This is parametric design at its most powerful.
   </TabItem>
   <TabItem label="Build Sequence">
 
-    ```
-    Step 1: Create Spreadsheet (parameters and formulas)
-    Step 2: Create Master Sketch (kinematic layout)
-    Step 3: Create Link OA
-    Step 4: Create Link OB
-    Step 5: Create Link AB
-    Step 6: Create Input Arm (OI)
-    Step 7: Create Output Arm (OP)
-    Step 8: Create Base
-    Step 9: Assemble with constraints
-    Step 10: Test parametric control
-    ```
+    <Steps>
+
+    1. Create Spreadsheet (parameters and formulas)
+
+    2. Create Master Sketch (kinematic layout)
+
+    3. Create Link OA
+
+    4. Create Link OB
+
+    5. Create Link AB
+
+    6. Create Input Arm (OI)
+
+    7. Create Output Arm (OP)
+
+    8. Create Base
+
+    9. Assemble with constraints
+
+    10. Test parametric control
+
+    </Steps>
 
   </TabItem>
   <TabItem label="Why Master Sketch?">
@@ -345,17 +354,17 @@ This is parametric design at its most powerful.
     | Cell | Value | Formula | Meaning |
     |------|-------|---------|---------|
     | **A4** | InputLength | - | Parameter name |
-    | **B4** | =B3*B2 | BaseLength × k | Auto-calculated! |
+    | **B4** | =B3*B2 | $$\text{BaseLength} \times k$$ | Auto-calculated! |
     | **C4** | mm | - | Unit |
-    | **D4** | OI = BaseLength × k | Note |
+    | **D4** | $$OI = \text{BaseLength} \times k$$ | Note |
     | **A5** | OutputLength | - | Parameter name |
-    | **B5** | =B3*B2*B2 | BaseLength × k² | Auto-calculated! |
+    | **B5** | =B3*B2*B2 | $$\text{BaseLength} \times k^2$$ | Auto-calculated! |
     | **C5** | mm | - | Unit |
-    | **D5** | OP = BaseLength × k² | Note |
+    | **D5** | $$OP = \text{BaseLength} \times k^2$$ | Note |
     | **A6** | CrossLink | - | Parameter name |
-    | **B6** | =B3*B2 | BaseLength × k | Auto-calculated! |
+    | **B6** | =B3*B2 | $$\text{BaseLength} \times k$$ | Auto-calculated! |
     | **C6** | mm | - | Unit |
-    | **D6** | AB = IP = InputLength | Note |
+    | **D6** | $$AB = IP = \text{InputLength}$$ | Note |
 
     :::tip[Expression Power]
     The expressions in column B ensure the similar triangle relationships are maintained automatically! Change BaseLength or ScalingRatio, all dependent values update instantly.
@@ -1179,15 +1188,13 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
    Create text box showing:
 
-   ```
-   Scaling Ratio k = 2:1
+   **Scaling Ratio:** $$k = 2:1$$
 
-   Link Lengths:
-   OA = OB = 100 mm (BaseLength)
-   OI = 200 mm (k × BaseLength)
-   OP = 400 mm (k² × BaseLength)
-   AB = 200 mm (k × BaseLength)
-   ```
+   **Link Lengths:**
+   - $$OA = OB = 100 \text{ mm (BaseLength)}$$
+   - $$OI = 200 \text{ mm} (k \times \text{BaseLength})$$
+   - $$OP = 400 \text{ mm} (k^2 \times \text{BaseLength})$$
+   - $$AB = 200 \text{ mm} (k \times \text{BaseLength})$$
 
 5. **Add motion diagram (optional)**
 
@@ -1198,7 +1205,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 6. **Title block**
 
    - Part name: "Pantograph Mechanism"
-   - Scaling ratio: k = 2:1
+   - Scaling ratio: $$k = 2:1$$
    - Scale, date, your name
 
 7. **Export**
@@ -1356,15 +1363,14 @@ By completing this lesson, you have:
 
 For a pantograph with scaling ratio k:
 
-```
-If input point I is at (x, y) relative to O,
-Then output point P is at (k×x, k×y) relative to O
-```
+$$\text{If input point } I \text{ is at } (x, y) \text{ relative to } O,$$
+
+$$\text{Then output point } P \text{ is at } (k \cdot x, k \cdot y) \text{ relative to } O$$
 
 **Example:**
-- Input moves to I = (50, 50)
-- With k = 2
-- Output should be at P = (100, 100)
+- Input moves to $$I = (50, 50)$$
+- With $$k = 2$$
+- Output should be at $$P = (100, 100)$$
 
 Test this in your assembly!
 
@@ -1383,26 +1389,26 @@ Test this in your assembly!
 
 ## Common Issues and Solutions
 
-### "Output doesn't scale correctly"
+### ``Output doesn't scale correctly"
 
 - **Cause:** Incorrect link length ratios
 - **Solution:** Verify expressions in spreadsheet
 - **Fix:** InputLength must = BaseLength × k
 - **Fix:** OutputLength must = BaseLength × k²
 
-### "Mechanism binds or locks up"
+### ``Mechanism binds or locks up"
 
 - **Cause:** Links interfering, or over-constrained assembly
 - **Solution:** Check clearances, ensure only Base is Fixed
 - **Fix:** May need to offset arms in Z-direction
 
-### "Scaling ratio parameter doesn't update links"
+### ``Scaling ratio parameter doesn't update links"
 
 - **Cause:** Dimensions not using formulas
 - **Solution:** Check that InputLength cell has `=B3*B2` not a hardcoded value
 - **Fix:** Recreate spreadsheet formulas
 
-### "Parts misalign in assembly"
+### ``Parts misalign in assembly"
 
 - **Cause:** Not referencing master sketch consistently
 - **Solution:** All part sketches must use External Geometry from same master sketch

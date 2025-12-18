@@ -94,7 +94,7 @@ A four-bar linkage consists of four elements working together:
 
 The behavior depends critically on link length relationships.
 
-**S + L ≤ P + Q**
+$$S + L \leq P + Q$$
 
 Where:
 - **S** = shortest link length
@@ -128,12 +128,14 @@ Where:
 | Link 4 (follower) | 70 mm | Output oscillator |
 
 **Grashof Check:**
-```
-S = 40, L = 100, P = 70, Q = 80
-S + L = 140
-P + Q = 150
-140 ≤ 150 ✓
-```
+
+$$S = 40, L = 100, P = 70, Q = 80$$
+
+$$S + L = 140$$
+
+$$P + Q = 150$$
+
+$$140 \leq 150 \checkmark$$
 
 :::tip[Engineering Insight]
 This is a **Grashof Crank-Rocker** configuration! Link 2 (crank) can rotate fully through 360°, while Link 4 (follower) oscillates. This configuration is ideal for applications requiring continuous rotary input to produce oscillating output: exactly what windshield wipers need!
@@ -190,19 +192,35 @@ This is the power of kinematic-first parametric design.
 
 </Card>
 
+
+
+
 ### Design Workflow
 
-```
-Step 1: Create Spreadsheet (parameter table)
-Step 2: Create Master Sketch (kinematic layout)
-Step 3: Create Link 1 - Ground (reference master)
-Step 4: Create Link 2 - Crank (reference master)
-Step 5: Create Link 3 - Coupler (reference master)
-Step 6: Create Link 4 - Follower (reference master)
-Step 7: Assemble with pin joints
-Step 8: Create technical drawing
-Step 9: Test Grashof configurations
-```
+<Steps>
+
+1. Create Spreadsheet (parameter table)
+
+2. Create Master Sketch (kinematic layout)
+
+3. Create Link 1 - Ground (reference master)
+
+4. Create Link 2 - Crank (reference master)
+
+5. Create Link 3 - Coupler (reference master)
+
+6. Create Link 4 - Follower (reference master)
+
+7. Assemble with pin joints
+
+8. Create technical drawing
+
+9. Test Grashof configurations
+
+</Steps>
+
+
+
 
 :::note[Why Master Sketch First?]
 By defining the **kinematic layout** before individual part geometry, we ensure all parts maintain correct positional relationships. The master sketch becomes the geometric truth: change joint positions once, every part adapts. This is essential for mechanism design where motion paths must remain coordinated.
@@ -986,26 +1004,26 @@ This is the moment of truth! A truly parametric mechanism updates correctly when
 **Try these link length configurations:**
 
 **Configuration 1: Crank-Rocker (original)**
-```
+
 Link1 = 100, Link2 = 40, Link3 = 80, Link4 = 70
-S + L = 140 ≤ P + Q = 150 (Grashof ✓)
-```
+$$S + L = 140 \leq P + Q = 150 \text{ (Grashof ✓)}$$
+
 - Link2 rotates fully 360°
 - Link4 oscillates
 
 **Configuration 2: Double-Rocker**
-```
+
 Link1 = 40, Link2 = 100, Link3 = 80, Link4 = 70
-S + L = 140 ≤ P + Q = 150 (Grashof ✓)
-```
+$$S + L = 140 \leq P + Q = 150 \text{ (Grashof ✓)}$$
+
 - Now Link1 is shortest (but fixed)
 - Both moving links oscillate!
 
 **Configuration 3: Non-Grashof**
-```
+
 Link1 = 100, Link2 = 20, Link3 = 80, Link4 = 70
-S + L = 120 ≤ P + Q = 150 (Grashof ✓, but barely)
-```
+$$S + L = 120 \leq P + Q = 150 \text{ (Grashof ✓, but barely)}$$
+
 - Try even more extreme: Link1=100, Link2=10
 - Mechanism may lock up!
 

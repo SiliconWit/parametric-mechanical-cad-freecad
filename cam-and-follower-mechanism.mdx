@@ -194,12 +194,21 @@ The rise and return sections require careful motion law selection. Sudden veloci
 <TabItem label="Motion Laws">
 
 **Simple Harmonic Motion**
-```
-s(θ) = L × [1 - cos(π × θ / θ_rise)] / 2
-```
+
 - Smooth acceleration
 - Good for moderate speeds
 - Used in this lesson
+
+$$
+s(\theta) = \frac{L}{2} \left[ 1 - \cos\left( \frac{\pi \theta}{\theta_{\text{rise}}} \right) \right]
+$$
+
+Where:
+- $$ s(\theta) $$ is the follower displacement
+- $$ \theta $$ is the cam rotation angle
+- $$ L $$ is the total lift
+- $$ \theta_{\text{rise}} $$ is the cam angle over which the rise occurs
+
 
 **Cycloidal Motion**
 - Smoother acceleration than harmonic
@@ -210,6 +219,7 @@ s(θ) = L × [1 - cos(π × θ / θ_rise)] / 2
 - Customizable acceleration profiles
 - Advanced applications
 - Requires numerical calculation
+
 
 </TabItem>
 </Tabs>
@@ -494,24 +504,24 @@ The cam profile must be designed relative to the follower position. For a roller
 
 For smooth acceleration during rise, we use simple harmonic motion:
 
-```
-Displacement: s(θ) = L × [1 - cos(π × θ / θ_rise)] / 2
+$$
+s(\theta) = L \times \left[1 - \cos\left(\frac{\pi \times \theta}{\theta_{\text{rise}}}\right)\right] / 2
+$$
 
-Where:
-s = follower displacement from base position
-θ = current cam angle from start of rise
-θ_rise = total rise angle (120°)
-L = total lift (20mm)
-```
+**Where:**
+- $s$ = follower displacement from base position
+- $\theta$ = current cam angle from start of rise
+- $\theta_{\text{rise}}$ = total rise angle (120°)
+- $L$ = total lift (20mm)
 
 **Cam Radius at Angle θ:**
 
-```
-R(θ) = R_b + s(θ)
+$$
+R(\theta) = R_b + s(\theta)
+$$
 
-Where:
-R_b = base circle radius
-```
+**Where:**
+- $R_b$ = base circle radius
 
 **Key Points for 120° Rise:**
 
@@ -1344,30 +1354,29 @@ Cam mechanism drawings require more than standard part views. They must clearly 
 
    Select angular dimension from toolbar
 
-2. **Dimension each motion zone:**
+2. **Dimension each motion zone**
 
    - 0° to 120°: Rise zone
    - 120° to 180°: High dwell
    - 180° to 300°: Return zone
    - 300° to 360°: Low dwell
 
-3. **Add text annotations:**
+3. **Add text annotations**
 
    Use Text tool to label:
-   ```
-   RISE (120°)
-   Lift: 20mm
-   Motion: Simple Harmonic
 
-   DWELL (60°)
-   Position: Maximum Lift
+   **RISE (120°)**
+   - Lift: 20mm
+   - Motion: Simple Harmonic
 
-   RETURN (120°)
-   Motion: Simple Harmonic
+   **DWELL (60°)**
+   - Position: Maximum Lift
 
-   DWELL (60°)
-   Position: Base Circle
-   ```
+   **RETURN (120°)**
+   - Motion: Simple Harmonic
+
+   **DWELL (60°)**
+   - Position: Base Circle
 
 </Steps>
 
