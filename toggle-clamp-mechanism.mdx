@@ -1,5 +1,5 @@
 ---
-title: "Toggle Clamp Mechanism - Parametric CAD Design"
+title: "Toggle Clamp Mechanism Design"
 description: "Design an over-center toggle clamp mechanism with mechanical advantage and self-locking behavior in FreeCAD"
 contributors: "sam-macharia,sila-mulwa"
 pubDate: 2025-12-17
@@ -21,453 +21,1116 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
-# Toggle Clamp Mechanism - Parametric CAD Design
+Master parametric CAD design by creating a toggle clamp mechanism, one of manufacturing's most essential fixturing devices. Learn FreeCAD through real-world over-center linkage design with self-locking behavior. #FreeCAD #ToggleClamp #OverCenter #SelfLocking
 
-## Engineering Context
+## 🎯 Learning Objectives
 
-### Why This Mechanism Matters
+By the end of this lesson, you will be able to:
 
-Toggle clamps are essential fixturing devices that use over-center geometry to create high clamping forces with low input force and provide self-locking behavior. They're ubiquitous in manufacturing, woodworking, and assembly operations.
+1. <Badge text="Design" variant="tip" /> mechanisms with angle-based constraints and over-center geometry
+2. <Badge text="Create" variant="note" /> clearance-aware parametric parts with motion limits
+3. <Badge text="Implement" variant="tip" /> mechanical advantage through intelligent linkage design
+4. <Badge text="Control" variant="caution" /> locked and unlocked states via geometric relationships
+5. <Badge text="Generate" variant="note" /> functional drawings showing multiple mechanism positions
 
-**Real-world applications:**
-- Welding fixtures and jigs
-- CNC machine workholding
-- Woodworking clamps and vises
-- Assembly line fixtures
-- Tool and die operations
-- PCB manufacturing fixtures
+## 🔧 Engineering Context: Why This Mechanism Matters
 
-### Engineering Problem
+<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+  <TailwindWrapper>
+    ![Toggle Clamp Mechanism](https://pub-b1eb899abc464b5baf5b9521d163efd9.r2.dev/parametric-mechanical-CAD-with-FreeCAD/toggle-clamp-mechanism.gif)
+  </TailwindWrapper>
+</div>
 
-**Given:** Need to secure a workpiece quickly and reliably
-**Required:** High clamping force with low operator effort
-**Constraint:** Must lock in place without continuous force application
+<BionicText method="advanced" intensity="medium" class="highlight">
+Toggle clamps are essential fixturing devices that use over-center geometry to create high clamping forces with low input force and provide self-locking behavior. They're ubiquitous in manufacturing, woodworking, and assembly operations, converting small handle motion into powerful, locked clamping force.
+</BionicText>
+
+### Real-World Applications
+
+The toggle clamp appears everywhere in manufacturing:
+
+:::note[Common Applications]
+- **Welding fixtures and jigs** - Secure workpieces during welding operations
+- **CNC machine workholding** - Quick-change fixturing for automated machining
+- **Woodworking clamps** - Hold work during cutting, gluing, or assembly
+- **Assembly line fixtures** - Rapid part positioning and securing
+- **Tool and die operations** - Precision part location and clamping
+- **PCB manufacturing** - Hold circuit boards during soldering and testing
+:::
+
+### The Engineering Problem
+
+> **Design Challenge:** Given the need to secure a workpiece quickly and reliably, how do we create high clamping force with low operator effort that locks in place without continuous force application?
 
 ### Over-Center Mechanism Principle
 
-The toggle clamp uses an **over-center linkage** where:
+<Tabs>
+  <TabItem label="Motion Phases">
 
-1. **Before center:** Links form an acute angle, mechanism moves easily
-2. **At center:** Links are straight (0° or 180°), infinite mechanical advantage, singularity point
-3. **Past center (over-center):** Links form obtuse angle, self-locking, resists opening
+The toggle clamp uses an **over-center linkage** with three distinct phases:
 
-**Mechanical advantage:**
-- Increases dramatically as links approach straight alignment
-- At dead-center: theoretically infinite (in practice, limited by friction and elasticity)
-- Over-center: negative MA (requires force to open, provides locking)
+**1. Before Center (Open Position)**
+- Links form an acute angle
+- Mechanism moves easily with low force
+- Minimal mechanical advantage
 
-### Key Components
+**2. At Dead Center**
+- Links are straight (0° or 180°)
+- Theoretically infinite mechanical advantage
+- Singularity point (unstable equilibrium)
 
-1. **Base** - Fixed mounting point
+**3. Past Center (Locked Position)**
+- Links form obtuse angle (>180°)
+- Self-locking behavior
+- Resists opening without force input
+
+</TabItem>
+<TabItem label="Mechanical Advantage">
+
+**How MA Changes Through Motion:**
+
+:::tip[Mechanical Advantage Behavior]
+- **Increases dramatically** as links approach straight alignment
+- **At dead-center:** Theoretically infinite (in practice, limited by friction and elasticity)
+- **Over-center:** Negative MA (requires force to open, provides locking)
+- **Maximum clamping force** achieved just past dead center
+:::
+
+The magic happens because small angular changes near dead center create large force amplification!
+
+</TabItem>
+<TabItem label="Key Components">
+
+**Five Essential Elements:**
+
+1. **Base** - Fixed mounting point (ground link)
 2. **Handle** - User input lever
 3. **Main link** - Connects handle pivot to over-center joint
 4. **Clamp arm** - Applies force to workpiece
 5. **Pivot pins** - Revolute joints at key points
 
-### Design Parameters
+<Card title="⚙️ Critical Design Parameters" icon="setting">
 
-- **Handle length** - Input lever arm
-- **Main link length** - Controls travel and MA
-- **Clamp arm length** - Output force and reach
-- **Over-center angle** - How far past center (determines locking strength)
+**Handle length** - Input lever arm (determines input force required)
 
----
+**Main link length** - Controls travel distance and MA curve
 
-## What You'll Learn
+**Clamp arm length** - Output force and reach to workpiece
 
-By completing this lesson, you will:
+**Over-center angle** - How far past center (determines locking strength)
 
-- Design mechanisms with angle-based constraints
-- Create clearance-aware geometry
-- Implement motion limits
-- Control mechanical advantage through geometry
-- Design for specific locked and unlocked states
-- Create functional dimension-focused technical drawings
+</Card>
 
-**This lesson assumes no prior FreeCAD knowledge** - all concepts introduced from scratch.
+</TabItem>
+</Tabs>
 
----
+## 🎯 What You'll Build
 
-## Part 1: FreeCAD Setup
+By completing this lesson, you'll create:
 
-### Starting the Project
+<CardGrid>
+  <Card title="Parametric Parts" icon="pencil">
+    Four fully constrained parts with angle-based motion control
+  </Card>
 
-1. Launch FreeCAD
-2. File → New (Ctrl+N)
-3. Save as "ToggleClamp.FCStd"
+  <Card title="Over-Center Mechanism" icon="puzzle">
+    Complete toggle clamp with self-locking behavior
+  </Card>
 
-### Workbenches
+  <Card title="Multi-Position Drawing" icon="document">
+    Technical drawing showing both open and locked states
+  </Card>
 
-- **Part Design** - Creating parts
-- **Sketcher** - Constrained sketches
-- **Spreadsheet** - Parameters
-- **Assembly** - Combining parts
-- **TechDraw** - Documentation
+  <Card title="MA-Optimized Design" icon="setting">
+    Mechanical advantage controlled by link geometry
+  </Card>
+</CardGrid>
 
----
+## 🚀 Part 1: Getting Started with FreeCAD
 
-## Part 2: Design Strategy
+<InArticleAd />
+
+
+### Installing FreeCAD
+
+<Steps>
+
+1. **Download FreeCAD 0.21 or later**
+
+   Visit [www.freecad.org](https://www.freecad.org/)
+
+   <Badge text="Free & Open Source" variant="success" />
+   <Badge text="Cross-Platform" variant="note" />
+
+2. **Install and launch**
+
+   Follow the installer for your operating system
+
+3. **Create new project**
+
+   File → New (Ctrl+N)
+
+   Save as "ToggleClamp.FCStd"
+
+</Steps>
+
+### Understanding Workbenches for This Project
+
+<Card title="🔧 Workbenches We'll Use" icon="star">
+
+FreeCAD organizes tools into **workbenches** - specialized tool collections for different tasks.
+
+</Card>
+
+**Key Workbenches for This Lesson:**
+
+- **Part Design** - Creating individual parametric parts
+- **Sketcher** - Creating 2D constraint-based sketches
+- **Spreadsheet** - Parameter tables and calculations
+- **Assembly** - Combining parts with motion constraints
+- **TechDraw** - Creating engineering drawings
+
+:::tip[Switching Workbenches]
+Use the dropdown in the top toolbar labeled "Workbench". You'll switch frequently as you work!
+:::
+
+## 💡 Part 2: Parametric Design Strategy
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+A parametric toggle clamp is designed with intelligent relationships between link lengths, angles, and positions. This allows you to explore different mechanical advantage ratios and motion characteristics by changing just a few parameters: the hallmark of professional engineering design.
+</BionicText>
 
 ### Linkage Analysis
 
-Our toggle clamp has 3 moving links:
-1. Handle (input)
-2. Main link (transmission)
-3. Clamp arm (output)
+<Tabs>
+  <TabItem label="Components">
 
-Plus one fixed base.
+Our toggle clamp has **3 moving links** plus one fixed base:
 
-### Critical Angles
+**1. Handle (Link 2) - Input**
+- User applies force here
+- Longest lever for maximum input efficiency
+- Rotates about base pivot
 
-We'll design for two positions:
+**2. Main Link (Link 3) - Transmission**
+- Connects handle to clamp arm
+- Critical for over-center geometry
+- Shortest link in the mechanism
 
-**Open position:**
-- Handle up (approximately 45° from horizontal)
-- Main link and clamp arm form acute angle
-- Easy to move
+**3. Clamp Arm (Link 4) - Output**
+- Applies clamping force to workpiece
+- Includes clamping pad surface
+- Rotates about base pivot
 
-**Closed (locked) position:**
-- Handle down (approximately -20° from horizontal)
-- Main link and clamp arm past center (obtuse angle, ~185°)
-- Self-locking
+**4. Base (Link 1) - Ground**
+- Fixed reference frame
+- Provides mounting and pivot points
 
-### Parameter Strategy
+</TabItem>
+<TabItem label="Critical Positions">
 
-Control the entire mechanism with:
-- Handle length
-- Main link length
-- Clamp arm length
-- Pivot positions
-- Open and closed angles
+We'll design for **two distinct positions**:
 
----
+<Card title="📐 Open Position" icon="document">
 
-## Part 3: Parameter Spreadsheet
+**Handle:** Up (approximately 45° from horizontal)
 
-<InArticleAd />
+**Main Link & Clamp Arm:** Form acute angle (~150°)
 
+**Behavior:** Easy to move, minimal force required
 
-### Creating Parameters
+**State:** Workpiece accessible for loading/unloading
+
+</Card>
+
+<Card title="🔒 Locked Position" icon="approve-check">
+
+**Handle:** Down (approximately -20° from horizontal)
+
+**Main Link & Clamp Arm:** Past dead center (obtuse angle ~185°)
+
+**Behavior:** Self-locking, resists opening
+
+**State:** Workpiece securely clamped
+
+</Card>
+
+</TabItem>
+<TabItem label="Parameter Strategy">
+
+<Card title="🎯 Multi-Parameter Control Philosophy" icon="rocket">
+
+We'll control the **entire toggle clamp mechanism** with these key parameters:
+
+**Geometric Parameters:**
+- Handle length (input lever arm)
+- Main link length (transmission ratio)
+- Clamp arm length (output reach)
+- Link widths and thicknesses
+
+**Angular Parameters:**
+- Open position angle
+- Closed position angle
+- Over-center angle (locking strength)
+
+**Hardware Parameters:**
+- Pin diameters (clearance control)
+- Base dimensions
+
+Change these values → entire mechanism updates automatically!
+
+This is the power of parametric design.
+
+</Card>
+
+</TabItem>
+</Tabs>
+
+## 📊 Part 3: Creating the Parameter Spreadsheet
+
+### Building Your Parameter Table
+
+<Steps>
 
 1. **Switch to Part Design workbench**
 
-2. **Insert Spreadsheet**
+   Use the workbench dropdown at top
+
+2. **Insert a spreadsheet**
+
+   Insert → Spreadsheet
+
+   A "Spreadsheet" object appears in the left tree
+
+3. **Double-click to open the spreadsheet**
+
+   Click on "Spreadsheet" in the tree
+
+</Steps>
+
+### Entering Parameters
+
+<Tabs>
+  <TabItem label="Parameter Table">
+
+In the spreadsheet, create this comprehensive parameter table:
+
+| Cell | Value | Meaning |
+|------|-------|---------|
+| **A1** | Parameter | Header |
+| **B1** | Value | Header |
+| **C1** | Unit | Header |
+| **A2** | HandleLength | Handle lever arm |
+| **B2** | 120 | Numeric value |
+| **C2** | mm | Unit |
+| **A3** | MainLinkLength | Transmission link |
+| **B3** | 80 | Numeric value |
+| **C3** | mm | Unit |
+| **A4** | ClampArmLength | Output arm |
+| **B4** | 100 | Numeric value |
+| **C4** | mm | Unit |
+| **A5** | LinkWidth | All link widths |
+| **B5** | 25 | Numeric value |
+| **C5** | mm | Unit |
+| **A6** | LinkThickness | All link thicknesses |
+| **B6** | 8 | Numeric value |
+| **C6** | mm | Unit |
+| **A7** | PinDiameter | Pivot pin size |
+| **B7** | 8 | Numeric value |
+| **C7** | mm | Unit |
+| **A8** | PinRadius | Calculated |
+| **B8** | =B7/2 | Formula |
+| **C8** | mm | Unit |
+| **A9** | BaseWidth | Base plate width |
+| **B9** | 60 | Numeric value |
+| **C9** | mm | Unit |
+| **A10** | BaseHeight | Base plate height |
+| **B10** | 40 | Numeric value |
+| **C10** | mm | Unit |
+| **A11** | BaseThickness | Base extrusion |
+| **B11** | 15 | Numeric value |
+| **C11** | mm | Unit |
+| **A12** | HandleAngleOpen | Open position |
+| **B12** | 45 | Numeric value |
+| **C12** | deg | Unit |
+| **A13** | HandleAngleClosed | Locked position |
+| **B13** | -20 | Numeric value |
+| **C13** | deg | Unit |
+| **A14** | OverCenterAngle | Lock angle |
+| **B14** | 185 | Numeric value |
+| **C14** | deg | Unit |
+
+</TabItem>
+<TabItem label="Creating Aliases">
+
+**Why Aliases?**
+
+Aliases let you reference cells by name instead of "B2", making formulas readable and meaningful.
+
+**Create aliases for all parameter cells:**
+
+<Steps>
+
+1. Click cell **B2**
+2. Right-click → **Properties**
+3. In "Alias" field, type: `HandleLength`
+4. Click **OK**
+
+5. **Repeat for all parameters** (B3 through B14)
+
+   - B3: `MainLinkLength`
+   - B4: `ClampArmLength`
+   - B5: `LinkWidth`
+   - B6: `LinkThickness`
+   - B7: `PinDiameter`
+   - B8: `PinRadius`
+   - B9: `BaseWidth`
+   - B10: `BaseHeight`
+   - B11: `BaseThickness`
+   - B12: `HandleAngleOpen`
+   - B13: `HandleAngleClosed`
+   - B14: `OverCenterAngle`
+
+</Steps>
+
+Now you can use `Spreadsheet.HandleLength` anywhere in your model!
+
+</TabItem>
+<TabItem label="Best Practices">
 
-3. **Enter parameters:**
+:::tip[Spreadsheet Best Practices]
+- **Always use aliases** for values you'll reference
+- **Include units** in column C for documentation (they're comments, not calculations)
+- **Use descriptive names** (HandleLength, not HL or h)
+- **Use formulas** for derived values (PinRadius = PinDiameter/2)
+- **Group related parameters** together (geometric, angular, hardware)
+- **Add notes** in additional columns to document design decisions
+:::
 
-```
-A1: Parameter           B1: Value    C1: Unit
-A2: HandleLength        B2: 120      C2: mm
-A3: MainLinkLength      B3: 80       C3: mm
-A4: ClampArmLength      B4: 100      C4: mm
-A5: LinkWidth           B5: 25       C5: mm
-A6: LinkThickness       B6: 8        C6: mm
-A7: PinDiameter         B7: 8        C7: mm
-A8: PinRadius           B8: =B7/2    C8: mm
-A9: BaseWidth           B9: 60       C9: mm
-A10: BaseHeight         B10: 40      C10: mm
-A11: BaseThickness      B11: 15      C11: mm
-A12: HandleAngleOpen    B12: 45      C12: deg
-A13: HandleAngleClosed  B13: -20     C13: deg
-A14: OverCenterAngle    B14: 185     C14: deg
-```
+:::note[Calculated Parameters]
+Notice B8 uses `=B7/2` to calculate PinRadius from PinDiameter. This ensures they stay synchronized!
+:::
 
-4. **Create aliases** for cells B2 through B14 using the parameter names
+</TabItem>
+</Tabs>
 
-5. **Close spreadsheet**
+**Close the spreadsheet** when done (click the Close button).
 
----
+Your parameter foundation is ready!
 
-## Part 4: Creating the Base
-
-### Base Design Intent
-
-Fixed mounting plate with:
-- Mounting holes for attachment to workbench/fixture
-- Pivot pin mount for handle
-- Stable, rigid structure
-
-### Step-by-Step: Base
-
-#### 1. Create Body
-
-- Part Design workbench
-- Create Body
-- Rename: "Base"
-
-#### 2. Create Sketch on XY_Plane
-
-#### 3. Draw Base Plate
-
-**Main rectangle:**
-
-- Rectangle tool
-- Draw rectangle centered at origin
-- Use Symmetric constraints (horizontal and vertical)
-- Width = ƒx → `Spreadsheet.BaseWidth`
-- Height = ƒx → `Spreadsheet.BaseHeight`
-
-**Handle pivot hole:**
-
-- Circle tool
-- Place at origin
-- Coincident: center → origin
-- Radius = ƒx → `Spreadsheet.PinRadius`
-
-**Mounting holes:**
-
-- Add 2-4 circles for bolts (corner mounting holes)
-- Radius = 5mm (for M8 bolts)
-- Position symmetrically
-
-#### 4. Close and Pad
-
-- Close sketch
-- Pad: ƒx → `Spreadsheet.BaseThickness`
-- OK
-
----
-
-## Part 5: Creating the Handle
-
-### Handle Design Intent
-
-Lever arm with:
-- Pivot hole at one end
-- Connection hole for main link
-- Grip area for user
-
-### Step-by-Step: Handle
-
-#### 1. Create Body
-
-- Create Body → "Handle"
-
-#### 2. Create Sketch on XY_Plane
-
-#### 3. Draw Handle
-
-**Center line (construction):**
-
-- Line tool
-- Start at origin
-- Draw at angle (approximate, will constrain later)
-- Make construction (G key)
-
-**Dimension length:**
-
-- Length = ƒx → `Spreadsheet.HandleLength`
-
-**Add angle dimension:**
-
-- Angle constraint
-- Select the line and the horizontal X-axis
-- Enter: ƒx → `Spreadsheet.HandleAngleOpen`
-- This sets initial position
-
-**Pivot hole:**
-
-- Circle at origin
-- Radius = ƒx → `Spreadsheet.PinRadius`
-
-**Main link connection hole:**
-
-- Circle at far end of construction line
-- Coincident: center → line endpoint
-- Radius = ƒx → `Spreadsheet.PinRadius`
-
-**Handle body:**
-
-- Rectangle along the construction line
-- Symmetric about centerline
-- Width = ƒx → `Spreadsheet.LinkWidth`
-- Length spans both holes
-
-**Add grip enhancement (optional):**
-
-- Widen the grip end slightly
-- Add rounded end for ergonomics
-
-#### 4. Close and Pad
-
-- Pad: ƒx → `Spreadsheet.LinkThickness`
-
----
-
-## Part 6: Creating the Main Link
-
-### Main Link Design Intent
-
-Transmission link connecting handle to clamp arm.
-
-Critical: This link's geometry determines the over-center behavior.
-
-### Step-by-Step: Main Link
-
-#### 1. Create Body
-
-- Create Body → "MainLink"
-
-#### 2. Create Sketch on XY_Plane
-
-#### 3. Draw Main Link
-
-**Center line:**
-
-- Line tool (construction)
-- Start at origin
-- Length = ƒx → `Spreadsheet.MainLinkLength`
-- Angle: Leave free (will be constrained in assembly)
-
-**Holes at both ends:**
-
-- Circle at origin: radius = PinRadius
-- Circle at far end: radius = PinRadius
-
-**Link body:**
-
-- Rectangle
-- Symmetric about centerline
-- Width = ƒx → `Spreadsheet.LinkWidth`
-
-#### 4. Close and Pad
-
-- Pad: ƒx → `Spreadsheet.LinkThickness`
-
----
-
-## Part 7: Creating the Clamp Arm
+## 🔩 Part 4: Creating the Base
 
 <InArticleAd />
 
 
-### Clamp Arm Design Intent
+### Design Intent
 
-Output link with:
-- Pivot connection to base
-- Connection to main link
-- Clamping surface/pad
+<Card title="⚙️ Base Requirements" icon="document">
 
-### Step-by-Step: Clamp Arm
+The base is a fixed mounting plate with:
 
-#### 1. Create Body
+- **Handle pivot hole** for rotating lever connection
+- **Clamp arm pivot hole** for output arm rotation
+- **Mounting holes** for attachment to workbench/fixture
+- **Stable, rigid structure** serving as the ground link
 
-- Create Body → "ClampArm"
+</Card>
 
-#### 2. Create Sketch on XY_Plane
+### Step-by-Step: Base Part
 
-#### 3. Draw Clamp Arm
+<Steps>
 
-**Center line:**
+1. **Create a Body**
 
-- Line (construction)
-- Start at origin
-- Length = ƒx → `Spreadsheet.ClampArmLength`
+   - Ensure you're in **Part Design workbench**
+   - Click **Create Body** button (or Body → Create body)
+   - A "Body" object appears in the tree
+   - Right-click → Rename → type `Base`
 
-**Pivot hole (at base):**
+2. **Create a Sketch**
 
-- Circle at origin
-- Radius = PinRadius
+   - Select the "Base" body in tree
+   - Click **Create Sketch** button
+   - Dialog asks: Choose a plane
+   - Select **XY_Plane**
+   - Click **OK**
 
-**Main link connection hole:**
+   You're now in **Sketcher workbench** (automatic switch)
 
-- Circle at intermediate point along line
-- Distance from origin = 30mm (or parameter-controlled)
-- Radius = PinRadius
+</Steps>
 
-**Clamping pad:**
+### Drawing the Base Profile
 
-At the far end, add a wider pad:
+<Tabs>
+  <TabItem label="Main Plate">
 
-- Rectangle at end
-- Dimensions: 20mm × LinkWidth
-- This is the contact surface
+**Draw the base rectangle:**
 
-**Arm body:**
+<Steps>
 
-- Rectangle connecting pivot to pad
-- Symmetric about centerline
-- Width = LinkWidth
+1. **Rectangle tool**
 
-#### 4. Close and Pad
+   Draw rectangle approximately centered at origin
 
-- Pad: LinkThickness
+2. **Apply Symmetric constraints**
 
----
+   - Select top edge and bottom edge
+   - Select X-axis
+   - Apply Symmetric constraint
+   - Repeat for left/right edges with Y-axis
 
-## Part 8: Master Sketch (Optional Advanced Approach)
+3. **Dimension width:**
 
-For precise over-center control, consider creating a master sketch defining all pivot locations in both open and closed positions. This ensures correct geometry.
+   - Distance constraint on width
+   - Click **ƒx** button
+   - Type: `Spreadsheet.BaseWidth`
+   - Enter
 
-**Simplified approach:** Assemble parts and adjust dimensions empirically until over-center behavior is achieved.
+4. **Dimension height:**
 
----
+   - Distance constraint on height
+   - Click **ƒx** button
+   - Type: `Spreadsheet.BaseHeight`
+   - Enter
 
-## Part 9: Assembly
+</Steps>
+
+Base plate is now fully constrained and parametric!
+
+</TabItem>
+<TabItem label="Pivot Holes">
+
+**Add pivot holes for rotating links:**
+
+<Steps>
+
+1. **Handle pivot hole at origin:**
+
+   - Circle tool
+   - Click at **origin**
+   - Press Escape
+   - Coincident constraint: center → origin
+   - Radius constraint: ƒx → `Spreadsheet.PinRadius`
+
+2. **Clamp arm pivot hole:**
+
+   - Circle tool
+   - Click approximately 40mm to the right of origin
+   - Press Escape
+   - Horizontal constraint: center → origin (aligns horizontally)
+   - Distance from origin: `40` mm
+   - Radius: ƒx → `Spreadsheet.PinRadius`
+
+</Steps>
+
+:::note[Why Two Pivots?]
+The base provides two separate pivot points: one for the handle to rotate about, and one for the clamp arm. This configuration is essential for the over-center geometry to work!
+:::
+
+</TabItem>
+<TabItem label="Mounting Holes">
+
+**Optional: Add mounting holes for workbench attachment:**
+
+<Steps>
+
+1. **Add circles at corners**
+
+   - Place 2-4 circles near corners of base rectangle
+   - Radius = `5` mm (for M8 mounting bolts)
+
+2. **Position symmetrically**
+
+   - Use distance constraints from edges
+   - Typically 8-10mm from each edge
+   - Ensures balanced mounting
+
+</Steps>
+
+These holes allow you to bolt the clamp to a workbench or fixture base.
+
+</TabItem>
+<TabItem label="Finalize Sketch">
+
+**Check and close:**
+
+<Steps>
+
+1. **Verify fully constrained**
+
+   Check "Solver Messages" panel:
+   - Should say **"Fully constrained"**
+
+2. **Close the sketch**
+
+   Click the **Close** button in toolbar
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+### Creating 3D: Pad Operation
+
+<Steps>
+
+1. **Select the sketch** in the tree (under Base body)
+
+2. Click **Pad** tool in Part Design toolbar
+
+3. In the Pad panel (left side):
+   - Type: **Dimension**
+   - Length: Click **ƒx** → `Spreadsheet.BaseThickness`
+
+4. Click **OK**
+
+</Steps>
+
+**You now have a 3D base plate!**
+
+:::tip[Viewing Your Part]
+Press **V** then **F** to fit all in view. Rotate with middle mouse button to see the base from different angles.
+:::
+
+## 🔗 Part 5: Creating the Handle
+
+### Design Intent
+
+<Card title="🔧 Handle Requirements" icon="puzzle">
+
+The handle is an input lever arm with:
+
+- **Pivot hole** at one end (connects to base)
+- **Connection hole** for main link at other end
+- **Grip area** for user to apply force
+- **Parametric angle** control for open/closed positions
+
+</Card>
+
+### Step-by-Step: Handle Part
+
+<Steps>
+
+1. **Create new Body**
+
+   - Part Design workbench
+   - Create Body
+   - Rename: `Handle`
+
+2. **Create Sketch**
+
+   - Select Handle body
+   - Create Sketch → XY_Plane
+
+</Steps>
+
+### Drawing the Handle Profile
+
+<Tabs>
+  <TabItem label="Centerline Setup">
+
+**Create construction centerline:**
+
+<Steps>
+
+1. **Line tool** (press L)
+
+   - Click at **origin** (0, 0)
+   - Draw approximately upward and to the right
+   - Click to place endpoint
+   - Press **Escape**
+
+2. **Make it construction geometry**
+
+   - Select the line
+   - Press **G** key (toggles construction mode)
+   - Line turns blue (construction geometry)
+
+3. **Apply horizontal reference**
+
+   This will be used for angle measurement
+
+</Steps>
+
+:::note[Construction Geometry]
+Construction lines are reference geometry that won't become solid material. They're perfect for defining design intent and controlling parametric relationships!
+:::
+
+</TabItem>
+<TabItem label="Parametric Dimensions">
+
+**Add parametric length and angle:**
+
+<Steps>
+
+1. **Dimension the length:**
+
+   - Distance constraint
+   - Click both endpoints of line
+   - Click **ƒx** button
+   - Type: `Spreadsheet.HandleLength`
+   - Enter
+
+2. **Add angle constraint:**
+
+   - Angle constraint tool
+   - Click the **construction line**
+   - Click the **horizontal X-axis** (red line at origin)
+   - Click **ƒx** button
+   - Type: `Spreadsheet.HandleAngleOpen`
+   - Enter
+
+</Steps>
+
+Handle is now 120mm long at 45° angle and fully parametric!
+
+:::tip[Why Control the Angle?]
+By parameterizing the initial angle, we define the "open" position of the mechanism. Later, we can change HandleAngleOpen to explore different mechanism configurations!
+:::
+
+</TabItem>
+<TabItem label="Holes">
+
+**Add pivot and connection holes:**
+
+<Steps>
+
+1. **Pivot hole at origin:**
+
+   - Circle tool
+   - Click at **origin**
+   - Escape
+   - Coincident constraint: center → origin
+   - Radius: ƒx → `Spreadsheet.PinRadius`
+
+2. **Main link connection hole:**
+
+   - Circle tool
+   - Click at **far endpoint** of construction line
+   - Escape
+   - Coincident constraint: center → line endpoint
+   - Radius: ƒx → `Spreadsheet.PinRadius`
+
+</Steps>
+
+Both holes are now positioned and sized parametrically!
+
+</TabItem>
+<TabItem label="Handle Body">
+
+**Create the physical lever:**
+
+<Steps>
+
+1. **Rectangle tool**
+
+   - Draw rectangle along the construction line
+   - Enclosing both circles
+
+2. **Symmetric constraint:**
+
+   - Select **top edge** of rectangle
+   - Select **bottom edge** of rectangle
+   - Select the **construction centerline**
+   - Apply Symmetric constraint
+   - Rectangle centers on the line!
+
+3. **Dimension width:**
+
+   - Distance constraint between top and bottom edges
+   - Click **ƒx**
+   - Type: `Spreadsheet.LinkWidth`
+   - Enter
+
+4. **Optional: Add grip enhancement**
+
+   - Draw a wider rectangle or rounded shape at grip end
+   - Improves ergonomics and appearance
+
+</Steps>
+
+</TabItem>
+<TabItem label="Finalize">
+
+**Check and close:**
+
+<Steps>
+
+1. **Verify fully constrained**
+
+   Solver should show: **"Fully constrained"**
+
+2. **Close sketch**
+
+   Click **Close** button
+
+3. **Pad the handle:**
+
+   - Pad tool
+   - Length: ƒx → `Spreadsheet.LinkThickness`
+   - OK
+
+</Steps>
+
+**Handle complete!**
+
+</TabItem>
+</Tabs>
+
+## 🔧 Part 6: Creating the Main Link
+
+### Design Intent
+
+<Card title="⚙️ Main Link Requirements" icon="setting">
+
+The main link is the critical transmission element connecting handle to clamp arm:
+
+- **Two pivot holes** at each end
+- **Parametric length** controlling over-center geometry
+- **Simple rectangular body** for strength
+- **Free angle** (not constrained in sketch; assembly controls this)
+
+</Card>
+
+:::caution[Critical Component]
+This link's geometry **determines the over-center behavior**. Its length relative to other links controls whether the mechanism locks properly!
+:::
+
+### Quick Creation Steps
+
+<Steps>
+
+1. **Create Body:** Create and rename to `MainLink`
+
+2. **Create Sketch on XY_Plane**
+
+3. **Draw the link profile:**
+
+   **Centerline (construction):**
+   - Line tool, start at origin
+   - Draw horizontally (approximate)
+   - Make construction (G key)
+   - Length: ƒx → `Spreadsheet.MainLinkLength`
+   - **DO NOT** constrain angle (leave free for assembly)
+
+   **Holes at both ends:**
+   - Circle at origin: Radius = ƒx → `Spreadsheet.PinRadius`
+   - Circle at far end: Coincident to endpoint, Radius = ƒx → `Spreadsheet.PinRadius`
+
+   **Link body:**
+   - Rectangle along centerline
+   - Symmetric about centerline
+   - Width = ƒx → `Spreadsheet.LinkWidth`
+
+4. **Verify:** Should show some degrees of freedom (angle is intentionally free!)
+
+5. **Close and Pad:** Length = ƒx → `Spreadsheet.LinkThickness`
+
+</Steps>
+
+**Main link complete!**
+
+:::tip[Why Free Angle?]
+Unlike the handle, we don't constrain the main link's angle in its sketch. The assembly constraints will determine its position based on how it connects to the handle and clamp arm. This is intentional: the link needs to rotate freely between these connections!
+:::
+
+## 📦 Part 7: Creating the Clamp Arm
+
+<InArticleAd />
+
+
+### Design Intent
+
+<Card title="🔨 Clamp Arm Requirements" icon="document">
+
+The clamp arm is the output link that applies clamping force:
+
+- **Pivot hole** at base end (connects to base)
+- **Main link connection hole** at intermediate position
+- **Clamping pad** at output end for workpiece contact
+- **Parametric length** controlling reach and force application
+
+</Card>
+
+### Step-by-Step: Clamp Arm Part
+
+<Steps>
+
+1. **Create Body:** Create and rename to `ClampArm`
+
+2. **Create Sketch on XY_Plane**
+
+</Steps>
+
+### Drawing the Clamp Arm Profile
+
+<Tabs>
+  <TabItem label="Centerline & Holes">
+
+**Create construction centerline and pivot holes:**
+
+<Steps>
+
+1. **Centerline (construction):**
+
+   - Line tool, start at origin
+   - Draw horizontally to the right
+   - Make construction (G key)
+   - Length: ƒx → `Spreadsheet.ClampArmLength`
+
+2. **Pivot hole at base:**
+
+   - Circle at origin
+   - Radius: ƒx → `Spreadsheet.PinRadius`
+
+3. **Main link connection hole:**
+
+   - Circle at intermediate point along line
+   - Coincident to a point on the line (not endpoint)
+   - Distance from origin: `30` mm (or create parameter)
+   - Radius: ƒx → `Spreadsheet.PinRadius`
+
+</Steps>
+
+:::note[Intermediate Hole Position]
+The position of this hole along the clamp arm affects the mechanical advantage and motion characteristics. Closer to pivot = more force but less movement; farther = less force but more movement.
+:::
+
+</TabItem>
+<TabItem label="Arm Body">
+
+**Create the structural arm:**
+
+<Steps>
+
+1. **Rectangle tool**
+
+   - Draw rectangle along centerline
+   - From pivot to near the end
+
+2. **Symmetric constraint:**
+
+   - Top edge, bottom edge, and centerline
+   - Centers rectangle on the line
+
+3. **Dimension width:**
+
+   - Distance constraint
+   - Click **ƒx**
+   - Type: `Spreadsheet.LinkWidth`
+   - Enter
+
+</Steps>
+
+</TabItem>
+<TabItem label="Clamping Pad">
+
+**Add the workpiece contact surface:**
+
+<Steps>
+
+1. **Draw wider rectangle at far end:**
+
+   - Rectangle at the output end of arm
+   - Width: `20` mm (wider than LinkWidth)
+   - Height: ƒx → `Spreadsheet.LinkWidth`
+
+2. **Connect to arm body:**
+
+   - Ensure edges align or merge with main arm rectangle
+
+3. **Optional: Round the pad edge**
+
+   - Creates better contact surface
+   - Use fillet or arc
+
+</Steps>
+
+This wider pad:
+- Distributes clamping force
+- Provides clear contact point
+- Prevents workpiece damage
+
+</TabItem>
+<TabItem label="Finalize">
+
+**Check and complete:**
+
+<Steps>
+
+1. **Verify fully constrained**
+
+   Check solver messages
+
+2. **Close sketch**
+
+   Click Close button
+
+3. **Pad the clamp arm:**
+
+   - Pad tool
+   - Length: ƒx → `Spreadsheet.LinkThickness`
+   - OK
+
+</Steps>
+
+**Clamp arm complete!**
+
+</TabItem>
+</Tabs>
+
+All four parts are now ready for assembly!
+
+## 🧩 Part 8: Assembly
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+Assembly is where your individual parts come together as a functioning over-center mechanism. FreeCAD's Assembly workbench uses constraints to define how parts relate to each other, allowing you to test the locking behavior and verify your design achieves the critical over-center geometry.
+</BionicText>
 
 ### Assembly Strategy
 
-1. Fix base
-2. Handle pivots on base
-3. Main link connects handle to clamp arm
-4. Clamp arm pivots on base
-5. Test motion through open and closed positions
+<Card title="🎯 Assembly Constraints Plan" icon="rocket">
 
-### Step-by-Step: Assembly
+1. **Base:** Fixed (ground link)
+2. **Handle:** Rotates about base pivot at origin
+3. **Main Link:** Connects handle to clamp arm (two pivots)
+4. **Clamp Arm:** Pivots on base, receives force from main link
+5. **Test:** Verify over-center locking in closed position
 
-#### 1. Switch to Assembly Workbench
+</Card>
 
-#### 2. Create Assembly
+### Creating the Assembly
 
-#### 3. Add Parts
+<Tabs>
+  <TabItem label="Setup">
 
-- Add Base
-- Add Handle
-- Add MainLink
-- Add ClampArm
+<Steps>
 
-#### 4. Apply Constraints
+1. **Switch to Assembly workbench**
 
-**Fix base:**
+   Use workbench dropdown
 
-- Select Base
-- Fixed constraint
+2. **Create new assembly**
 
-**Handle pivot:**
+   Assembly → Create Assembly
 
-- Handle pivot hole axis → Base pivot hole axis
-- Axial align constraint
-- Allows handle to rotate about base
+3. **Add parts**
 
-**Main link to handle:**
+   Drag parts from tree or use "Add Part" button:
+   - Base
+   - Handle
+   - MainLink
+   - ClampArm
 
-- MainLink hole 1 → Handle far hole
-- Axial align
+</Steps>
 
-**Main link to clamp arm:**
+</TabItem>
+<TabItem label="Fix Base">
 
-- MainLink hole 2 → ClampArm intermediate hole
-- Axial align
+<Steps>
 
-**Clamp arm pivot:**
+1. Select **Base** in assembly tree
 
-- ClampArm pivot hole → Base (need to add second pivot on base!)
+2. Click **Fixed constraint** button
 
-*Note: You may need to revise the Base to add a second pivot point for the clamp arm. Position it such that the mechanism can achieve over-center geometry.*
+3. Base is now locked in place (ground link)
 
-### Testing Over-Center Action
+</Steps>
 
-1. **Open position:** Drag handle to open position (~45° up)
+:::note[Why Fix the Base?]
+Every mechanism needs a ground reference. The base provides the fixed reference point from which all other motion is measured and provides the two pivot points the mechanism rotates about.
+:::
+
+</TabItem>
+<TabItem label="Handle Constraints">
+
+**Allow handle to rotate about base:**
+
+<Steps>
+
+1. Select **handle pivot hole axis**
+
+2. Select **base pivot hole axis** (at origin)
+
+3. Click **Axial Align constraint**
+
+</Steps>
+
+Handle can now rotate about the base pivot!
+
+</TabItem>
+<TabItem label="Main Link Connections">
+
+**Connect main link to handle:**
+
+<Steps>
+
+1. MainLink hole 1 axis → Handle far hole axis
+
+2. Axial Align constraint
+
+</Steps>
+
+**Connect main link to clamp arm:**
+
+<Steps>
+
+1. MainLink hole 2 axis → ClampArm intermediate hole axis
+
+2. Axial Align constraint
+
+</Steps>
+
+The main link now transmits motion between handle and clamp arm!
+
+</TabItem>
+<TabItem label="Clamp Arm Pivot">
+
+**Mount clamp arm to base:**
+
+<Steps>
+
+1. ClampArm pivot hole axis → Base second pivot hole axis
+
+2. Axial Align constraint
+
+</Steps>
+
+:::caution[Second Pivot Required]
+If you didn't add a second pivot hole to the base earlier, you'll need to edit the Base part now to add it. Position it approximately 40mm to the right of the origin for proper over-center geometry.
+:::
+
+</TabItem>
+<TabItem label="Testing Motion">
+
+**Test the over-center action:**
+
+<Steps>
+
+1. **Open position:** Drag handle to open (~45° up)
+
    - Main link and clamp arm should form acute angle (~150°)
+   - Mechanism moves easily
 
 2. **Closed position:** Drag handle down (~-20°)
+
    - Main link and clamp arm should be past 180° (~185°)
    - Should feel "locked" - resistant to opening
 
-If over-center doesn't work:
-- Adjust pivot positions
-- Adjust link lengths
+</Steps>
+
+:::tip[Troubleshooting Over-Center]
+**If over-center doesn't work:**
+- Adjust base pivot hole positions (edit Base part)
+- Adjust MainLinkLength in spreadsheet
 - Check that closed angle exceeds 180°
+- Verify clamp arm intermediate hole position
+
+The mechanism must achieve **geometric locking** where the links pass dead center!
+:::
+
+</TabItem>
+</Tabs>
 
 ---
 

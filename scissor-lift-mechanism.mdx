@@ -1,5 +1,5 @@
 ---
-title: "Scissor Lift Mechanism - Parametric CAD Design"
+title: "Scissor Lift Mechanism Design"
 description: "Design a parametric scissor lift mechanism with repeating geometry and scalable stages in FreeCAD"
 contributors: "sam-macharia,sila-mulwa"
 pubDate: 2025-12-17
@@ -21,567 +21,1418 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
-# Scissor Lift Mechanism - Parametric CAD Design
+Master parametric CAD design by creating a scissor lift mechanism, one of engineering's most elegant vertical motion solutions. Learn to design symmetric, repeating structures with FreeCAD's powerful parametric tools. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
 
-## Engineering Context
+## 🎯 Learning Objectives
 
-### Why This Mechanism Matters
+By the end of this lesson, you will be able to:
 
-Scissor lift mechanisms provide vertical motion through a compact, stable structure using multiple interconnected linkages. They're fundamental to many height-adjustment and material handling applications.
+1. <Badge text="Design" variant="tip" /> symmetrical mechanisms with repeating geometry
+2. <Badge text="Create" variant="note" /> parametric links with multiple pin connections
+3. <Badge text="Control" variant="tip" /> stage count and dimensions via spreadsheet parameters
+4. <Badge text="Assemble" variant="caution" /> pin-jointed collapsible structures
+5. <Badge text="Manage" variant="note" /> multiple instances of the same parametric part
 
-**Real-world applications:**
-- Vehicle scissor jacks
-- Aerial work platforms (scissor lifts)
-- Adjustable work tables and desks
-- Stage platforms and theatrical equipment
-- Medical examination tables
-- Warehouse loading platforms
+## 🔧 Engineering Context: Why This Mechanism Matters
 
-### Engineering Problem
+<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+  <TailwindWrapper>
+    ![Scissor Lift Mechanism](https://pub-b1eb899abc464b5baf5b9521d163efd9.r2.dev/parametric-mechanical-CAD-with-FreeCAD/scissor-lift-mechanism.gif)
+  </TailwindWrapper>
+</div>
 
-**Given:** Limited horizontal space for vertical lifting
-**Required:** Stable vertical motion with significant height change
-**Constraint:** Compact when collapsed, strong when extended
+<BionicText method="advanced" intensity="medium" class="highlight">
+Scissor lift mechanisms provide vertical motion through a compact, stable structure using multiple interconnected linkages. They're fundamental to many height-adjustment and material handling applications, converting small horizontal input motion into amplified vertical displacement.
+</BionicText>
 
-### Mechanism Principles
+### Real-World Applications
 
-A scissor mechanism consists of crossed links (X-shaped pairs) connected in series. Key characteristics:
+The scissor lift appears everywhere in engineering:
 
-**Motion amplification:**
-- Small horizontal input → Large vertical output
-- Multiple stages multiply the lift height
+:::note[Common Applications]
+- **Vehicle scissor jacks** - Compact emergency lifting for tire changes
+- **Aerial work platforms** - Construction and maintenance access at height
+- **Adjustable work tables** - Ergonomic height adjustment in manufacturing
+- **Stage platforms** - Theatrical equipment for dynamic staging
+- **Medical examination tables** - Patient positioning with smooth vertical control
+- **Warehouse loading platforms** - Material handling and dock leveling
+:::
 
-**Stability:**
-- Wide base when collapsed
-- Load distributed across multiple pivot points
+### The Engineering Problem
 
-**Mechanical advantage:**
-- Force amplification when raising loads
-- Self-locking potential in certain configurations
+> **Design Challenge:** Given limited horizontal space, how do we achieve significant vertical lifting with a stable, compact mechanism that stores efficiently when collapsed?
 
-### Key Parameters
+## 📚 Mechanism Fundamentals
 
-The behavior is controlled by:
+### Components and Motion
 
-- **Link length (L)** - Length of each scissor arm
-- **Link width (W)** - Width of the link structure
-- **Number of stages (N)** - How many X-pairs in series
-- **Minimum angle (θ_min)** - Collapsed position angle
-- **Maximum angle (θ_max)** - Extended position angle
+A scissor mechanism consists of crossed links working in harmony:
 
-**Height relationship:**
-```
-Collapsed height: H_min = 2N × L × sin(θ_min)
-Extended height: H_max = 2N × L × sin(θ_max)
-```
+<Tabs>
+  <TabItem label="Components">
 
----
+    **1. Scissor Arms (Links)**
+    - Crossed in X-shaped pairs
+    - Multiple pivot points per arm
+    - Connected in series for stages
 
-## What You'll Learn
+    **2. Pivot Pins**
+    - End pivots connect to base/top
+    - Center pivot where arms cross
+    - Allow relative rotation
 
-By completing this lesson, you will:
+    **3. Base Platform**
+    - Fixed reference frame
+    - Mounts bottom pivots
+    - Provides stability
 
-- Design symmetrical mechanisms
-- Create repeating parametric geometry
-- Use linear patterns for multiple instances
-- Control stage count via parameters
-- Model pin-jointed collapsible structures
-- Manage multiple copies of the same part
-- Create clear assembly documentation
+    **4. Top Platform**
+    - Moving platform
+    - Carries the load
+    - Rises with mechanism extension
 
-**This lesson assumes no prior FreeCAD knowledge** - all concepts are introduced step by step.
+</TabItem>
+  <TabItem label="Key Parameters">
 
----
+    <Card title="⚙️ Critical Design Parameters" icon="setting">
 
-## Part 1: FreeCAD Setup
+    **Arm length (L)**
+    - Length of each scissor arm
+    - Directly affects maximum height
+    - Typical range: 150-300mm for small lifts
 
-### Starting Fresh
+    **Number of stages (N)**
+    - How many X-pairs in series
+    - Multiplies lift height
+    - More stages = more compact when collapsed
 
-1. Launch FreeCAD
-2. Create new document: File → New
-3. Save as "ScissorLift.FCStd"
+    **Minimum angle (θ_min)**
+    - Collapsed position angle
+    - Affects minimum height
+    - Typically 15-20 degrees
 
-### Workbenches for This Lesson
+    **Maximum angle (θ_max)**
+    - Extended position angle
+    - Affects maximum height
+    - Typically 60-70 degrees
 
-- **Part Design** - Individual parts
-- **Sketcher** - Constrained 2D sketches
-- **Spreadsheet** - Parameter control
-- **Assembly** - Combining multiple instances
-- **TechDraw** - Documentation
+    </Card>
 
----
+</TabItem>
+  <TabItem label="Motion Analysis">
 
-## Part 2: Design Strategy
+    **Height Relationship:**
+    ```
+    Collapsed height: H_min = 2N × L × sin(θ_min)
+    Extended height:  H_max = 2N × L × sin(θ_max)
+    Lift ratio:       H_max / H_min = sin(θ_max) / sin(θ_min)
+    ```
 
-### Single Stage vs. Multiple Stages
+    **Design Guidelines:**
+    - N ≥ 2 for significant lift height
+    - L/W ratio ≥ 4 for stable geometry
+    - θ_max ≤ 70° to avoid instability
 
-We'll design:
-1. One parametric scissor link
-2. Assemble a single X-pair (one stage)
-3. Repeat for multiple stages
-4. Add base and top platforms
+    :::tip[Engineering Insight]
+    The scissor lift's mechanical advantage varies with angle. At shallow angles (collapsed), it provides maximum force amplification but requires more horizontal input. At steep angles (extended), it moves faster vertically but with less force multiplication. This is why scissor jacks feel easier at the start!
+    :::
 
-### Parametric Philosophy
+</TabItem>
+</Tabs>
 
-Instead of creating each stage separately, we'll:
-- Design ONE perfect link
-- Use that link multiple times
-- Control everything from the spreadsheet
-
-### Our Parameters
-
-```
-ArmLength = 200 mm       (scissor arm length)
-ArmWidth = 30 mm         (arm plate width)
-ArmThickness = 8 mm      (arm plate thickness)
-PinDiameter = 8 mm       (pivot pin diameter)
-StageCount = 2           (number of X-pairs)
-```
-
----
-
-## Part 3: Parameter Spreadsheet
-
-### Creating the Spreadsheet
-
-1. **Switch to Part Design workbench**
-
-2. **Insert spreadsheet:**
-   - Insert → Spreadsheet
-   - Double-click to open
-
-3. **Enter parameters:**
-
-```
-A1: Parameter          B1: Value    C1: Unit
-A2: ArmLength          B2: 200      C2: mm
-A3: ArmWidth           B3: 30       C3: mm
-A4: ArmThickness       B4: 8        C4: mm
-A5: PinDiameter        B5: 8        C5: mm
-A6: PinRadius          B6: =B5/2    C6: mm
-A7: StageCount         B7: 2        C7: count
-A8: BaseWidth          B8: 400      C8: mm
-A9: BaseThickness      B9: 15       C9: mm
-```
-
-4. **Create aliases:**
-   - B2: `ArmLength`
-   - B3: `ArmWidth`
-   - B4: `ArmThickness`
-   - B5: `PinDiameter`
-   - B6: `PinRadius`
-   - B7: `StageCount`
-   - B8: `BaseWidth`
-   - B9: `BaseThickness`
-
-5. **Close spreadsheet**
-
----
-
-## Part 4: Designing the Scissor Arm
+## 🎯 What You'll Build
 
 <InArticleAd />
 
 
-### Arm Design Intent
+By completing this lesson, you'll create:
 
-Each arm is a rectangular link with three holes:
-1. **Center hole** - Where arms cross (intersection point)
-2. **End hole 1** - Connects to base or adjacent stage
-3. **End hole 2** - Connects to top platform or adjacent stage
+<CardGrid>
+  <Card title="Parametric Scissor Arm" icon="pencil">
+    A single link with three pin connections controlled by spreadsheet
+  </Card>
 
-### Step-by-Step: Scissor Arm
+  <Card title="Platform Components" icon="puzzle">
+    Base and top platforms with pin mount arrays
+  </Card>
 
-#### 1. Create Body
+  <Card title="Working Assembly" icon="star">
+    Complete single-stage mechanism that actually lifts
+  </Card>
 
-- Switch to Part Design
-- Create Body
-- Rename: "ScissorArm"
+  <Card title="Scalable Design" icon="setting">
+    Change parameters, entire mechanism updates automatically
+  </Card>
+</CardGrid>
 
-#### 2. Create Sketch on XY_Plane
+## 🚀 Part 1: Design Strategy and Planning
 
-#### 3. Draw Center Line (Construction)
+### Understanding Scissor Geometry
 
-**Horizontal reference:**
+<BionicText method="advanced" intensity="medium" class="highlight">
+The scissor lift uses the same arm design multiple times. This repeating geometry pattern is key to scalable parametric design: design once, use everywhere, control centrally.
+</BionicText>
 
-- Line tool (L)
-- Draw from origin horizontally right
-- Make horizontal (H key)
-- Coincident: left end at origin
+### Our Design Approach
 
-**Dimension:**
+<Card title="🎯 Repeating Geometry Philosophy" icon="rocket">
 
-- Length constraint
-- ƒx → `Spreadsheet.ArmLength`
+We'll control the **entire scissor lift** with parametric design:
 
-**Make construction:**
+**ArmLength** = 200 mm
+**ArmWidth** = 30 mm
+**StageCount** = 2 (for documentation)
 
-- Select the line
-- Press G (construction geometry)
-- Turns blue/dashed
+Design ONE perfect arm → Use it four times (for 2-stage lift)!
 
-This line is our reference axis.
+This is industrial-strength parametric methodology.
 
-#### 4. Add Pin Holes
+</Card>
 
-**Center hole:**
+### Design Workflow
 
-- Circle tool
-- Place at midpoint of the line
-- Escape
+```
+Step 1: Create Spreadsheet (parameter table)
+Step 2: Design Scissor Arm (one link, three holes)
+Step 3: Create Base Platform (mount points)
+Step 4: Create Top Platform (load carrier)
+Step 5: Assemble single stage with constraints
+Step 6: Test parametric control
+Step 7: Create technical drawing
+Step 8: Extension - add second stage
+```
 
-**Constrain:**
+:::note[Why Symmetric Design Matters]
+Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetrically about a centerline and using midpoint constraints, we ensure the mechanism will function correctly no matter how we change the parameters.
+:::
 
-- Midpoint constraint
-- Circle center → line midpoint
-- Radius = ƒx → `Spreadsheet.PinRadius`
+## 📊 Part 2: Creating the Parameter Spreadsheet
 
-**End hole 1:**
+### Building Your Parameter Table
 
-- Circle tool
-- Place at left end (origin)
-- Escape
+<Steps>
 
-**Constrain:**
+1. **Create a new document**
 
-- Coincident: center → origin
-- Radius = ƒx → `Spreadsheet.PinRadius`
+   File → New (or Ctrl+N)
 
-**End hole 2:**
+   Save it as `ScissorLift.FCStd`
 
-- Circle tool
-- Place at right end
-- Escape
+2. **Switch to Part Design workbench**
 
-**Constrain:**
+   Use the workbench dropdown at top
 
-- Coincident: center → right endpoint of line
-- Radius = ƒx → `Spreadsheet.PinRadius`
+3. **Insert a spreadsheet**
 
-#### 5. Draw Arm Body
+   Insert → Spreadsheet
 
-**Rectangle for arm plate:**
+   A "Spreadsheet" object appears in the left tree
 
-- Rectangle tool
-- Draw rectangle around the line and circles
-- Should encompass all three holes
+4. **Double-click to open the spreadsheet**
 
-**Symmetric constraint:**
+   Click on "Spreadsheet" in the tree
 
-- Symmetric constraint
-- Select top edge of rectangle
-- Select bottom edge of rectangle
-- Select the horizontal centerline
-- This centers the rectangle about the axis
+</Steps>
 
-**Dimension width:**
+### Entering Parameters
 
-- Distance constraint
-- Top edge to bottom edge
-- ƒx → `Spreadsheet.ArmWidth`
+<Tabs>
+  <TabItem label="Setup">
 
-**Fix the ends:**
+    In the spreadsheet, create this table:
 
-The rectangle length is already defined by the coincident constraints of the end holes at the line endpoints.
+    | Cell | Value | Meaning |
+    |------|-------|---------|
+    | **A1** | Parameter | Header |
+    | **B1** | Value | Header |
+    | **C1** | Unit | Header |
+    | **A2** | ArmLength | Parameter name |
+    | **B2** | 200 | Numeric value |
+    | **C2** | mm | Unit (documentation) |
+    | **A3** | ArmWidth | Parameter name |
+    | **B3** | 30 | Numeric value |
+    | **C3** | mm | Unit |
+    | **A4** | ArmThickness | Parameter name |
+    | **B4** | 8 | Numeric value |
+    | **C4** | mm | Unit |
+    | **A5** | PinDiameter | Parameter name |
+    | **B5** | 8 | Numeric value |
+    | **C5** | mm | Unit |
+    | **A6** | PinRadius | Parameter name |
+    | **B6** | =B5/2 | Formula |
+    | **C6** | mm | Unit |
+    | **A7** | StageCount | Parameter name |
+    | **B7** | 2 | Numeric value |
+    | **C7** | count | Unit |
+    | **A8** | BaseWidth | Parameter name |
+    | **B8** | 400 | Numeric value |
+    | **C8** | mm | Unit |
+    | **A9** | BaseThickness | Parameter name |
+    | **B9** | 15 | Numeric value |
+    | **C9** | mm | Unit |
 
-#### 6. Check and Close
+</TabItem>
+  <TabItem label="Creating Aliases">
 
-- Sketch should be fully constrained
-- Close sketch
+    **Why Aliases?**
 
-#### 7. Pad the Arm
+    Aliases let you reference cells by name instead of "B2", making formulas readable and professional.
 
-- Select sketch in tree
-- Pad tool
-- Length: ƒx → `Spreadsheet.ArmThickness`
-- OK
+    **Create aliases:**
 
-You now have one scissor arm!
+    <Steps>
 
----
+    1. Click cell **B2**
+    2. Right-click → **Properties**
+    3. In "Alias" field, type: `ArmLength`
+    4. Click **OK**
 
-## Part 5: Creating the Base Platform
+    5. Click cell **B3**
+    6. Right-click → **Properties**
+    7. In "Alias" field, type: `ArmWidth`
+    8. Click **OK**
+
+    9. Repeat for all parameters:
+       - B4: `ArmThickness`
+       - B5: `PinDiameter`
+       - B6: `PinRadius`
+       - B7: `StageCount`
+       - B8: `BaseWidth`
+       - B9: `BaseThickness`
+
+    </Steps>
+
+    Now you can use `Spreadsheet.ArmLength` anywhere in your model!
+
+</TabItem>
+  <TabItem label="Calculated Values">
+
+    **Note the PinRadius formula:**
+
+    Cell B6 contains: `=B5/2`
+
+    This automatically calculates radius from diameter!
+
+    :::tip[Spreadsheet Calculations]
+    - Use **formulas** for dependent values (radius from diameter)
+    - Use **aliases** on calculated cells too
+    - FreeCAD recalculates automatically
+    - This creates intelligent parameter relationships
+    :::
+
+</TabItem>
+</Tabs>
+
+**Close the spreadsheet** when done (click the Close button).
+
+Your parameter foundation is ready!
+
+## 🔩 Part 3: Creating the Scissor Arm
+
+<InArticleAd />
+
 
 ### Design Intent
 
-Rectangular base with:
-- Pin mounts for bottom ends of first stage arms
-- Stable, wide footprint
+<Card title="⚙️ Scissor Arm Requirements" icon="document">
 
-### Step-by-Step: Base Platform
+The scissor arm is a rectangular link with three holes:
 
-#### 1. Create Body
+- **End hole 1** (left) - Connects to base or adjacent stage
+- **Center hole** (middle) - Where arms cross (intersection pivot)
+- **End hole 2** (right) - Connects to top platform or adjacent stage
+- **Parametric control** - All dimensions driven by spreadsheet
 
-- Create Body
-- Rename: "BasePlatform"
+</Card>
 
-#### 2. Create Sketch on XY_Plane
+### Step-by-Step: Scissor Arm Part
 
-#### 3. Draw Base Rectangle
+<Steps>
 
-- Rectangle tool centered at origin
-- Use Symmetric constraints (both horizontal and vertical about axes)
-- Width = ƒx → `Spreadsheet.BaseWidth`
-- Height = 60mm (or smaller value for depth)
+1. **Create a Body**
 
-#### 4. Add Pin Mount Holes
+   - Ensure you're in **Part Design workbench**
+   - Click **Create Body** button (or Body → Create body)
+   - A "Body" object appears in the tree
+   - Right-click → Rename → type `ScissorArm`
 
-For a 1-stage lift, you need two pin holes for the bottom pivot points of the scissor arms.
+2. **Create a Sketch**
 
-- Draw circles at appropriate positions
-- Spacing should match scissor geometry when collapsed
-- Radius = ƒx → `Spreadsheet.PinRadius`
+   - Select the "ScissorArm" body in tree
+   - Click **Create Sketch** button
+   - Dialog asks: Choose a plane
+   - Select **XY_Plane**
+   - Click **OK**
 
-(Exact positions depend on desired collapsed angle - for simplicity, place at -80mm and +80mm from center on X-axis)
+   You're now in **Sketcher workbench** (automatic switch)
 
-#### 5. Close and Pad
+</Steps>
 
-- Close sketch
-- Pad: ƒx → `Spreadsheet.BaseThickness`
+### Drawing the Centerline Reference
 
----
+<Tabs>
+  <TabItem label="Construction Line">
 
-## Part 6: Creating the Top Platform
+    **Draw horizontal reference:**
+
+    <Steps>
+
+    1. **Line tool** (press L)
+
+    2. Click at **origin** (0, 0)
+
+    3. Move horizontally to the **right**
+
+    4. Click to place endpoint
+
+    5. Press **Escape**
+
+    6. Select the line
+
+    7. **Make it horizontal:** Press **H** key
+
+    </Steps>
+
+    You now have a horizontal line from the origin!
+
+</TabItem>
+  <TabItem label="Parametric Length">
+
+    **Dimension the centerline:**
+
+    <Steps>
+
+    1. **Distance constraint** tool
+
+    2. Click the **left endpoint** of the line
+
+    3. Click the **right endpoint** of the line
+
+    4. A dimension dialog appears
+
+    5. Click the small **ƒx** button
+
+    6. In the formula editor, type: `Spreadsheet.ArmLength`
+
+    7. Press **Enter**
+
+    </Steps>
+
+    Line is now 200mm and parametric!
+
+</TabItem>
+  <TabItem label="Make Construction">
+
+    **Convert to construction geometry:**
+
+    <Steps>
+
+    1. **Select the line** (click on it)
+
+    2. Press **G** key (or click Construction Mode button)
+
+    3. The line turns **blue/dashed**
+
+    </Steps>
+
+    :::note[What is Construction Geometry?]
+    Construction geometry is reference-only: it helps constrain your design but won't become part of the final 3D shape. Perfect for centerlines, reference axes, and symmetry lines!
+    :::
+
+</TabItem>
+</Tabs>
+
+### Adding the Three Pin Holes
+
+<Tabs>
+  <TabItem label="Center Hole">
+
+    **Draw the crossing pivot:**
+
+    <Steps>
+
+    1. **Circle tool** (press C)
+
+    2. Click somewhere near the **middle** of the line
+
+    3. Move mouse out and click to set size
+
+    4. Press **Escape**
+
+    5. **Midpoint constraint:**
+       - Click **Midpoint constraint** tool
+       - Click the **circle center**
+       - Click the **centerline** (the construction line)
+       - Circle center snaps to line midpoint!
+
+    6. **Radius dimension:**
+       - Radius constraint tool
+       - Click the circle
+       - Click **ƒx** button
+       - Type: `Spreadsheet.PinRadius`
+       - Enter
+
+    </Steps>
+
+    Center hole is perfectly positioned and parametric!
+
+</TabItem>
+  <TabItem label="Left End Hole">
+
+    **Draw the base connection:**
+
+    <Steps>
+
+    1. **Circle tool**
+
+    2. Click near the **left end** of the centerline
+
+    3. Click to set size
+
+    4. Press **Escape**
+
+    5. **Coincident constraint:**
+       - Coincident tool
+       - Click **circle center**
+       - Click **left endpoint** of centerline
+       - Circle locks to origin!
+
+    6. **Radius:**
+       - Radius constraint
+       - Click the circle
+       - ƒx → `Spreadsheet.PinRadius`
+       - Enter
+
+    </Steps>
+
+    Left hole positioned at origin!
+
+</TabItem>
+  <TabItem label="Right End Hole">
+
+    **Draw the top platform connection:**
+
+    <Steps>
+
+    1. **Circle tool**
+
+    2. Click near the **right end** of centerline
+
+    3. Click to set size
+
+    4. Press **Escape**
+
+    5. **Coincident constraint:**
+       - Circle center → Right endpoint of centerline
+
+    6. **Radius:**
+       - ƒx → `Spreadsheet.PinRadius`
+
+    </Steps>
+
+    All three holes are now positioned and dimensioned!
+
+</TabItem>
+</Tabs>
+
+### Creating the Arm Body
+
+<Tabs>
+  <TabItem label="Rectangle Profile">
+
+    **Draw the structural beam:**
+
+    <Steps>
+
+    1. **Rectangle tool**
+
+    2. Draw a rectangle that encompasses all three circles
+
+    3. Should extend past the leftmost and rightmost circles
+
+    4. Press **Escape**
+
+    </Steps>
+
+    Don't worry about exact positioning yet. Constraints will fix it!
+
+</TabItem>
+  <TabItem label="Symmetric Constraint">
+
+    **Center the rectangle about centerline:**
+
+    <Steps>
+
+    1. Click **Symmetric constraint** tool
+
+    2. Click the **top edge** of the rectangle
+
+    3. Click the **bottom edge** of the rectangle
+
+    4. Click the **horizontal centerline** (construction line)
+
+    5. Press **Escape**
+
+    </Steps>
+
+    The rectangle is now perfectly centered vertically!
+
+    :::tip[Symmetry is Powerful]
+    The symmetric constraint maintains equal distance above and below the centerline. When you change ArmWidth, the rectangle expands equally in both directions. This is parametric design at its finest!
+    :::
+
+</TabItem>
+  <TabItem label="Width Dimension">
+
+    **Set the parametric width:**
+
+    <Steps>
+
+    1. **Distance constraint** tool
+
+    2. Click the **top edge** of rectangle
+
+    3. Click the **bottom edge** of rectangle
+
+    4. ƒx button
+
+    5. Type: `Spreadsheet.ArmWidth`
+
+    6. Enter
+
+    </Steps>
+
+    Arm width is now 30mm and parametric!
+
+</TabItem>
+  <TabItem label="Length Lock">
+
+    **The rectangle length is automatically constrained!**
+
+    Because the rectangle corners will be coincident with or near the end hole centers (which are already positioned at the centerline endpoints), the rectangle length is implicitly defined.
+
+    If the solver shows degrees of freedom, add:
+
+    - **Coincident:** Rectangle left edge → passes through left hole center
+    - **Coincident:** Rectangle right edge → passes through right hole center
+
+    Or simply ensure the rectangle extends to the endpoints.
+
+</TabItem>
+</Tabs>
+
+### Finalizing the Sketch
+
+<Steps>
+
+1. **Check the solver**
+
+   Look at "Solver Messages" panel:
+   - Should say **"Fully constrained"**
+   - If it says "X degrees of freedom", review constraints
+
+2. **Verify the design**
+
+   You should see:
+   - Horizontal construction line (blue/dashed)
+   - Three circles on the line
+   - Rectangle centered about the line
+   - All dimensions showing formulas
+
+3. **Close the sketch**
+
+   Click the **Close** button in the toolbar
+
+</Steps>
+
+### Creating 3D: Pad Operation
+
+<Tabs>
+  <TabItem label="Applying Pad">
+
+    <Steps>
+
+    1. **Select the sketch** in the tree (under ScissorArm body)
+
+    2. Click **Pad** tool in Part Design toolbar
+
+    3. In the Pad panel (left side):
+       - Type: **Dimension**
+       - Click the **ƒx** button next to Length
+       - Type: `Spreadsheet.ArmThickness`
+       - Click **OK**
+
+    4. Click **OK** to complete the pad
+
+    </Steps>
+
+    **You now have a 3D scissor arm!**
+
+</TabItem>
+  <TabItem label="Viewing Your Part">
+
+    **Navigate the 3D view:**
+
+    - Press **V** then **F** to fit all
+    - Rotate view with middle mouse button
+    - See the rectangular link with three holes!
+
+    :::note[What You Created]
+    - A parametric 3D scissor link
+    - Three precision-positioned pin holes
+    - Perfectly symmetric about centerline
+    - Controlled by spreadsheet
+    - Ready for multiple use in assembly
+    :::
+
+</TabItem>
+</Tabs>
+
+## 📦 Part 4: Creating the Base Platform
 
 ### Design Intent
 
-Similar to base, but attaches to top ends of scissor arms.
+The base provides stable mounting for the bottom pivots of the scissor mechanism.
 
-### Step-by-Step: Top Platform
+<Card title="🏗️ Base Platform Requirements" icon="puzzle">
 
-#### 1. Create Body
+- **Wide footprint** - Stability when mechanism extends
+- **Pin mount holes** - For bottom pivots of arms
+- **Parametric width** - Controlled by `Spreadsheet.BaseWidth`
+- **Appropriate thickness** - Structural integrity
 
-- Create Body
-- Rename: "TopPlatform"
+</Card>
 
-#### 2. Create Sketch on XY_Plane
+### Creating the Base
 
-#### 3. Draw Platform
+<Steps>
 
-- Similar rectangle to base
-- Width = ƒx → `Spreadsheet.BaseWidth` (or separate TopWidth parameter)
-- Height = 60mm
+1. **Create new Body**
 
-#### 4. Add Pin Holes
+   - Part Design workbench
+   - Create Body
+   - Rename: `BasePlatform`
 
-- Positions match the top pivots of the scissor mechanism
-- Radius = ƒx → `Spreadsheet.PinRadius`
+2. **Create Sketch**
 
-#### 5. Pad
+   - Select BasePlatform body
+   - Create Sketch → XY_Plane
 
-- Thickness = ƒx → `Spreadsheet.BaseThickness`
+</Steps>
 
----
+### Drawing the Base Platform
 
-## Part 7: Assembly - Single Stage
+<Tabs>
+  <TabItem label="Main Rectangle">
+
+    <Steps>
+
+    1. **Rectangle tool**
+
+    2. Draw rectangle roughly centered at origin
+
+    3. Press **Escape**
+
+    4. **Symmetric constraints:**
+       - Symmetric: left edge, right edge, Y-axis
+       - Symmetric: top edge, bottom edge, X-axis
+       - This centers the rectangle perfectly!
+
+    5. **Width dimension:**
+       - Distance: left edge to right edge
+       - ƒx → `Spreadsheet.BaseWidth`
+       - Enter
+
+    6. **Depth dimension:**
+       - Distance: top edge to bottom edge
+       - Type: `60` mm (fixed depth)
+       - Enter
+
+    </Steps>
+
+</TabItem>
+  <TabItem label="Pin Mount Holes">
+
+    For a single-stage lift, we need two pin holes for the bottom pivots.
+
+    **Left pin hole:**
+
+    <Steps>
+
+    1. **Circle tool**
+
+    2. Draw circle on the left side
+
+    3. Press **Escape**
+
+    4. **Horizontal constraint:**
+       - Circle center and origin (centers on X-axis)
+
+    5. **Distance from origin:**
+       - Distance: origin to circle center
+       - Type: `80` mm (horizontal spacing)
+       - Enter
+
+    6. **Radius:**
+       - ƒx → `Spreadsheet.PinRadius`
+
+    </Steps>
+
+    **Right pin hole:**
+
+    <Steps>
+
+    1. Draw another circle on the right
+
+    2. **Horizontal constraint:** Circle center and origin
+
+    3. **Distance from origin:** `80` mm
+
+    4. **Radius:** ƒx → `Spreadsheet.PinRadius`
+
+    </Steps>
+
+    Or better - use **Equal and Symmetric** constraints:
+
+    <Steps>
+
+    1. After creating both circles
+    2. **Equal constraint:** Both circles (equal radii)
+    3. **Symmetric constraint:** Both circle centers, Y-axis
+    4. **Distance:** One circle center to Y-axis = `80` mm
+
+    </Steps>
+
+    This ensures perfect symmetry!
+
+</TabItem>
+  <TabItem label="Check & Finish">
+
+    **Verify and complete:**
+
+    :::caution[Check Solver]
+    Solver should show: **"Fully constrained"**
+
+    The sketch should have:
+    - Rectangle centered at origin
+    - Two symmetric pin holes
+    - All parametric dimensions in place
+    :::
+
+    <Steps>
+    1. Confirm "Fully constrained"
+    2. **Close sketch**
+    </Steps>
+
+</TabItem>
+</Tabs>
+
+### Padding the Base
+
+<Steps>
+
+1. **Select the sketch** in the tree
+
+2. **Pad tool**
+
+3. Length: ƒx → `Spreadsheet.BaseThickness`
+
+4. **OK**
+
+</Steps>
+
+**Base platform complete!**
+
+## 🏗️ Part 5: Creating the Top Platform
+
+### Design Intent
+
+Similar to the base, but this platform moves vertically and carries the load.
+
+### Quick Creation Steps
+
+<Steps>
+
+1. **Body:** Create and rename to `TopPlatform`
+
+2. **Sketch on XY_Plane:**
+
+   - **Rectangle:** Centered at origin (symmetric constraints)
+   - **Width:** ƒx → `Spreadsheet.BaseWidth` (or create `TopWidth` parameter)
+   - **Depth:** `60` mm
+
+   - **Two pin holes:**
+     - Symmetric about Y-axis
+     - Horizontal constraint (on X-axis)
+     - Distance from center: `80` mm each
+     - Radius: ƒx → `Spreadsheet.PinRadius`
+
+3. **Check:** Fully constrained
+
+4. **Pad:** ƒx → `Spreadsheet.BaseThickness`
+
+</Steps>
+
+:::tip[Reusing Design Patterns]
+Notice the top platform is almost identical to the base. In professional CAD, you might create one and mirror/copy it. For learning, creating both reinforces the constraint workflow!
+:::
+
+**Top platform complete!**
+
+## 🧩 Part 6: Assembly - Single Stage
+
+<InArticleAd />
+
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+Assembly is where your individual parts come together as a functioning mechanism. The scissor lift assembly uses the same arm part twice in a crossed configuration, demonstrating how parametric parts can be reused in different orientations.
+</BionicText>
 
 ### Assembly Strategy
 
-First, assemble a single scissor stage to understand the geometry.
+<Card title="🎯 Single-Stage Assembly Plan" icon="rocket">
 
-### Step-by-Step: Single Stage Assembly
+1. **Base Platform:** Fixed (ground reference)
+2. **First Scissor Arm:** Left-to-right rising diagonal
+3. **Second Scissor Arm:** Right-to-left rising diagonal
+4. **Center crossing:** Arms pivot where they cross
+5. **Top Platform:** Rises with mechanism extension
 
-#### 1. Switch to Assembly Workbench
+</Card>
 
-#### 2. Create Assembly
+### Creating the Assembly
 
-#### 3. Add Parts
+<Tabs>
+  <TabItem label="Setup">
 
-You need:
-- 2 × ScissorArm (we'll add the same part twice)
-- 1 × BasePlatform
-- 1 × TopPlatform
+    <Steps>
 
-**Add ScissorArm twice:**
-- Right-click ScissorArm in tree → "Duplicate Object" or use Assembly4's "Add Part" twice
+    1. **Switch to Assembly workbench**
 
-#### 4. Position and Constrain
+       Use workbench dropdown (Assembly4 or A2plus recommended)
 
-**Fix the base:**
+    2. **Create new assembly**
 
-- Select BasePlatform
-- Fixed constraint
+       Assembly → Create Assembly
 
-**First arm (left-to-right rising):**
+    3. **Add parts**
 
-- Bottom-left hole → Base left pin mount (Axial align)
+       You need to add:
+       - BasePlatform (once)
+       - ScissorArm (twice - same part, two instances!)
+       - TopPlatform (once)
 
-**Second arm (right-to-left rising):**
+       Use "Add Part" or drag from tree, adding ScissorArm twice
 
-- Bottom-right hole → Base right pin mount (Axial align)
+    </Steps>
 
-**Cross connection (center pivots):**
+</TabItem>
+  <TabItem label="Fixing Base">
 
-- First arm center hole → Second arm center hole (Axial align)
-- This is where they cross!
+    <Steps>
 
-**Top connections:**
+    1. Select **BasePlatform** in assembly tree
 
-- First arm top hole → TopPlatform right pin (Axial align)
-- Second arm top hole → TopPlatform left pin (Axial align)
+    2. Click **Fixed constraint** button
 
-### Test Motion
+    3. Base is now locked in place (ground link)
 
-The platform should lift as you adjust the angle!
+    </Steps>
 
----
+    :::note[Why Fix the Base?]
+    Every mechanism needs a ground reference. The base platform provides this fixed foundation from which all vertical motion is measured.
+    :::
 
-## Part 8: Multi-Stage Assembly (Advanced)
+</TabItem>
+  <TabItem label="First Arm Position">
 
-### Adding More Stages
+    **Position the left-rising arm:**
 
-To create a 2-stage lift:
-1. Add 2 more ScissorArm copies (4 arms total for 2 stages)
-2. The top of stage 1 connects to the bottom of stage 2
-3. Repeat the crossing pattern
+    <Steps>
 
-This gets complex quickly - in practice, use assembly patterns or spreadsheet-driven positioning.
+    1. Select the **left end hole axis** of the first ScissorArm
 
-### Simplified Approach
+    2. Select the **left pin hole axis** of the BasePlatform
 
-For this lesson, completing a 1-stage scissor lift demonstrates all the key principles. Multi-stage is a scaling exercise.
+    3. Click **Axial Align constraint**
 
----
+    </Steps>
 
-## Part 9: Technical Drawing
+    The first arm's left end is now connected to the base!
+
+    :::tip[Naming Parts]
+    Rename your ScissorArm instances in the assembly to "ScissorArm_Left" and "ScissorArm_Right" to avoid confusion!
+    :::
+
+</TabItem>
+  <TabItem label="Second Arm Position">
+
+    **Position the right-rising arm:**
+
+    <Steps>
+
+    1. Select the **left end hole axis** of the second ScissorArm
+
+    2. Select the **right pin hole axis** of the BasePlatform
+
+    3. Click **Axial Align constraint**
+
+    </Steps>
+
+    The second arm's left end connects to the right side of the base!
+
+</TabItem>
+  <TabItem label="Center Crossing">
+
+    **This is the critical scissor pivot!**
+
+    <Steps>
+
+    1. Select the **center hole axis** of first ScissorArm
+
+    2. Select the **center hole axis** of second ScissorArm
+
+    3. Click **Axial Align constraint**
+
+    </Steps>
+
+    The arms now cross and can pivot relative to each other!
+
+    :::caution[Assembly Critical Point]
+    This center crossing constraint is what makes it a "scissor" mechanism. Without this, the arms would be independent. With it, they work together to amplify motion!
+    :::
+
+</TabItem>
+  <TabItem label="Top Platform">
+
+    **Connect to the top platform:**
+
+    <Steps>
+
+    1. First arm's **right end hole** → TopPlatform **right pin hole**
+       - Axial Align constraint
+
+    2. Second arm's **right end hole** → TopPlatform **left pin hole**
+       - Axial Align constraint
+
+    </Steps>
+
+    The mechanism is now complete!
+
+</TabItem>
+  <TabItem label="Testing Motion">
+
+    **Test the scissor action:**
+
+    Try dragging the top platform or an arm in the assembly view:
+    - Arms should rotate about their pivots
+    - Center crossing should move
+    - Top platform should rise and fall!
+    - Motion should be smooth and coordinated
+
+    :::tip[Troubleshooting Motion]
+    **If mechanism won't move:**
+    - Check that only BasePlatform is Fixed
+    - All pin joints should be Axial Align (not Fixed!)
+    - Remove any redundant constraints
+    - Verify you have 4 arm-to-platform connections + 1 crossing connection
+    :::
+
+</TabItem>
+</Tabs>
+
+## 📐 Part 7: Technical Drawing
+
+### Creating Professional Documentation
+
+<Steps>
+
+1. **Switch to TechDraw workbench**
+
+2. **Create a page:**
+
+   - Insert Page
+   - Choose template: A3_Landscape (assembly drawings need space)
+
+3. **Add assembly views:**
+
+   - Insert View → Select entire assembly
+   - Create **Front view** (collapsed position)
+   - Create **Side view**
+   - Position views by dragging
+
+4. **Add detail view of arm:**
+
+   - Insert View → Select ScissorArm body
+   - Show dimensions and hole positions
+   - Use Dimension tools: Horizontal, Vertical, Radius
+
+5. **Add parts list:**
+
+   Create a table showing:
+
+   | Part | Qty | Material |
+   |------|-----|----------|
+   | Scissor Arm | 2 | Steel |
+   | Base Platform | 1 | Steel |
+   | Top Platform | 1 | Steel |
+   | Pin (8mm dia) | 5 | Steel |
+
+6. **Title block:**
+
+   - Double-click text fields
+   - Enter: Part name, material, scale, your name, date
+
+7. **Export:**
+
+   - Right-click page → Export as PDF
+
+</Steps>
+
+You now have professional engineering documentation!
+
+## ✅ Part 8: Testing Parametric Control
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+This is where parametric design proves its worth! A truly parametric model updates correctly when you change parameters. Let's verify your scissor lift is intelligent and responsive to design changes.
+</BionicText>
+
+### Verification Tests
+
+<Tabs>
+  <TabItem label="Test 1: Arm Length">
+
+    <Steps>
+
+    1. **Open Spreadsheet**
+
+       Double-click Spreadsheet in tree
+
+    2. **Change ArmLength**
+
+       - Click cell B2
+       - Type: `250`
+       - Press Enter
+
+    3. **Recompute**
+
+       Press **Ctrl+R** or click Recompute button
+
+    4. **Observe changes:**
+
+       - All scissor arms are now longer!
+       - Maximum lift height increases!
+       - Pin holes remain properly positioned!
+       - Assembly maintains all constraints!
+
+    </Steps>
+
+    ✅ **Success!** Your mechanism scales with arm length!
+
+</TabItem>
+  <TabItem label="Test 2: Arm Width">
+
+    <Steps>
+
+    1. **Change ArmWidth**
+
+       - Cell B3: Type `40`
+       - Enter
+
+    2. **Recompute** (Ctrl+R)
+
+    3. **Verify:**
+
+       - Scissor arms are now wider (more robust!)
+       - Symmetric constraints maintained
+       - All holes still centered
+       - Assembly still functions
+
+    </Steps>
+
+    ✅ **Your arms are parametric!**
+
+</TabItem>
+  <TabItem label="Test 3: Pin Size">
+
+    <Steps>
+
+    1. **Change PinDiameter**
+
+       - Cell B5: Type `10`
+       - Enter (note: PinRadius updates automatically!)
+
+    2. **Recompute**
+
+    3. **Verify:**
+
+       - All holes in arms are now larger
+       - All holes in platforms match
+       - Formula-driven PinRadius worked!
+
+    </Steps>
+
+    ✅ **Calculated parameters work perfectly!**
+
+</TabItem>
+  <TabItem label="Test 4: Base Width">
+
+    <Steps>
+
+    1. Set **BaseWidth = 500**
+    2. Recompute
+
+    </Steps>
+
+    **Platforms expand for wider stance!**
+
+    Try extreme values:
+    - ArmLength = 150, ArmWidth = 20 (compact design)
+    - ArmLength = 300, ArmWidth = 50 (heavy-duty version)
+
+    Everything should update cleanly!
+
+    :::caution[If Updates Fail]
+    **Problem:** Some parts don't update
+
+    **Check:**
+    - Did you use formulas (`Spreadsheet.ArmLength`) not hardcoded values?
+    - Are all sketches fully constrained?
+    - Try recomputing individual bodies
+    - Check for any hardcoded dimensions that should be parametric
+    :::
+
+</TabItem>
+</Tabs>
+
+## 🎓 Learning Outcomes
 
 <InArticleAd />
 
 
-### Creating Assembly Drawing
+**Congratulations!** By completing this lesson, you have:
 
-#### 1. Switch to TechDraw
+<CardGrid>
+  <Card title="✅ Designed Symmetric Parts" icon="approve-check">
+    Used symmetric constraints and construction geometry
+  </Card>
 
-#### 2. Create Page
+  <Card title="✅ Created Reusable Components" icon="pencil">
+    One arm design, multiple instances
+  </Card>
 
-- Insert Page
-- Template: A3_Landscape (assembly drawings need space)
+  <Card title="✅ Built Parametric Mechanisms" icon="setting">
+    Spreadsheet-driven scalable design
+  </Card>
 
-#### 3. Add Assembly Views
+  <Card title="✅ Assembled Crossed Links" icon="puzzle">
+    Pin-jointed scissor configuration
+  </Card>
 
-- Insert View
-- Select the entire assembly
-- Front view (collapsed position)
-- Side view
+  <Card title="✅ Generated Documentation" icon="document">
+    Professional assembly drawings with parts list
+  </Card>
 
-#### 4. Add Detail View
+  <Card title="✅ Tested Scalability" icon="star">
+    Verified parametric updates across assembly
+  </Card>
+</CardGrid>
 
-- Create detail view of one arm
-- Show dimensions and hole positions
+**Most importantly:** You've designed a mechanism with repeating geometry using professional parametric methodology!
 
-#### 5. Add Parts List
+## 🔍 Design Verification Checklist
 
-Many TechDraw templates include parts list tables:
-- Fill in: Part name, Quantity, Material
+Use this checklist to verify your design:
 
-**Example:**
-| Part | Qty | Material |
-|------|-----|----------|
-| Scissor Arm | 2 | Steel |
-| Base Platform | 1 | Steel |
-| Top Platform | 1 | Steel |
-| Pin | 5 | Steel |
+:::note[Verification Questions]
 
-#### 6. Export
+**Mechanism Function:**
+- [ ] Do both scissor arms rotate smoothly about all pivots?
+- [ ] Does the top platform rise and fall symmetrically?
+- [ ] Is the center crossing pivot functioning correctly?
 
-- Export as PDF
+**Parametric Behavior:**
+- [ ] Changing ArmLength updates all arms and spacing correctly?
+- [ ] Changing ArmWidth updates arm geometry symmetrically?
+- [ ] Changing PinDiameter updates all holes (arms and platforms)?
+- [ ] PinRadius automatically calculates from PinDiameter?
 
----
+**Model Quality:**
+- [ ] All sketches show "Fully constrained"?
+- [ ] No regeneration errors when recomputing?
+- [ ] Assembly moves without binding or interference?
 
-## Part 10: Testing Parametric Control
+**Documentation:**
+- [ ] Can you export a PDF drawing of the assembly?
+- [ ] Drawing shows critical dimensions?
+- [ ] Parts list includes all components?
 
-### Changing Arm Length
+:::
 
-1. Open Spreadsheet
-2. Change ArmLength from 200 to 250
-3. Recompute (Ctrl+R)
-4. All arms and mechanism update!
+## 🚀 Extension Challenges
 
-### Changing Arm Width
+Ready for more? Try these enhancements:
 
-- Try ArmWidth = 40mm
-- Wider, more robust arms
+<Tabs>
+  <TabItem label="Beginner">
 
-### Changing Stage Count (Conceptual)
+    <Steps>
 
-The StageCount parameter is included for future expansion. To actually implement it would require:
-- Array/pattern features in assembly
-- Or scripting to duplicate parts
+    1. **Add fillets**
 
-For now, it serves as documentation of design intent.
+       Use Fillet tool to round sharp corners (3mm radius)
 
----
+    2. **Add chamfers**
 
-## Learning Outcomes
+       Chamfer the edges of holes for easier pin insertion
 
-By completing this lesson, you have:
+    3. **Create the pins**
 
-- ✅ Designed a symmetric parametric link
-- ✅ Created repeating geometry with multiple instances
-- ✅ Assembled a pin-jointed collapsible mechanism
-- ✅ Used symmetry constraints effectively
-- ✅ Managed multiple copies of the same part
-- ✅ Created assembly documentation with parts list
-- ✅ Understood motion amplification in scissor mechanisms
+       Design separate pin parts (cylinders with heads)
 
----
+    </Steps>
 
-## Design Verification
+</TabItem>
+  <TabItem label="Intermediate">
 
-1. **Does the scissor mechanism collapse and expand smoothly?**
-2. **Are all pin holes aligned correctly?**
-3. **When you change ArmLength, does the mechanism update without errors?**
-4. **Is the base stable (wide enough)?**
-5. **Can you calculate the theoretical lift height based on arm length and angle?**
+    <Steps>
 
----
+    1. **Add a second stage**
 
-## Challenges for Further Practice
+       Use 4 arms total for double lift height
 
-1. **Add a second stage** (4 arms total) for double lift height
-2. **Design a pin** as a separate part (cylinder with head)
-3. **Add a linear actuator** mechanism to drive the scissor action
-4. **Create an exploded view** showing assembly sequence
-5. **Add safety locks** at different height positions
-6. **Calculate and display** mechanical advantage at different angles
+    2. **Create linear actuator mount**
 
----
+       Add base geometry for a screw drive or hydraulic cylinder
 
-## Common Issues and Solutions
+    3. **Design safety locks**
 
-### "Arms don't align at center crossing"
+       Add features for height-locking pins
 
-- **Cause:** Center hole not exactly at midpoint
-- **Solution:** Use Midpoint constraint, not manual positioning
-- **Fix:** Re-constrain center hole to line midpoint
+    </Steps>
 
-### "Platform holes don't match arm holes"
+</TabItem>
+  <TabItem label="Advanced">
 
-- **Cause:** Inconsistent spacing or radius
-- **Solution:** Use same PinRadius parameter for all holes
-- **Fix:** Check all pin holes reference `Spreadsheet.PinRadius`
+    <Steps>
 
-### "Mechanism binds/won't move smoothly"
+    1. **Motion study**
 
-- **Cause:** Over-constrained assembly or interference
-- **Solution:** Check that only base is Fixed, all pins are Axial align
-- **Fix:** Remove redundant constraints
+       Calculate lift height as function of base spacing angle
 
-### "Cannot duplicate ScissorArm"
+    2. **Mechanical advantage analysis**
 
-- **Solution:** In Part Design, use Std_DuplicateSelection or in Assembly workbench use "Add Part" multiple times referencing same part
+       Derive force amplification at different heights
 
----
+    3. **Multi-stage parametric**
 
-## Next Steps
+       Make StageCount parameter actually control number of stages
 
-In the next lesson on **Toggle Clamp Mechanism**, we'll explore:
+    </Steps>
 
-- Over-center mechanisms
-- Mechanical advantage and force amplification
-- Locking geometry
-- Motion limits and clearances
-- Angle-based constraints
+</TabItem>
+</Tabs>
+
+## ❓ Common Issues and Solutions
+
+<Tabs>
+  <TabItem label="Sketch Issues">
+
+    **"Center hole not at midpoint"**
+
+    :::caution[Solution]
+    - Use **Midpoint constraint**, not approximate positioning
+    - Select circle center → Select construction line
+    - Apply Midpoint constraint from toolbar
+    - Verify constraint icon appears on line
+    :::
+
+    **"Rectangle not symmetric"**
+
+    :::caution[Solution]
+    - Use **Symmetric constraint** on edges
+    - Select top edge, bottom edge, then centerline
+    - Order matters: two objects, then reference line
+    - Check that centerline is construction geometry
+    :::
+
+</TabItem>
+  <TabItem label="Parametric Issues">
+
+    **"PinRadius doesn't update with PinDiameter"**
+
+    :::caution[Solution]
+    - Check cell B6 contains formula: `=B5/2`
+    - Verify alias is on B6, not B5
+    - Delete and recreate the formula if needed
+    - Recompute after spreadsheet changes
+    :::
+
+    **"Arms don't scale uniformly"**
+
+    :::caution[Solution]
+    - Verify all dimensions use formulas (ƒx icon visible)
+    - Check for hardcoded values that should be parametric
+    - Ensure both arm instances reference same source part
+    - Try "Mark to Recompute" on body, then Ctrl+R
+    :::
+
+</TabItem>
+  <TabItem label="Assembly Issues">
+
+    **"Arms don't cross properly"**
+
+    :::caution[Solution]
+    - Verify center hole exists on both arms
+    - Check Axial Align constraint on center holes
+    - Ensure arms are oriented correctly (one rises left, one rises right)
+    - May need to flip one arm orientation
+    :::
+
+    **"Platform holes don't match arm holes"**
+
+    :::caution[Solution]
+    - All holes must use same `Spreadsheet.PinRadius`
+    - Check spacing matches collapsed geometry
+    - For single stage: platform holes ~80mm from center
+    - Verify all radius constraints reference parameter
+    :::
+
+    **"Can't add ScissorArm twice"**
+
+    :::caution[Solution]
+    - Use assembly workbench "Add Part" button twice
+    - Or right-click body → "Duplicate Object" before assembly
+    - Assembly4: Use "Insert Link" for same part multiple times
+    - A2plus: Import the same part file twice
+    :::
+
+</TabItem>
+</Tabs>
+
+## 📚 Next Steps
+
+In **Lesson 4: Toggle Clamp Mechanism**, you'll explore:
+
+<CardGrid>
+  <Card title="Over-Center Locking" icon="star">
+    Mechanisms that lock in position geometrically
+  </Card>
+
+  <Card title="Force Amplification" icon="pencil">
+    Mechanical advantage through linkage geometry
+  </Card>
+
+  <Card title="Motion Limits" icon="document">
+    Constraining range and adding hard stops
+  </Card>
+
+  <Card title="Contact Geometry" icon="puzzle">
+    Designing cam surfaces and follower paths
+  </Card>
+</CardGrid>
+
+Each lesson builds on parametric fundamentals while introducing new mechanisms and CAD techniques!
 
 <InArticleAd />
 <ParametricMechanicalCadFreecadComments />
