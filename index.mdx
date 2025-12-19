@@ -124,6 +124,75 @@ By the end of the course, learners will not just know how to use FreeCAD. They w
 
 This mirrors real engineering practice, where CAD is not about drawing shapes, but about building **systems that change correctly**.
 
+## Why FreeCAD Over Alternatives?
+
+This course uses **FreeCAD** instead of commercial CAD (Fusion 360, SolidWorks, Inventor) or free 3D software (Blender) for evidence-based reasons:
+
+### ✅ **Parametric Engineering CAD, Not Mesh Modeling**
+
+**FreeCAD:** True parametric constraint-based CAD for mechanical engineering
+- Designs defined by dimensions, constraints, and relationships
+- Change one parameter → entire design updates correctly
+- Engineering intent preserved (e.g., "holes always concentric," "wall thickness constant")
+
+**Blender:** Free but mesh-based modeling for animation/visual effects
+- Not parametric—moving vertices manually
+- No constraint solver or dimensional control
+- Excellent for art/rendering, wrong tool for mechanical engineering
+
+**Commercial CAD (SolidWorks, Fusion 360):** Parametric, but costly and restrictive (see below)
+
+### ✅ **Freedom & Accessibility**
+
+<CardGrid>
+  <Card title="💰 Zero Cost, Forever" icon="approve-check">
+    **FreeCAD:** Completely free (GPL), no restrictions
+
+    **Commercial alternatives:** Subscription-based pricing models requiring ongoing payments; "free" tiers often have feature restrictions and can be modified or revoked
+  </Card>
+
+  <Card title="🔓 Data Sovereignty" icon="document">
+    **FreeCAD:** Your files, locally stored, no account required
+
+    **Some alternatives:** Cloud-based storage models requiring internet connectivity; your design data resides on vendor servers
+  </Card>
+
+  <Card title="🐧 True Cross-Platform" icon="laptop">
+    **FreeCAD:** Windows, macOS, **Linux**
+
+    **Many alternatives:** Limited to specific operating systems; Linux support often unavailable (critical for ROS, research, embedded systems)
+  </Card>
+
+  <Card title="🐍 Python Scripting" icon="seti:python">
+    Native Python API for computational design—generate gears, lattices, optimization
+
+    Integrates with NumPy, SciPy, matplotlib for engineering computation
+  </Card>
+</CardGrid>
+
+### ✅ **Engineering Capabilities**
+
+- **Parametric Part Design:** Sketch-based features with constraint solver
+- **Assembly Modeling:** Multi-part assemblies with motion constraints
+- **Technical Drawings:** Engineering drawings with dimensions, tolerances, annotations
+- **FEM Analysis:** Built-in finite element analysis (CalculiX integration)
+- **CAM Manufacturing:** Toolpath generation for CNC machining
+- **STEP/IGES/STL Export:** Industry-standard formats for collaboration
+
+**Educational advantages:**
+- ✅ Students use it **after graduation** (no license expiration)
+- ✅ Works in **startups and low-income regions** without budget barriers
+- ✅ No vendor lock-in (Autodesk discontinued 123D Design, Inventor LT, AutoCAD)
+- ✅ Open-source transparency; inspect algorithms, contribute features, community-driven development
+- ✅ Privacy; no telemetry, forced account creation, or data collection
+- ✅ Offline capability; works without internet connection
+
+### ⚠️ **Honest Limitations**
+
+FreeCAD is **actively developed** but less mature than decades-old commercial CAD (SolidWorks since 1995, Inventor since 1999). Some manufacturers' workflows and machines integrate better with commercial CAD file formats and ecosystems. **However:** FreeCAD's STEP/IGES/STL export and standard engineering drawings are sufficient for manufacturing most designs you'll ever build, **provided you understand manufacturers' engineering requirements and communicate tolerances, materials, and processes clearly.** The limitation is rarely the software, but understanding manufacturing constraints.
+
+**This course teaches engineering CAD methodology and manufacturing-aware design, not necessarily vendor-specific buttons.**
+
 ## Software Requirements
 
 <Badge text="FreeCAD 0.21 or later" variant="tip" />
@@ -132,6 +201,8 @@ This mirrors real engineering practice, where CAD is not about drawing shapes, b
 - Free and open-source
 - Cross-platform (Windows, Mac, Linux)
 - Professional-grade parametric 3D CAD
+
+**Note:** The FreeCAD ecosystem includes commercially-backed development efforts such as **Ondsel**, which contributed improvements (topology naming fixes, UI enhancements) back to the FreeCAD core. This demonstrates both community and commercial interest in advancing the platform.
 
 ## Prerequisites
 
