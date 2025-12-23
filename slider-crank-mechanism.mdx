@@ -172,7 +172,7 @@ By completing this lesson, you'll create:
 
 1. **Download FreeCAD 0.21 or later**
 
-   Visit [www.freecad.org](https://www.freecad.org/)
+   Download Instructions [Software Requirements and Download](https://siliconwit.com/education/parametric-mechanical-cad-freecad/#software-requirements)
 
    <Badge text="Free & Open Source" variant="success" />
    <Badge text="Cross-Platform" variant="note" />
@@ -274,6 +274,10 @@ Change these two values → entire mechanism updates automatically!
 
 This is the power of parametric design.
 
+:::tip[Want to experiment with kinematics first?]
+Try our **[interactive slider-crank simulator](https://siliconwit.com/product-development/crank-slider-mechanism-simulator/)** to visualize motion, analyze velocity/acceleration profiles, and download experimental data before building your CAD model.
+:::
+
 </Card>
 
 ### Design Workflow
@@ -319,17 +323,27 @@ By defining parameters **first**, we can reference them throughout our design. T
 
    Save it as `SliderCrank.FCStd`
 
-2. **Switch to Part Design workbench**
+   ```
+   File → Save As... → SliderCrank.FCStd
+   ``` 
+
+2. **Switch to Spreadsheet workbench**
 
    Use the workbench dropdown at top
 
-3. **Insert a spreadsheet**
+3. **Create a spreadsheet**
 
    ```
-   Insert → Spreadsheet
+   Spreadsheet → Create Spreadsheet
    ```
 
    A "Spreadsheet" object appears in the left tree
+
+   <div style={{ display: 'flex', justifyContent: 'center', width: '100%', margin: '1rem 0' }}>
+     <TailwindWrapper>
+       ![FreeCAD Spreadsheet Workbench](./images/crank-slider/freecad-spreadsheet-workbench.png)
+     </TailwindWrapper>
+   </div>
 
 4. **Double-click to open the spreadsheet**
 
@@ -395,7 +409,7 @@ By defining parameters **first**, we can reference them throughout our design. T
   </TabItem>
 </Tabs>
 
-**Close the spreadsheet** when done (click the Close button).
+`Ctrl+S` to **Save the spreadsheet** and then **Close** it when done (click the Close button).
 
 Your parameter foundation is ready!
 
@@ -419,18 +433,17 @@ The crank is a rotating disc with:
 
 1. **Create a Body**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Body** button (or Body → Create body)
+   - Switch to **Part Design workbench**
+   - Click **Create Body** button (or Part Design → Create body)
    - A "Body" object appears in the tree
    - Right-click → Rename → type `Crank`
 
 2. **Create a Sketch**
 
    - Select the "Crank" body in tree
-   - Click **Create Sketch** button
+   - Click **Create Sketch** button (or Sketch → Create Sketch)
    - Dialog asks: Choose a plane
    - Select **XY_Plane**
-   - Click **OK**
 
    You're now in **Sketcher workbench** (automatic switch)
 
@@ -497,7 +510,7 @@ The crank is a rotating disc with:
 
 1. **Draw the outer circle**
 
-   - Click **Circle tool** (or press C)
+   - Click **Circle tool drop down arrow** then click **Create Circle by Center** (or **press 'G' and then 'C' in quick succession**)
    - Click at the **origin** (look for white/yellow dot at center)
    - Move mouse outward and click to complete circle
    - Press **Escape**
@@ -512,7 +525,7 @@ The crank is a rotating disc with:
 3. **Draw the rod pin hole**
 
    - **Circle tool** again
-   - Click somewhere to the **right** of center
+   - Click somewhere to the **right** of center, at the origin horizontal line
    - Draw a small circle
    - Press **Escape**
 
@@ -525,7 +538,7 @@ The crank is a rotating disc with:
 <Tabs>
   <TabItem label="Center Hole">
 
-    **Make shaft hole concentric with origin:**
+    **Make shaft hole concentric with origin (if you did not already *'Click at the origin'* above):**
 
     <Steps>
     1. Click **Coincident constraint** tool
@@ -539,7 +552,7 @@ The crank is a rotating disc with:
   </TabItem>
   <TabItem label="Pin Alignment">
 
-    **Make rod pin horizontally aligned:**
+    **Make rod pin horizontally aligned (if you did not already *'Click at the origin horizontal line'* above):**
 
     <Steps>
     1. Click **Horizontal constraint** tool
@@ -580,10 +593,9 @@ The crank is a rotating disc with:
   <TabItem label="Outer Radius">
 
     <Steps>
-    1. Click **Radius constraint** tool
-    2. Click the **outer circle**
-    3. Dimension appears - type: `40`
-    4. Press **Enter**
+    1. Click the **outer circle**, then **press 'K' and 'R' in quick succession** to activate the **Radius Constraint Dimensioning Tool** (or go to Sketch → Sketcher Constraints → Constrain Radius).
+    2. Type `40`
+    3. Click **OK**.
     </Steps>
 
     Crank disk is now 40mm radius.
@@ -592,10 +604,9 @@ The crank is a rotating disc with:
   <TabItem label="Shaft Hole">
 
     <Steps>
-    1. **Radius constraint** tool
-    2. Click the **inner circle** at origin
-    3. Type: `8`
-    4. Press **Enter**
+    1. Click the **inner circle**, then **press 'K' and 'R' in quick succession**
+    2. Type: `8`
+    3. Press **Enter**
     </Steps>
 
     8mm radius shaft hole created.
@@ -604,10 +615,9 @@ The crank is a rotating disc with:
   <TabItem label="Rod Pin Hole">
 
     <Steps>
-    1. **Radius constraint** tool
-    2. Click the **offset circle**
-    3. Type: `5`
-    4. Press **Enter**
+    1. Click the **offset circle**, then **press 'K' and 'R' in quick succession**
+    2. Type: `5`
+    3. Press **Enter**
     </Steps>
 
     5mm radius pin hole created.
@@ -622,22 +632,17 @@ The crank is a rotating disc with:
     </Card>
 
     <Steps>
-
-    1. Click **Distance constraint** tool
-    2. Click the **origin point**
-    3. Click the **center** of the offset circle
-    4. A dimension dialog appears
-    5. **Don't type a number!**
-    6. Click the small **ƒx** button
-    7. In the formula editor, type: `Spreadsheet.CrankRadius`
-    8. Press **Enter**
-
+    1. Click the **origin point**, then click the **origin point of the Rod Pin Hole circle**.
+    2. **Press 'L'** to activate the **Constraint Horizontal Distance Dimensioning Tool**. **Don't type a number!** 
+    3. Click the small **fx** button and in the formula editor, start typing *Spreadsh...* and `<<Spreadsheet>>` will appear. Then, click it. Next, start typing the alias *Crank...* and `CrankRadius` will appear. Click it.
+    4. Click **OK** and you will see `Radius: 30.00`.
+    5. Click **OK** again.
     </Steps>
 
     **Magic!** The dimension now shows "30mm" and will update whenever you change the spreadsheet!
 
     :::tip[This Is Parametric Design]
-    You just linked a dimension to a parameter. This single step is what separates amateur CAD from professional parametric design. The geometry is now **intelligent** and **controllable**.
+    You just linked a dimension to a parameter. This single step is what separates amateur CAD from professional parametric design. The geometry is now **'intelligent'** and **controllable**.
     :::
 
   </TabItem>
@@ -735,6 +740,7 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
    - Part Design workbench
    - Create Body
    - Rename: `ConnectingRod`
+   - Select `Crank`, right-click, then choose **Hide Selection** to remove the crank obstruction from the next sketch/body
 
 2. **Create Sketch**
 
@@ -743,106 +749,178 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
 
 </Steps>
 
-### Drawing the Rod Profile
+### Drawing the Rod Profile 
 
 <Tabs>
-  <TabItem label="Centerline (Construction)">
+  <TabItem label="Outer Circles">
 
-    **Draw a reference line:**
+    **Create the end profiles:**
 
     <Steps>
-    1. **Line tool** (press L)
-    2. Click at **origin** (0, 0)
-    3. Move horizontally to the right
-    4. Click to place endpoint
+    1. **Circle tool** (press **G, C**)
+    2. Click **anywhere on the left side** of the sketch area and draw the first circle
+    3. Repeat the process **to the right** of the first circle (arbitrary distance) to draw the second circle
+    4. Press **Escape**
+
+    5. Select the **left circle**
+    6. Radius constraint: Press **K, R**
+       - Type: `10` mm  
+       - Enter
+
+    7. **Repeat for right circle:**
+       - **K, R** → Radius = `8` mm
+       - Enter
+    </Steps>
+
+    The two circles define the rod ends. Their spacing will be controlled later using constraints.
+
+  </TabItem>
+
+  <TabItem label="Top & Bottom Lines">
+
+    **Create tangent boundaries:**
+
+    <Steps>
+    1. **Line tool** (press **G, L**)
+    2. Draw a **long horizontal line above** both circles  
+       - Start **well before** the left circle  
+       - End **well after** the right circle
+    3. Press **Escape**
+
+    4. Draw a **second horizontal line below** both circles
+       - Again, extend it past both circles
     5. Press **Escape**
-
-    6. Select the line
-    7. **Make it horizontal:** Press **H** key
-
-    8. **Dimension the length:**
-       - Distance constraint
-       - Click both endpoints
-       - Click **ƒx** button
-       - Type: `Spreadsheet.RodLength`
-       - Enter
-
     </Steps>
 
-    Line is now 100mm long and parametric!
+    These lines will later become tangent to the circles and trimmed to form the rod body.
 
   </TabItem>
-  <TabItem label="End Holes">
 
-    **Add circles at both ends:**
+  <TabItem label="Tangent Constraints & Trim">
+
+    **Constrain and clean geometry:**
 
     <Steps>
+    1. **Apply tangent constraints**:
+       - Click **top line**, then **left circle arc**, press **T**
+       - Repeat for:
+         - Top line → left circle
+         - Top line → right circle
+         - Bottom line → left circle
+         - Bottom line → right circle  
+       *(4 tangents total)*
 
-    1. **Circle tool**
-    2. Draw circle at **left endpoint** of line
-    3. Escape
-
-    4. **Coincident constraint:**
-       - Circle center → Line left endpoint
-
-    5. **Radius:** `8` mm
-
-    6. **Repeat for right end:**
-       - Circle at right endpoint
-       - Coincident constraint
-       - Radius: `6` mm
-
+    2. **Trim excess geometry**:
+       - Trim tool (**G, T**)
+       - Trim the **overextended ends** of the top and bottom lines (4 trims)
+       - Trim the **inner arcs** of both circles between the lines
+    3. Press **Escape**
     </Steps>
 
-    Different radii because they connect to different pins!
+    The rod outline is now defined by tangency — strong, clean constraints with minimal dimensions.
 
   </TabItem>
-  <TabItem label="Rod Body">
 
-    **Create the structural beam:**
+  <TabItem label="Alignment & Length">
+
+    **Align and parametrize the sketch:**
 
     <Steps>
+    1. **Align circle centers horizontally**:
+       - Click **left circle center**
+       - Click **right circle center**
+       - Press **H**
 
-    1. **Rectangle tool**
-    2. Draw rectangle enclosing both circles horizontally
-    3. Press Escape
+    2. **Set rod length parametrically**:
+       - Click **left circle center**
+       - Click **right circle center**
+       - Press **L** (horizontal distance)
+       - Click **ƒx**
+       - Enter: `Spreadsheet.RodLength`
+       - OK
 
-    4. **Symmetric constraint:**
-       - Select **top edge** of rectangle
-       - Select **bottom edge** of rectangle
-       - Select the **horizontal centerline**
-       - This centers rectangle about the line!
-
-    5. **Dimension width:**
-       - Distance constraint
-       - Top edge to bottom edge
-       - Type: `16` mm (rod width)
-       - Enter
-
+    3. **Fix left end to origin**:
+       - Click **left circle center**
+       - Click **origin**
+       - Press **C** (coincident)
     </Steps>
 
-    </TabItem>
-  <TabItem label="Check & Finish">
+    The rod length is now fully driven by the spreadsheet and anchored to the origin.
 
-    **Verify and complete:**
+  </TabItem>
+</Tabs>
+
+<Tabs>
+  <TabItem label="Check & Pad">
+
+    **Verify and create solid:**
 
     :::caution[Check Solver]
-    Solver should show: **"Fully constrained"**
+    Solver should report: **"Fully constrained"**
 
-    If not fully constrained:
-    - Missing distance from left endpoint to origin? (Should be 0 via Coincident)
-    - Missing horizontal constraint on centerline?
-    - Missing symmetric constraint on rectangle?
+    If not:
+    - Missing tangent constraint?
+    - Circle centers not horizontally aligned?
+    - Left circle not coincident with origin?
     :::
 
     <Steps>
-    1. Confirm "Fully constrained"
+    1. Confirm **Fully constrained**
     2. **Close sketch**
-    3. **Pad:** Length = `8` mm
+    3. **Pad** → Length = `8` mm
     4. OK
     </Steps>
 
-    **Connecting rod complete!**
+    The outer rod body is complete.
+
+  </TabItem>
+
+  <TabItem label="Inner Holes">
+
+    **Create pin holes using a secondary sketch:**
+
+    <Steps>
+    1. Click the **top face** of the rod
+    2. **Create sketch** (go to *Sketch* → *Create Sketch*)
+
+    3. **Left inner hole**:
+       - **G, C**
+       - Click the **origin**
+       - **K, R** → Radius = `8` mm
+       - OK
+
+    4. **Right inner hole**:
+       - Enable **external geometry** (**G, X**)
+       - Click the **right outer arc**
+       - **G, C**
+       - Click the arc center
+       - **K, R** → Radius = `6` mm
+       - OK
+    </Steps>
+
+    Using external geometry guarantees perfect alignment with the outer profile.
+
+  </TabItem>
+
+  <TabItem label="Hole Feature & Finish">
+
+    **Cut through the body:**
+
+    <Steps>
+    1. Close sketch
+    2. Select **one hole circle sketch**
+       - If hidden, click the **eye icon** or double-click the sketch
+    3. Click **Hole tool**
+       - Depth: **Through all**
+       - Diameter: `R × 2`
+       - OK
+
+    4. **Repeat** for the second hole
+    5. Press **V, F** → View Fit
+    6. **Save**: **Ctrl + S**
+    </Steps>
+
+    **Connecting rod complete and fully parametric!**
 
   </TabItem>
 </Tabs>
@@ -860,21 +938,29 @@ The slider is a block that moves linearly, with a hole for the connecting rod pi
 
 <Steps>
 
-1. **Body:** Create and rename to `Slider`
+1. Hide the `ConnectingRod` by clicking the eye
+2. **Body:** go to *Part Design* → *Create Body*, then rename to `Slider`
 
-2. **Sketch on XY_Plane:**
+3. **Sketch on XY_Plane:**
 
-   - **Rectangle:** Draw centered at origin
-   - **Symmetric constraints:** Center about X and Y axes
-   - **Dimensions:** Width = `40` mm, Height = `30` mm
+   - **Sketch:** Click `Slider`, then go to *Sketch* → *Create Sketch*, click **XY-Plane**
+   - **Rectangle:** Press **G, R**, then click an arbitrary location to draw a rectangle, then **Escape** or **right click**
+   - **Symmetric constraints:** Click **top right corner**, then **bottom left corner**, then **click origin**, then press **S** to center the rectangle about X and Y axes
+   - **Length Dimension:** Click the **bottom left corner**, then the **bottom right corner**, then press **L**, then enter Length = `40` mm 
+   - **Height Dimension:** Click the **bottom left corner**, then the **top left corner**, then press **I**, then enter Height = `30` mm
 
-   - **Circle:** At origin for pin hole
-   - **Coincident:** Circle center to origin
-   - **Radius:** `6` mm
+4. **Check:** Fully constrained, then **close** the sketch
 
-3. **Check:** Fully constrained
+5. **Pad:** Length = `20` mm
 
-4. **Pad:** Length = `20` mm
+6. **Circle:** At origin for pin hole
+
+   - Click the pad and select the top face
+   - Go to *Sketch* → *Create Sketch*
+   - Press **G, C** to draw a circle of an arbitrary radius starting from the **origin** within the slider block, then **right click** or **Escape**
+   - Click the **circle arc**, press **K, R**, then enter radius `10` mm (arbitrary within the block to achieve a fully constrained sketch), and **close** the sketch
+   - Click the **Hole tool**, set depth to **Through all**, and diameter to be `12 mm`, then **OK**
+   - Press **CRTL + S** to save your part design
 
 </Steps>
 
