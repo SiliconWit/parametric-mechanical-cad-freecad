@@ -21,6 +21,8 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
+
+
 Master parametric CAD design by creating a pantograph mechanism: an elegant linkage that scales motion through similar triangle geometry. Learn ratio-driven design and expression-based parametric control in FreeCAD. #FreeCAD #Pantograph #MotionScaling #SimilarTriangles
 
 ## 🎯 Learning Objectives
@@ -35,18 +37,17 @@ By the end of this lesson, you will be able to:
 
 ## 🔧 Engineering Context: Why This Mechanism Matters
 
-
 <InArticleAd />
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+A pantograph is an elegant mechanical linkage that scales motion through similar triangle geometry. It can enlarge, reduce, or exactly copy a path traced by one point as output at another point, with applications ranging from engraving to drafting tools.
+</BionicText>
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
     ![Pantograph Mechanism](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/pantograph-mechanism.gif)
   </TailwindWrapper>
 </div>
-
-<BionicText method="advanced" intensity="medium" class="highlight">
-A pantograph is an elegant mechanical linkage that scales motion through similar triangle geometry. It can enlarge, reduce, or exactly copy a path traced by one point as output at another point, with applications ranging from engraving to drafting tools.
-</BionicText>
 
 ### Real-World Applications
 
@@ -67,8 +68,8 @@ The pantograph appears in diverse engineering applications:
 
 ## 📚 Mechanism Fundamentals
 
-
 <InArticleAd />
+
 
 ### Pantograph Principle
 
@@ -138,8 +139,8 @@ The pantograph appears in diverse engineering applications:
 
 ## 🎯 What You'll Build
 
-
 <InArticleAd />
+
 
 By completing this lesson, you'll create:
 
@@ -163,8 +164,8 @@ By completing this lesson, you'll create:
 
 ## 🚀 Part 1: Getting Started with FreeCAD
 
-
 <InArticleAd />
+
 
 ### Installing FreeCAD
 
@@ -222,8 +223,8 @@ By completing this lesson, you'll create:
 
 ## 💡 Part 2: Parametric Design Strategy
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 The pantograph is our first ratio-driven mechanism where geometric relationships are more complex. We'll use a master sketch to define the kinematic layout, then reference it from all parts. This ensures geometric consistency and simplifies the parametric control to just two values: base length and scaling ratio.
@@ -316,8 +317,8 @@ This is parametric design at its most powerful.
 
 ## 📊 Part 3: Creating the Parameter Spreadsheet
 
-
 <InArticleAd />
+
 
 ### Building Your Parameter Table with Formulas
 
@@ -438,8 +439,8 @@ Your expression-based parameter foundation is ready!
 
 ## 🎨 Part 4: Creating the Master Sketch
 
-
 <InArticleAd />
+
 
 ### Design Intent
 
@@ -674,8 +675,8 @@ Think of it as the "blueprint" that all parts will reference.
 
 ## 🔩 Part 5: Creating Link OA
 
-
 <InArticleAd />
+
 
 ### Design Intent
 
@@ -737,8 +738,8 @@ Link from fixed pivot O to moving pivot A:
 
 ## 🔗 Part 6: Creating Link OB
 
-
 <InArticleAd />
+
 
 Same process as Link OA, but reference points O and B:
 
@@ -764,8 +765,8 @@ Same process as Link OA, but reference points O and B:
 
 ## 📏 Part 7: Creating Link AB
 
-
 <InArticleAd />
+
 
 The connecting link between moving pivots A and B:
 
@@ -791,8 +792,8 @@ The connecting link between moving pivots A and B:
 
 ## ✏️ Part 8: Creating Input Arm (OI)
 
-
 <InArticleAd />
+
 
 ### Design Intent
 
@@ -838,8 +839,8 @@ This arm extends from O through A all the way to I (input stylus):
 
 ## 🎯 Part 9: Creating Output Arm (OP)
 
-
 <InArticleAd />
+
 
 This arm extends from O through B to P (output tracer).
 
@@ -869,8 +870,8 @@ This arm extends from O through B to P (output tracer).
 
 ## 🏗️ Part 10: Creating the Base
 
-
 <InArticleAd />
+
 
 ### Design Intent
 
@@ -922,8 +923,8 @@ Fixed mounting plate providing:
 
 ## 🧩 Part 11: Assembly
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 Assembly is where the pantograph comes to life! With six separate parts all sharing a common pivot point at O, proper constraint strategy is critical. We'll use axial alignment to create revolute joints while maintaining the parallelogram geometry.
@@ -1085,8 +1086,8 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
 
 ## ✅ Part 12: Verifying the Scaling Ratio
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 The true test of a pantograph is its scaling accuracy. We'll verify both the geometric construction and the parametric control to ensure the mechanism works correctly at any scaling ratio.
@@ -1198,8 +1199,8 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
 ## 📐 Part 13: Technical Drawing
 
-
 <InArticleAd />
+
 
 ### Creating Professional Documentation
 
@@ -1254,8 +1255,8 @@ You now have professional documentation for your parametric pantograph!
 
 ## 🔬 Part 14: Testing Parametric Control
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 This is where expression-based parametric design really shines. Watch as a single parameter change recalculates all dependent dimensions and updates the entire mechanism automatically.
@@ -1373,8 +1374,8 @@ This is where expression-based parametric design really shines. Watch as a singl
 
 ## 🎓 Learning Outcomes
 
-
 <InArticleAd />
+
 
 By completing this lesson, you have:
 
@@ -1391,8 +1392,8 @@ By completing this lesson, you have:
 
 ## Design Verification
 
-
 <InArticleAd />
+
 
 1. **Does the output point move smoothly as input moves?**
 2. **Is the scaling ratio correct? (Test with measurements)**
@@ -1404,8 +1405,8 @@ By completing this lesson, you have:
 
 ## Mathematical Verification
 
-
 <InArticleAd />
+
 
 ### Calculating Output Position
 
@@ -1426,8 +1427,8 @@ Test this in your assembly!
 
 ## Challenges for Further Practice
 
-
 <InArticleAd />
+
 
 1. **Design a reduction pantograph** (k = 0.5, output smaller than input)
 2. **Add a stylus holder** at input point (removable, adjustable)
@@ -1440,8 +1441,8 @@ Test this in your assembly!
 
 ## Common Issues and Solutions
 
-
 <InArticleAd />
+
 
 ### ``Output doesn't scale correctly"
 
@@ -1472,8 +1473,8 @@ Test this in your assembly!
 
 ## Next Steps
 
-
 <InArticleAd />
+
 
 In the next lesson on **Cam and Follower Mechanism**, we'll explore:
 
@@ -1482,6 +1483,8 @@ In the next lesson on **Cam and Follower Mechanism**, we'll explore:
 - Rise-dwell-return profiles
 - Contact-driven motion
 - Datum axes and reference geometry
+
+
 
 <InArticleAd />
 <ParametricMechanicalCadFreecadComments />

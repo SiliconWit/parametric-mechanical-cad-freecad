@@ -21,6 +21,8 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
+
+
 Master parametric CAD design by creating a four-bar linkage mechanism, one of engineering's most fundamental and versatile planar mechanisms. Learn master sketch techniques and Grashof's Theorem through hands-on design. #FreeCAD #FourBarLinkage #GrashofTheorem #MasterSketch
 
 ## 🎯 Learning Objectives
@@ -35,18 +37,17 @@ By the end of this lesson, you will be able to:
 
 ## 🔧 Engineering Context: Why This Mechanism Matters
 
-
 <InArticleAd />
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+The four-bar linkage is one of the simplest yet most versatile planar mechanisms in mechanical engineering. It forms the backbone of countless mechanical systems, from vehicle suspensions to robotic arms, and understanding its design is fundamental to mechanism synthesis.
+</BionicText>
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
     ![Four-Bar Linkage Mechanism](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/four-bar-linkage-mechanism.gif)
   </TailwindWrapper>
 </div>
-
-<BionicText method="advanced" intensity="medium" class="highlight">
-The four-bar linkage is one of the simplest yet most versatile planar mechanisms in mechanical engineering. It forms the backbone of countless mechanical systems, from vehicle suspensions to robotic arms, and understanding its design is fundamental to mechanism synthesis.
-</BionicText>
 
 ### Real-World Applications
 
@@ -67,8 +68,8 @@ The four-bar linkage appears in countless engineering applications:
 
 ## 📚 Mechanism Fundamentals
 
-
 <InArticleAd />
+
 
 ### Components and Motion
 
@@ -152,8 +153,8 @@ This is a **Grashof Crank-Rocker** configuration! Link 2 (crank) can rotate full
 
 ## 🎯 What You'll Build
 
-
 <InArticleAd />
+
 
 By completing this lesson, you'll create:
 
@@ -177,8 +178,8 @@ Professional documentation for manufacturing linkage plates
 
 ## 💡 Parametric Design Strategy
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 We'll use a master sketch approach: defining the complete kinematic layout once, then referencing it from all parts. This is how professionals design mechanisms where geometric relationships between parts are more critical than individual part dimensions.
@@ -231,8 +232,8 @@ By defining the **kinematic layout** before individual part geometry, we ensure 
 
 ## 📊 Part 3: Creating the Parameter Spreadsheet
 
-
 <InArticleAd />
+
 
 ### Building Your Parameter Table
 
@@ -347,8 +348,8 @@ Your parameter foundation is ready!
 
 ## 🔧 Part 4: Creating the Master Sketch
 
-
 <InArticleAd />
+
 
 ### What is a Master Sketch?
 
@@ -570,8 +571,8 @@ You now have the kinematic foundation for your entire four-bar linkage mechanism
 
 ## 🔩 Part 5: Creating Link 1 (Ground Link)
 
-
 <InArticleAd />
+
 
 ### Design Intent
 
@@ -715,8 +716,8 @@ You now have a parametric ground link that references the master sketch for join
 
 ## 🔄 Part 6: Creating Link 2 (Crank)
 
-
 <InArticleAd />
+
 
 ### Quick Creation Process
 
@@ -754,8 +755,8 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
 
 ## 🔄 Part 7: Creating Link 3 (Coupler)
 
-
 <InArticleAd />
+
 
 ### Quick Creation Process
 
@@ -781,8 +782,8 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
 
 ## 🔄 Part 8: Creating Link 4 (Follower)
 
-
 <InArticleAd />
+
 
 ### Quick Creation Process
 
@@ -808,8 +809,8 @@ You now have four parametric linkage plates, all referencing the same master ske
 
 ## 🧩 Part 9: Assembly
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 Assembly is where your individual linkage plates come together as a functioning mechanism. By applying pin joint constraints, you'll see Grashof's Theorem in action as the crank rotates and the follower oscillates!
@@ -933,8 +934,8 @@ You're witnessing a **Crank-Rocker mechanism**! Link 2 (shortest adjacent to gro
 
 ## 📐 Part 10: Technical Drawing
 
-
 <InArticleAd />
+
 
 ### Creating Professional Documentation
 
@@ -980,8 +981,8 @@ This drawing could be sent directly to a machine shop for manufacturing! You've 
 
 ## ✅ Part 11: Testing Parametric Control
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 This is the moment of truth! A truly parametric mechanism updates correctly when you change parameters. Let's verify your design is intelligent, test Grashof's Theorem, and explore different linkage configurations.
@@ -1085,8 +1086,8 @@ Everything should update cleanly!
 
 ## 🎓 Learning Outcomes
 
-
 <InArticleAd />
+
 
 **Congratulations!** By completing this lesson, you have:
 
@@ -1120,8 +1121,8 @@ Built intelligent, reconfigurable design
 
 ## 🔍 Design Verification Checklist
 
-
 <InArticleAd />
+
 
 Use this checklist to verify your design:
 
@@ -1153,8 +1154,8 @@ Use this checklist to verify your design:
 
 ## 🚀 Extension Challenges
 
-
 <InArticleAd />
+
 
 Ready for more? Try these enhancements:
 
@@ -1224,8 +1225,8 @@ Ready for more? Try these enhancements:
 
 ## ❓ Common Issues and Solutions
 
-
 <InArticleAd />
+
 
 <Tabs>
 <TabItem label="Assembly Issues">
@@ -1284,8 +1285,8 @@ Ready for more? Try these enhancements:
 
 ## 📚 Next Steps
 
-
 <InArticleAd />
+
 
 In **Lesson 3: Scissor Lift Mechanism**, you'll explore:
 
@@ -1308,6 +1309,8 @@ Understanding forces in pin-jointed structures
 </CardGrid>
 
 Each lesson builds on the parametric CAD fundamentals while introducing new mechanism types and advanced design techniques!
+
+
 
 <InArticleAd />
 <ParametricMechanicalCadFreecadComments />

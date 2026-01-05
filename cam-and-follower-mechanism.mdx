@@ -21,6 +21,8 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
   contributors={frontmatter.contributors}
 />
 
+
+
 Master parametric CAD design by creating a cam and follower mechanism: one of the most sophisticated motion control systems in mechanical engineering. Learn to program precise motion through geometry. #FreeCAD #CamDesign #FollowerMotion #ProgrammedMotion
 
 ## 🎯 Learning Objectives
@@ -35,18 +37,17 @@ By the end of this lesson, you will be able to:
 
 ## 🔧 Engineering Context: Why This Mechanism Matters
 
-
 <InArticleAd />
+
+<BionicText method="advanced" intensity="medium" class="highlight">
+Cam and follower mechanisms convert continuous rotary motion into precisely controlled reciprocating or oscillating motion. They're fundamental to timing and sequencing in mechanical systems, with the cam profile acting as a geometric program that defines the follower's motion.
+</BionicText>
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
     ![Cam and Follower Mechanism](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/cam-and-follower-mechanism.gif)
   </TailwindWrapper>
 </div>
-
-<BionicText method="advanced" intensity="medium" class="highlight">
-Cam and follower mechanisms convert continuous rotary motion into precisely controlled reciprocating or oscillating motion. They're fundamental to timing and sequencing in mechanical systems, with the cam profile acting as a geometric program that defines the follower's motion.
-</BionicText>
 
 ### Real-World Applications
 
@@ -79,8 +80,8 @@ Cam and follower mechanisms power critical timing and sequencing operations acro
 
 ## 📚 Mechanism Fundamentals
 
-
 <InArticleAd />
+
 
 ### Components and Motion
 
@@ -230,8 +231,8 @@ Where:
 
 ## 🎯 What You'll Build
 
-
 <InArticleAd />
+
 
 By completing this lesson, you'll create:
 
@@ -255,8 +256,8 @@ By completing this lesson, you'll create:
 
 ## 🚀 Part 1: Getting Started
 
-
 <InArticleAd />
+
 
 ### Project Setup
 
@@ -326,8 +327,8 @@ For this lesson, you'll use:
 
 ## 💡 Part 2: Design Strategy
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 Cam design requires thinking in terms of motion profiles first, then translating those profiles into geometry. The cam surface is literally a physical encoding of the desired motion: every point on the profile corresponds to a specific follower position at a specific rotation angle.
@@ -369,8 +370,8 @@ ShaftDiameter = 20 mm
 
 ## 📊 Part 3: Creating the Parameter Spreadsheet
 
-
 <InArticleAd />
+
 
 ### Building Your Parameter Table
 
@@ -499,8 +500,8 @@ Your parametric foundation is ready!
 
 ## 🔧 Part 4: Designing the Cam Profile
 
-
 <InArticleAd />
+
 
 ### Understanding Cam Profile Design
 
@@ -902,8 +903,8 @@ The profile is now a complete closed curve!
 
 ## 🔨 Creating the 3D Cam
 
-
 <InArticleAd />
+
 
 <Steps>
 
@@ -930,8 +931,8 @@ The profile is now a complete closed curve!
 
 ## 🎯 Part 5: Creating the Follower System
 
-
 <InArticleAd />
+
 
 ### Follower Design Intent
 
@@ -1099,8 +1100,8 @@ For more realism:
 
 ## 🏗️ Part 6: Creating the Base Frame
 
-
 <InArticleAd />
+
 
 ### Frame Design Intent
 
@@ -1160,8 +1161,8 @@ The frame provides:
 
 ## 🧩 Part 7: Assembly
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 Assembly transforms individual parts into a functioning mechanism. For the cam and follower, we must establish rotational motion for the cam while constraining the follower to pure vertical translation. The roller maintains contact with the cam surface through careful positioning.
@@ -1329,8 +1330,8 @@ For learning and design verification, manual positioning demonstrates the motion
 
 ## 📐 Part 8: Technical Drawing
 
-
 <InArticleAd />
+
 
 ### Creating Motion Documentation
 
@@ -1532,8 +1533,8 @@ Plot these points and connect smoothly.
 
 ## ✅ Part 9: Testing Parametric Control
 
-
 <InArticleAd />
+
 
 <BionicText method="advanced" intensity="medium" class="highlight">
 The true test of parametric design: change a parameter, watch the entire mechanism update correctly. This is where hours of careful constraint work pay off with instant design iterations.
@@ -1647,8 +1648,8 @@ Watch how the cam profile adapts!
 
 ## 🎓 Learning Outcomes
 
-
 <InArticleAd />
+
 
 **Congratulations!** By completing this lesson, you have:
 
@@ -1682,8 +1683,8 @@ Watch how the cam profile adapts!
 
 ## 🔍 Design Verification Checklist
 
-
 <InArticleAd />
+
 
 Use this checklist to verify your cam design:
 
@@ -1723,8 +1724,8 @@ Use this checklist to verify your cam design:
 
 ## 🚀 Extension Challenges
 
-
 <InArticleAd />
+
 
 Ready for more? Try these enhancements:
 
@@ -1794,8 +1795,8 @@ Ready for more? Try these enhancements:
 
 ## ❓ Common Issues and Solutions
 
-
 <InArticleAd />
+
 
 <Tabs>
 <TabItem label="Profile Issues">
@@ -1862,8 +1863,8 @@ Ready for more? Try these enhancements:
 
 ## 📚 Next Steps
 
-
 <InArticleAd />
+
 
 In the next lesson on **Geneva Mechanism**, you'll explore:
 
@@ -1886,6 +1887,8 @@ In the next lesson on **Geneva Mechanism**, you'll explore:
 </CardGrid>
 
 Each lesson builds your parametric CAD mastery while exploring fundamental mechanisms!
+
+
 
 <InArticleAd />
 <ParametricMechanicalCadFreecadComments />
