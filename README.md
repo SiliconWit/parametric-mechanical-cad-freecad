@@ -12,6 +12,8 @@ sidebar:
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Contributors Welcome](https://img.shields.io/badge/contributors-welcome-orange)
 
+**Read this course at:** [https://siliconwit.com/education/parametric-mechanical-cad-freecad/](https://siliconwit.com/education/parametric-mechanical-cad-freecad/)
+
 A course on engineering design methodology using FreeCAD. Each lesson builds one complete mechanical mechanism with dimensions derived from kinematic analysis, manufacturing constraints, and engineering requirements. Covers slider crank, four-bar linkage, scissor lift, toggle clamp, pantograph, cam and follower, Geneva mechanism, scotch yoke, and Python scripting for advanced CAD.
 
 ## Lessons
