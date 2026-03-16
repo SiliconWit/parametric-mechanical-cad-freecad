@@ -15,7 +15,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -23,9 +23,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master parametric CAD design by creating a scissor lift mechanism, one of engineering's most elegant vertical motion solutions. Learn to design symmetric, repeating structures with FreeCAD's powerful parametric tools. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
+A single hydraulic cylinder gives you limited stroke, typically a few hundred millimeters. A scissor lift multiplies that stroke through cascaded X-shaped links: three stages can turn 100 mm of cylinder travel into 600 mm of vertical rise while keeping the footprint compact and the load centered. The challenge is that each additional stage changes the geometry of every other stage, making manual dimensioning tedious and error-prone. In this lesson you will design a scissor lift in FreeCAD where a single parameter controls the number of stages and every link updates automatically. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -35,7 +35,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Assemble" variant="caution" /> pin-jointed collapsible structures
 5. <Badge text="Manage" variant="note" /> multiple instances of the same parametric part
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -67,7 +67,7 @@ The scissor lift appears everywhere in engineering:
 
 > **Design Challenge:** Given limited horizontal space, how do we achieve significant vertical lifting with a stable, compact mechanism that stores efficiently when collapsed?
 
-## 📚 Mechanism Fundamentals
+## Mechanism Fundamentals
 
 <InArticleAd />
 
@@ -149,7 +149,7 @@ A scissor mechanism consists of crossed links working in harmony:
 </TabItem>
 </Tabs>
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -174,7 +174,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Design Strategy and Planning
+## Part 1: Design Strategy and Planning
 
 <InArticleAd />
 
@@ -227,7 +227,7 @@ This is industrial-strength parametric methodology.
 Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetrically about a centerline and using midpoint constraints, we ensure the mechanism will function correctly no matter how we change the parameters.
 :::
 
-## 📊 Part 2: Creating the Parameter Spreadsheet
+## Part 2: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -351,7 +351,7 @@ Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetri
 
 Your parameter foundation is ready!
 
-## 🔩 Part 3: Creating the Scissor Arm
+## Part 3: Creating the Scissor Arm
 
 <InArticleAd />
 
@@ -712,7 +712,7 @@ The scissor arm is a rectangular link with three holes:
 </TabItem>
 </Tabs>
 
-## 📦 Part 4: Creating the Base Platform
+## Part 4: Creating the Base Platform
 
 <InArticleAd />
 
@@ -870,7 +870,7 @@ The base provides stable mounting for the bottom pivots of the scissor mechanism
 
 **Base platform complete!**
 
-## 🏗️ Part 5: Creating the Top Platform
+## Part 5: Creating the Top Platform
 
 <InArticleAd />
 
@@ -909,7 +909,7 @@ Notice the top platform is almost identical to the base. In professional CAD, yo
 
 **Top platform complete!**
 
-## 🧩 Part 6: Assembly - Single Stage
+## Part 6: Assembly - Single Stage
 
 <InArticleAd />
 
@@ -1071,7 +1071,7 @@ Assembly is where your individual parts come together as a functioning mechanism
 </TabItem>
 </Tabs>
 
-## 📐 Part 7: Technical Drawing
+## Part 7: Technical Drawing
 
 <InArticleAd />
 
@@ -1124,7 +1124,7 @@ Assembly is where your individual parts come together as a functioning mechanism
 
 You now have professional engineering documentation!
 
-## ✅ Part 8: Testing Parametric Control
+## Part 8: Testing Parametric Control
 
 <InArticleAd />
 
@@ -1241,7 +1241,7 @@ This is where parametric design proves its worth! A truly parametric model updat
 </TabItem>
 </Tabs>
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 <InArticleAd />
 
@@ -1276,7 +1276,7 @@ This is where parametric design proves its worth! A truly parametric model updat
 
 **Most importantly:** You've designed a mechanism with repeating geometry using professional parametric methodology!
 
-## 🔍 Design Verification Checklist
+## Design Verification Checklist
 
 <InArticleAd />
 
@@ -1308,7 +1308,7 @@ Use this checklist to verify your design:
 
 :::
 
-## 🚀 Extension Challenges
+## Extension Challenges
 
 <InArticleAd />
 
@@ -1375,7 +1375,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## ❓ Common Issues and Solutions
+## Common Issues and Solutions
 
 <InArticleAd />
 
@@ -1455,7 +1455,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## 📚 Next Steps
+## Next Steps
 
 <InArticleAd />
 

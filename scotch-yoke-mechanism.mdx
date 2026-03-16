@@ -15,7 +15,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -23,9 +23,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master pure sinusoidal motion design with the Scotch yoke mechanism: an elegant solution for converting rotary motion to perfectly sinusoidal linear motion. Learn advanced parametric CAD with slot-driven mechanisms and clearance management. #FreeCAD #ScotchYoke #SinusoidalMotion #HarmonicMotion
+A slider-crank mechanism converts rotation to reciprocating motion, but the output is only approximately sinusoidal, and the approximation worsens at higher crank-to-rod ratios. When you need pure harmonic motion for vibration testing, shaker tables, or precision pumps, even small deviations introduce unwanted harmonics that corrupt measurements or reduce efficiency. The Scotch yoke produces mathematically perfect sinusoidal output because the slider tracks a pin moving in a circular path through a straight slot. In this lesson you will design a Scotch yoke in FreeCAD with slot-driven kinematics and clearance management. #FreeCAD #ScotchYoke #SinusoidalMotion #HarmonicMotion
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -35,7 +35,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Model" variant="caution" /> both rotational and linear sliding motion
 5. <Badge text="Analyze" variant="note" /> simple harmonic motion through CAD verification
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -140,7 +140,7 @@ The acceleration being proportional and opposite to displacement is the hallmark
 </TabItem>
 </Tabs>
 
-## 📚 Mechanism Fundamentals
+## Mechanism Fundamentals
 
 <InArticleAd />
 
@@ -180,7 +180,7 @@ The acceleration being proportional and opposite to displacement is the hallmark
 Sliding contact in the slot creates higher friction than pivoting joints. Consider lubrication provisions, low-friction materials (bronze bushings), or roller bearings for high-cycle applications.
 :::
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -205,7 +205,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Getting Started
+## Part 1: Getting Started
 
 <InArticleAd />
 
@@ -269,7 +269,7 @@ You'll switch between workbenches frequently. Use the dropdown or keyboard short
 </TabItem>
 </Tabs>
 
-## 💡 Part 2: Parametric Design Strategy
+## Part 2: Parametric Design Strategy
 
 <InArticleAd />
 
@@ -323,7 +323,7 @@ Change crank radius → entire mechanism updates with proper clearances maintain
 By using spreadsheet formulas for dependent dimensions (Stroke = 2r, SlotWidth = PinDia + clearance), we ensure geometric relationships remain correct when parameters change. This is intelligent design automation!
 :::
 
-## 📊 Part 3: Creating the Parameter Spreadsheet
+## Part 3: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -476,7 +476,7 @@ Now you can reference `Spreadsheet.CrankRadius` throughout your model!
 
 Your parametric foundation with intelligent formulas is ready!
 
-## 🔩 Part 4: Creating the Crank
+## Part 4: Creating the Crank
 
 <InArticleAd />
 
@@ -717,7 +717,7 @@ We'll create it as a separate pad feature on the crank face.
 
 Crank is complete with rotating disk and eccentric protruding pin!
 
-## 📦 Part 5: Creating the Yoke
+## Part 5: Creating the Yoke
 
 <InArticleAd />
 
@@ -897,7 +897,7 @@ View the yoke in 3D (rotate view) - you should see a block with a horizontal slo
 </TabItem>
 </Tabs>
 
-## 🏗️ Part 6: Creating the Guide Rails
+## Part 6: Creating the Guide Rails
 
 <InArticleAd />
 
@@ -1010,7 +1010,7 @@ You may need to iterate positioning based on your assembly.
 </TabItem>
 </Tabs>
 
-## 🏭 Part 7: Creating the Base Frame
+## Part 7: Creating the Base Frame
 
 <InArticleAd />
 
@@ -1076,7 +1076,7 @@ Fixed mounting base with:
 
 All four parts are now ready for assembly!
 
-## 🧩 Part 8: Assembly
+## Part 8: Assembly
 
 <InArticleAd />
 
@@ -1258,7 +1258,7 @@ If the stroke equals exactly 2 × CrankRadius, your parametric design is working
 </TabItem>
 </Tabs>
 
-## 📐 Part 9: Technical Drawing
+## Part 9: Technical Drawing
 
 <InArticleAd />
 
@@ -1373,7 +1373,7 @@ Professional engineering documentation complete!
 </TabItem>
 </Tabs>
 
-## ✅ Part 10: Testing Parametric Control
+## Part 10: Testing Parametric Control
 
 <InArticleAd />
 
@@ -1514,7 +1514,7 @@ Try different crank radii to understand how stroke affects the mechanism's size 
 </TabItem>
 </Tabs>
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 <InArticleAd />
 
@@ -1549,7 +1549,7 @@ Try different crank radii to understand how stroke affects the mechanism's size 
 
 **Most importantly:** You've mastered advanced parametric control using formulas and designed a mechanism demonstrating perfect simple harmonic motion!
 
-## 🔍 Design Verification Checklist
+## Design Verification Checklist
 
 <InArticleAd />
 
@@ -1581,7 +1581,7 @@ Use this checklist to verify your design:
 
 :::
 
-## 📊 Mathematical Analysis
+## Mathematical Analysis
 
 <InArticleAd />
 
@@ -1683,7 +1683,7 @@ Where:
 </TabItem>
 </Tabs>
 
-## 🚀 Extension Challenges
+## Extension Challenges
 
 <InArticleAd />
 
@@ -1766,7 +1766,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## ❓ Common Issues and Solutions
+## Common Issues and Solutions
 
 <InArticleAd />
 
@@ -1856,7 +1856,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## 📚 Comparison: Scotch Yoke vs Slider-Crank
+## Comparison: Scotch Yoke vs Slider-Crank
 
 <InArticleAd />
 

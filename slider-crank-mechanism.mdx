@@ -16,7 +16,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -24,9 +24,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master parametric CAD design by creating a complete slider crank mechanism, one of engineering's most fundamental motion conversion mechanisms. Learn FreeCAD from scratch through real-world mechanical design. #FreeCAD #SliderCrank #ReciprocatingMotion #KinematicDesign
+Every internal combustion engine, every reciprocating compressor, and every hand-operated water pump relies on the same kinematic chain: a crank, a connecting rod, and a slider. Despite its simplicity, the mechanism's behavior changes significantly when you adjust the crank-to-rod ratio or add an offset, and predicting those changes from a sketch alone is difficult. In this lesson you will build a complete slider-crank mechanism in FreeCAD from scratch, with parametric dimensions that let you explore how link lengths affect stroke, velocity, and mechanical advantage. #FreeCAD #SliderCrank #ReciprocatingMotion #KinematicDesign
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -36,7 +36,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Assemble" variant="caution" /> multi-part mechanisms with motion constraints
 5. <Badge text="Generate" variant="note" /> professional technical drawings for documentation
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -81,7 +81,7 @@ The slider crank appears everywhere in engineering:
 - Connecting rod length affects motion characteristics (l/r ratio critical)
 :::
 
-## 📚 Mechanism Fundamentals
+## Mechanism Fundamentals
 
 <InArticleAd />
 
@@ -150,7 +150,7 @@ A slider crank consists of four elements working together:
   </TabItem>
 </Tabs>
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -175,7 +175,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Getting Started with FreeCAD
+## Part 1: Getting Started with FreeCAD
 
 <InArticleAd />
 
@@ -269,7 +269,7 @@ By completing this lesson, you'll create:
   </TabItem>
 </Tabs>
 
-## 💡 Part 2: Parametric Design Strategy
+## Part 2: Parametric Design Strategy
 
 <InArticleAd />
 
@@ -323,7 +323,7 @@ Try our **[interactive slider-crank simulator](https://siliconwit.com/product-de
 By defining parameters **first**, we can reference them throughout our design. The spreadsheet becomes the single source of truth—change it once, everything updates. This is the foundation of intelligent parametric control.
 :::
 
-## 📊 Part 3: Creating the Parameter Spreadsheet
+## Part 3: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -430,7 +430,7 @@ By defining parameters **first**, we can reference them throughout our design. T
 
 Your parameter foundation is ready!
 
-## 🔩 Part 4: Creating the Crank
+## Part 4: Creating the Crank
 
 <InArticleAd />
 
@@ -737,7 +737,7 @@ The crank is a rotating disc with:
   </TabItem>
 </Tabs>
 
-## 🔗 Part 5: Creating the Connecting Rod
+## Part 5: Creating the Connecting Rod
 
 <InArticleAd />
 
@@ -948,7 +948,7 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
   </TabItem>
 </Tabs>
 
-## 📦 Part 6: Creating the Slider
+## Part 6: Creating the Slider
 
 <InArticleAd />
 
@@ -989,7 +989,7 @@ The slider is a block that moves linearly, with a hole for the connecting rod pi
 
 **Slider complete!**
 
-## 🏗️ Part 7: Creating the Frame
+## Part 7: Creating the Frame
 
 <InArticleAd />
 
@@ -1020,7 +1020,7 @@ The frame provides:
 
 All four parts are now ready for assembly!
 
-## 🧩 Part 8: Assembly
+## Part 8: Assembly
 
 <InArticleAd />
 
@@ -1150,7 +1150,7 @@ Assembly is where your individual parts come together as a functioning mechanism
   </TabItem>
 </Tabs>
 
-## 📐 Part 9: Technical Drawing
+## Part 9: Technical Drawing
 
 <InArticleAd />
 
@@ -1189,7 +1189,7 @@ Assembly is where your individual parts come together as a functioning mechanism
 
 You now have professional engineering documentation!
 
-## ✅ Part 10: Testing Parametric Control
+## Part 10: Testing Parametric Control
 
 <InArticleAd />
 
@@ -1296,7 +1296,7 @@ This is the moment of truth! A truly parametric model updates correctly when you
   </TabItem>
 </Tabs>
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 <InArticleAd />
 
@@ -1331,7 +1331,7 @@ This is the moment of truth! A truly parametric model updates correctly when you
 
 **Most importantly:** You've designed a complete, functional mechanism from scratch using professional parametric CAD methodology!
 
-## 🔍 Design Verification Checklist
+## Design Verification Checklist
 
 <InArticleAd />
 
@@ -1362,7 +1362,7 @@ Use this checklist to verify your design:
 
 :::
 
-## 🚀 Extension Challenges
+## Extension Challenges
 
 <InArticleAd />
 
@@ -1429,7 +1429,7 @@ Ready for more? Try these enhancements:
   </TabItem>
 </Tabs>
 
-## ❓ Common Issues and Solutions
+## Common Issues and Solutions
 
 <InArticleAd />
 
@@ -1495,7 +1495,7 @@ Ready for more? Try these enhancements:
   </TabItem>
 </Tabs>
 
-## 📚 Next Steps
+## Next Steps
 
 <InArticleAd />
 

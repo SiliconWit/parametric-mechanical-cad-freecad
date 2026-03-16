@@ -15,7 +15,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -23,9 +23,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master parametric CAD design by creating a toggle clamp mechanism, one of manufacturing's most essential fixturing devices. Learn FreeCAD through real-world over-center linkage design with self-locking behavior. #FreeCAD #ToggleClamp #OverCenter #SelfLocking
+Holding a workpiece during machining or welding requires a clamp that locks firmly, resists vibration, and releases with one hand. A screw clamp is secure but slow; a spring clamp is fast but weak. A toggle clamp achieves both: the over-center linkage multiplies a small hand force into a large clamping force, then locks mechanically so no continuous effort is needed. In this lesson you will design a toggle clamp in FreeCAD with parametric over-center geometry and self-locking behavior. #FreeCAD #ToggleClamp #OverCenter #SelfLocking
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -35,7 +35,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Control" variant="caution" /> locked and unlocked states via geometric relationships
 5. <Badge text="Generate" variant="note" /> functional drawings showing multiple mechanism positions
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -129,7 +129,7 @@ The magic happens because small angular changes near dead center create large fo
 </TabItem>
 </Tabs>
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -154,7 +154,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Getting Started with FreeCAD
+## Part 1: Getting Started with FreeCAD
 
 <InArticleAd />
 
@@ -202,7 +202,7 @@ FreeCAD organizes tools into **workbenches** - specialized tool collections for 
 Use the dropdown in the top toolbar labeled "Workbench". You'll switch frequently as you work!
 :::
 
-## 💡 Part 2: Parametric Design Strategy
+## Part 2: Parametric Design Strategy
 
 <InArticleAd />
 
@@ -297,7 +297,7 @@ This is the power of parametric design.
 </TabItem>
 </Tabs>
 
-## 📊 Part 3: Creating the Parameter Spreadsheet
+## Part 3: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -432,7 +432,7 @@ Notice B8 uses `=B7/2` to calculate PinRadius from PinDiameter. This ensures the
 
 Your parameter foundation is ready!
 
-## 🔩 Part 4: Creating the Base
+## Part 4: Creating the Base
 
 <InArticleAd />
 
@@ -606,7 +606,7 @@ These holes allow you to bolt the clamp to a workbench or fixture base.
 Press **V** then **F** to fit all in view. Rotate with middle mouse button to see the base from different angles.
 :::
 
-## 🔗 Part 5: Creating the Handle
+## Part 5: Creating the Handle
 
 <InArticleAd />
 
@@ -794,7 +794,7 @@ Both holes are now positioned and sized parametrically!
 </TabItem>
 </Tabs>
 
-## 🔧 Part 6: Creating the Main Link
+## Part 6: Creating the Main Link
 
 <InArticleAd />
 
@@ -854,7 +854,7 @@ This link's geometry **determines the over-center behavior**. Its length relativ
 Unlike the handle, we don't constrain the main link's angle in its sketch. The assembly constraints will determine its position based on how it connects to the handle and clamp arm. This is intentional: the link needs to rotate freely between these connections!
 :::
 
-## 📦 Part 7: Creating the Clamp Arm
+## Part 7: Creating the Clamp Arm
 
 <InArticleAd />
 
@@ -1001,7 +1001,7 @@ This wider pad:
 
 All four parts are now ready for assembly!
 
-## 🧩 Part 8: Assembly
+## Part 8: Assembly
 
 <InArticleAd />
 

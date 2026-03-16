@@ -15,7 +15,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -23,9 +23,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master parametric CAD design by creating a pantograph mechanism: an elegant linkage that scales motion through similar triangle geometry. Learn ratio-driven design and expression-based parametric control in FreeCAD. #FreeCAD #Pantograph #MotionScaling #SimilarTriangles
+Copying a shape at a different scale by hand is slow and error-prone, and resizing with software distorts curves unless you control the transformation carefully. A pantograph uses similar triangles to scale motion mechanically with zero distortion, which is why it has been used for centuries in engraving, map duplication, and precision manufacturing. Changing the pivot position changes the scale ratio, making it a natural fit for parametric CAD where a single dimension drives the entire geometry. In this lesson you will design a pantograph in FreeCAD with expression-based parametric control over the scaling ratio. #FreeCAD #Pantograph #MotionScaling #SimilarTriangles
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -35,7 +35,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Control" variant="caution" /> motion scaling with single parameter (scaling ratio k)
 5. <Badge text="Verify" variant="note" /> geometric relationships through parametric testing
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -67,7 +67,7 @@ The pantograph appears in diverse engineering applications:
 
 > **Design Challenge:** Given a path traced by an input stylus or pointer, reproduce that path at a different scale while maintaining geometric similarity and smooth motion.
 
-## 📚 Mechanism Fundamentals
+## Mechanism Fundamentals
 
 <InArticleAd />
 
@@ -138,7 +138,7 @@ The pantograph appears in diverse engineering applications:
   </TabItem>
 </Tabs>
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -163,7 +163,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Getting Started with FreeCAD
+## Part 1: Getting Started with FreeCAD
 
 <InArticleAd />
 
@@ -222,7 +222,7 @@ By completing this lesson, you'll create:
   </TabItem>
 </Tabs>
 
-## 💡 Part 2: Parametric Design Strategy
+## Part 2: Parametric Design Strategy
 
 <InArticleAd />
 
@@ -316,7 +316,7 @@ This is parametric design at its most powerful.
   </TabItem>
 </Tabs>
 
-## 📊 Part 3: Creating the Parameter Spreadsheet
+## Part 3: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -438,7 +438,7 @@ This is parametric design at its most powerful.
 
 Your expression-based parameter foundation is ready!
 
-## 🎨 Part 4: Creating the Master Sketch
+## Part 4: Creating the Master Sketch
 
 <InArticleAd />
 
@@ -674,7 +674,7 @@ Think of it as the "blueprint" that all parts will reference.
 
 **Master sketch complete!** This defines all key points for the entire mechanism.
 
-## 🔩 Part 5: Creating Link OA
+## Part 5: Creating Link OA
 
 <InArticleAd />
 
@@ -737,7 +737,7 @@ Link from fixed pivot O to moving pivot A:
 
 **Link OA complete!**
 
-## 🔗 Part 6: Creating Link OB
+## Part 6: Creating Link OB
 
 <InArticleAd />
 
@@ -764,7 +764,7 @@ Same process as Link OA, but reference points O and B:
 
 **Link OB complete!**
 
-## 📏 Part 7: Creating Link AB
+## Part 7: Creating Link AB
 
 <InArticleAd />
 
@@ -791,7 +791,7 @@ The connecting link between moving pivots A and B:
 
 **Link AB complete!**
 
-## ✏️ Part 8: Creating Input Arm (OI)
+## Part 8: Creating Input Arm (OI)
 
 <InArticleAd />
 
@@ -838,7 +838,7 @@ This arm extends from O through A all the way to I (input stylus):
 
 **Input Arm complete!**
 
-## 🎯 Part 9: Creating Output Arm (OP)
+## Part 9: Creating Output Arm (OP)
 
 <InArticleAd />
 
@@ -869,7 +869,7 @@ This arm extends from O through B to P (output tracer).
 
 **Output Arm complete!**
 
-## 🏗️ Part 10: Creating the Base
+## Part 10: Creating the Base
 
 <InArticleAd />
 
@@ -922,7 +922,7 @@ Fixed mounting plate providing:
 
 **Base complete!** All parts are now ready for assembly!
 
-## 🧩 Part 11: Assembly
+## Part 11: Assembly
 
 <InArticleAd />
 
@@ -1085,7 +1085,7 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
   </TabItem>
 </Tabs>
 
-## ✅ Part 12: Verifying the Scaling Ratio
+## Part 12: Verifying the Scaling Ratio
 
 <InArticleAd />
 
@@ -1198,7 +1198,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
   </TabItem>
 </Tabs>
 
-## 📐 Part 13: Technical Drawing
+## Part 13: Technical Drawing
 
 <InArticleAd />
 
@@ -1254,7 +1254,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
 You now have professional documentation for your parametric pantograph!
 
-## 🔬 Part 14: Testing Parametric Control
+## Part 14: Testing Parametric Control
 
 <InArticleAd />
 
@@ -1373,7 +1373,7 @@ This is where expression-based parametric design really shines. Watch as a singl
   </TabItem>
 </Tabs>
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 <InArticleAd />
 

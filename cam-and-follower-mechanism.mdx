@@ -15,7 +15,7 @@ import Copyright from '../../../../components/Copyright.astro';
 import BionicText from '../../../../components/BionicText.astro';
 import TailwindWrapper from '../../../../components/TailwindWrapper.jsx';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/components';
+import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/starlight/components';
 
 <UniversalContentContributors 
   contributors={frontmatter.contributors}
@@ -23,9 +23,9 @@ import { Card, CardGrid, Badge, Steps, LinkButton } from '@astrojs/starlight/com
 
 
 
-Master parametric CAD design by creating a cam and follower mechanism: one of the most sophisticated motion control systems in mechanical engineering. Learn to program precise motion through geometry. #FreeCAD #CamDesign #FollowerMotion #ProgrammedMotion
+Gears and linkages convert one type of motion into another, but they cannot produce an arbitrary motion profile. When you need a valve to open slowly, dwell at the top, and snap shut, or a pick-and-place arm to follow a specific acceleration curve, you need a cam. The cam's profile is the motion program carved into metal, and getting that profile wrong means the follower jams, bounces, or wears prematurely. In this lesson you will design a cam and follower mechanism in FreeCAD with parametric control over the rise, dwell, and return segments. #FreeCAD #CamDesign #FollowerMotion #ProgrammedMotion
 
-## 🎯 Learning Objectives
+## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
@@ -35,7 +35,7 @@ By the end of this lesson, you will be able to:
 4. <Badge text="Model" variant="caution" /> both rotating and translating components
 5. <Badge text="Generate" variant="note" /> motion-focused technical documentation
 
-## 🔧 Engineering Context: Why This Mechanism Matters
+## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
@@ -79,7 +79,7 @@ Cam and follower mechanisms power critical timing and sequencing operations acro
   </Card>
 </CardGrid>
 
-## 📚 Mechanism Fundamentals
+## Mechanism Fundamentals
 
 <InArticleAd />
 
@@ -230,7 +230,7 @@ Where:
 </TabItem>
 </Tabs>
 
-## 🎯 What You'll Build
+## What You'll Build
 
 <InArticleAd />
 
@@ -255,7 +255,7 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-## 🚀 Part 1: Getting Started
+## Part 1: Getting Started
 
 <InArticleAd />
 
@@ -326,7 +326,7 @@ For this lesson, you'll use:
 </TabItem>
 </Tabs>
 
-## 💡 Part 2: Design Strategy
+## Part 2: Design Strategy
 
 <InArticleAd />
 
@@ -369,7 +369,7 @@ ShaftDiameter = 20 mm
 - **Cam thickness and shaft:** Standard proportions for rigid, machinable components
 :::
 
-## 📊 Part 3: Creating the Parameter Spreadsheet
+## Part 3: Creating the Parameter Spreadsheet
 
 <InArticleAd />
 
@@ -499,7 +499,7 @@ Now you can use `Spreadsheet.BaseCircleRadius` anywhere in your model!
 
 Your parametric foundation is ready!
 
-## 🔧 Part 4: Designing the Cam Profile
+## Part 4: Designing the Cam Profile
 
 <InArticleAd />
 
@@ -902,7 +902,7 @@ The profile is now a complete closed curve!
 
 </Steps>
 
-## 🔨 Creating the 3D Cam
+## Creating the 3D Cam
 
 <InArticleAd />
 
@@ -930,7 +930,7 @@ The profile is now a complete closed curve!
 
 **Your parametric cam is complete!**
 
-## 🎯 Part 5: Creating the Follower System
+## Part 5: Creating the Follower System
 
 <InArticleAd />
 
@@ -1099,7 +1099,7 @@ For more realism:
 </TabItem>
 </Tabs>
 
-## 🏗️ Part 6: Creating the Base Frame
+## Part 6: Creating the Base Frame
 
 <InArticleAd />
 
@@ -1160,7 +1160,7 @@ The frame provides:
 
 **Frame complete!**
 
-## 🧩 Part 7: Assembly
+## Part 7: Assembly
 
 <InArticleAd />
 
@@ -1329,7 +1329,7 @@ For learning and design verification, manual positioning demonstrates the motion
 </TabItem>
 </Tabs>
 
-## 📐 Part 8: Technical Drawing
+## Part 8: Technical Drawing
 
 <InArticleAd />
 
@@ -1532,7 +1532,7 @@ Plot these points and connect smoothly.
 
 </Steps>
 
-## ✅ Part 9: Testing Parametric Control
+## Part 9: Testing Parametric Control
 
 <InArticleAd />
 
@@ -1647,7 +1647,7 @@ Watch how the cam profile adapts!
 </TabItem>
 </Tabs>
 
-## 🎓 Learning Outcomes
+## Learning Outcomes
 
 <InArticleAd />
 
@@ -1682,7 +1682,7 @@ Watch how the cam profile adapts!
 
 **Most importantly:** You've designed a motion-programming mechanism: geometry that directly controls motion characteristics!
 
-## 🔍 Design Verification Checklist
+## Design Verification Checklist
 
 <InArticleAd />
 
@@ -1723,7 +1723,7 @@ Use this checklist to verify your cam design:
 
 :::
 
-## 🚀 Extension Challenges
+## Extension Challenges
 
 <InArticleAd />
 
@@ -1794,7 +1794,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## ❓ Common Issues and Solutions
+## Common Issues and Solutions
 
 <InArticleAd />
 
@@ -1862,7 +1862,7 @@ Ready for more? Try these enhancements:
 </TabItem>
 </Tabs>
 
-## 📚 Next Steps
+## Next Steps
 
 <InArticleAd />
 
