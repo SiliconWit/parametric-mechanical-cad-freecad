@@ -25,6 +25,10 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 A single hydraulic cylinder gives you limited stroke, typically a few hundred millimeters. A scissor lift multiplies that stroke through cascaded X-shaped links: three stages can turn 100 mm of cylinder travel into 600 mm of vertical rise while keeping the footprint compact and the load centered. The challenge is that each additional stage changes the geometry of every other stage, making manual dimensioning tedious and error-prone. In this lesson you will design a scissor lift in FreeCAD where a single parameter controls the number of stages and every link updates automatically. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
 
+:::tip[Simulate before you build]
+Before designing the 3D model, try your link lengths in the [Scissor Lift Mechanism Simulator](/product-development/scissor-lift-mechanism-simulator/) to verify force requirements, check stability at different heights, and compare actuator types. For structured kinematic and force experiments with Python analysis, see the [Scissor Lift Experiments](/education/mechanism-design-simulation/scissor-lift-experiments).
+:::
+
 ## Learning Objectives
 
 By the end of this lesson, you will be able to:
@@ -1459,6 +1463,10 @@ Ready for more? Try these enhancements:
 
 <InArticleAd />
 
+
+- **Simulate it:** Use the [Scissor Lift Mechanism Simulator](/product-development/scissor-lift-mechanism-simulator/) to analyze the kinematics and forces of the mechanism you just built. Adjust link length, number of stages, actuator type, and load in real time to see height, force, power, and stability plots.
+- **Run experiments:** Follow the [Scissor Lift Experiments](/education/mechanism-design-simulation/scissor-lift-experiments) for nine structured lab exercises with Python data analysis.
+- **Read more:** See the [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/scissor-lift-mechanism-simulator) for a full overview of the simulator's capabilities and downloadable resources.
 
 In **Lesson 4: Toggle Clamp Mechanism**, you'll explore:
 
