@@ -5,7 +5,7 @@ contributors: "sam-macharia,francis-maina,sila-mulwa"
 pubDate: 2025-12-17
 tags: ["freecad", "slider-crank", "kinematics", "parametric-design", "mechanism-design"]
 excerpt: "Design a fully parametric slider crank mechanism while learning FreeCAD fundamentals including sketching, constraints, part design, assemblies, and technical drawings."
-heroImage: "https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/crank-slider-mechanism-design-lesson.png"
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/crank-slider-mechanism-simulator.png"
 ---
 
 import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
@@ -25,6 +25,10 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 Every internal combustion engine, every reciprocating compressor, and every hand-operated water pump relies on the same kinematic chain: a crank, a connecting rod, and a slider. Despite its simplicity, the mechanism's behavior changes significantly when you adjust the crank-to-rod ratio or add an offset, and predicting those changes from a sketch alone is difficult. In this lesson you will build a complete slider-crank mechanism in FreeCAD from scratch, with parametric dimensions that let you explore how link lengths affect stroke, velocity, and mechanical advantage. #FreeCAD #SliderCrank #ReciprocatingMotion #KinematicDesign
+
+:::tip[Simulate before you build]
+Before designing the 3D model, try your link lengths in the [Crank-Slider Mechanism Simulator](/product-development/crank-slider-mechanism-simulator/) to see how the crank-to-rod ratio and offset change the stroke, velocity, and acceleration, and to preview the quick-return behavior. For structured kinematic experiments with Python analysis, see the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
+:::
 
 ## Learning Objectives
 
@@ -290,10 +294,6 @@ We'll control the **entire slider crank mechanism** with just two parameters:
 Change these two values → entire mechanism updates automatically!
 
 This is the power of parametric design.
-
-:::tip[Want to experiment with kinematics first?]
-Try our **[interactive slider-crank simulator](https://siliconwit.com/product-development/crank-slider-mechanism-simulator/)** to visualize motion, analyze velocity/acceleration profiles, and download experimental data before building your CAD model.
-:::
 
 </Card>
 

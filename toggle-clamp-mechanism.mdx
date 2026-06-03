@@ -5,6 +5,7 @@ contributors: "sam-macharia,francis-maina,sila-mulwa"
 pubDate: 2025-12-17
 tags: ["freecad", "toggle-clamp", "over-center", "parametric-design", "mechanism-design"]
 excerpt: "Create a fully parametric toggle clamp with over-center locking behavior, learning mechanical advantage, motion limits, and clearance-aware design."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/toggle-clamp-mechanism-simulator.png"
 ---
 
 import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
@@ -24,6 +25,10 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 Holding a workpiece during machining or welding requires a clamp that locks firmly, resists vibration, and releases with one hand. A screw clamp is secure but slow; a spring clamp is fast but weak. A toggle clamp achieves both: the over-center linkage multiplies a small hand force into a large clamping force, then locks mechanically so no continuous effort is needed. In this lesson you will design a toggle clamp in FreeCAD with parametric over-center geometry and self-locking behavior. #FreeCAD #ToggleClamp #OverCenter #SelfLocking
+
+:::tip[Simulate before you build]
+Before modeling, try your geometry in the [Toggle Clamp Mechanism Simulator](/product-development/toggle-clamp-mechanism-simulator/) to check the over-center force amplification, the lock margin, and the pin and link stresses. For structured experiments with Python analysis, see the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
+:::
 
 ## Learning Objectives
 
@@ -1337,6 +1342,10 @@ As θ approaches 180° (dead center), MA approaches infinity.
 
 <InArticleAd />
 
+
+- **Simulate it:** Use the [Toggle Clamp Mechanism Simulator](/product-development/toggle-clamp-mechanism-simulator/) to analyze the force amplification, lock margin, and pin/link stresses of the clamp you just built, and adjust the geometry in real time.
+- **Run the experiments:** Work through the [Toggle Clamp Experiments](/education/mechanism-design-simulation/toggle-clamp-experiments) for structured, Python-verified exercises.
+- **Read more:** See the [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/) for the full simulator set and downloadable resources.
 
 In the next lesson on **Pantograph Mechanism**, we'll explore:
 

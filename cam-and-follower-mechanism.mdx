@@ -5,6 +5,7 @@ contributors: "sam-macharia,francis-maina,sila-mulwa"
 pubDate: 2025-12-17
 tags: ["freecad", "cam", "follower", "motion-control", "parametric-design", "mechanism-design"]
 excerpt: "Create a fully parametric cam and follower system with custom motion profiles, learning curve-based sketching and contact-driven motion design."
+heroImage: "https://cdn.siliconwit.com/product-development/2d-mechanisms-analyzer/cam-follower-mechanism-simulator.png"
 ---
 
 import ParametricMechanicalCadFreecadComments from '../../../../components/parametric-mechanical-cad-freecad/ParametricMechanicalCadFreecadComments.astro';
@@ -24,6 +25,10 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 Gears and linkages convert one type of motion into another, but they cannot produce an arbitrary motion profile. When you need a valve to open slowly, dwell at the top, and snap shut, or a pick-and-place arm to follow a specific acceleration curve, you need a cam. The cam's profile is the motion program carved into metal, and getting that profile wrong means the follower jams, bounces, or wears prematurely. In this lesson you will design a cam and follower mechanism in FreeCAD with parametric control over the rise, dwell, and return segments. #FreeCAD #CamDesign #FollowerMotion #ProgrammedMotion
+
+:::tip[Simulate before you build]
+Before carving the profile in CAD, try your motion program in the [Cam and Follower Mechanism Simulator](/product-development/cam-follower-mechanism-simulator/) to plot the SVAJ diagrams, check the pressure angle and radius of curvature, and compare motion profiles. For structured experiments with Python analysis, see the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
+:::
 
 ## Learning Objectives
 
@@ -1866,6 +1871,10 @@ Ready for more? Try these enhancements:
 
 <InArticleAd />
 
+
+- **Simulate it:** Use the [Cam and Follower Mechanism Simulator](/product-development/cam-follower-mechanism-simulator/) to analyze the SVAJ chain, pressure angle, radius of curvature, and follower jump of the cam you just built, and adjust the motion profile in real time.
+- **Run the experiments:** Work through the [Cam and Follower Experiments](/education/mechanism-design-simulation/cam-follower-experiments) for structured, Python-verified exercises.
+- **Read more:** See the [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/) for the full simulator set and downloadable resources.
 
 In the next lesson on **Geneva Mechanism**, you'll explore:
 
