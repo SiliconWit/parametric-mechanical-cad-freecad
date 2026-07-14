@@ -24,6 +24,8 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 
+import YouTube from '../../../../components/YouTube.jsx';
+
 A single rotating shaft can drive a windshield wiper, a rocking sprinkler, or a walking robot leg, all with the same basic mechanism: four rigid links and four pin joints. The difference between a smooth, reliable motion and a mechanism that locks up mid-cycle comes down to link length ratios, which is exactly what Grashof's Theorem predicts. In this lesson you will design a four-bar linkage in FreeCAD using master sketch techniques and expression-driven dimensions, then verify Grashof's condition to guarantee full rotation of the input crank. #FreeCAD #FourBarLinkage #GrashofTheorem #MasterSketch
 
 :::tip[Simulate before you build]
@@ -49,11 +51,7 @@ By the end of this lesson, you will be able to:
 The four-bar linkage is one of the simplest yet most versatile planar mechanisms in mechanical engineering. It forms the backbone of countless mechanical systems, from vehicle suspensions to robotic arms, and understanding its design is fundamental to mechanism synthesis.
 </BionicText>
 
-<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-  <TailwindWrapper>
-    ![Four-Bar Linkage Mechanism](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/four-bar-linkage-mechanism.gif)
-  </TailwindWrapper>
-</div>
+<YouTube videoId="F2NXWNiB2B4" title="Four-Bar Linkage (Crank-Rocker) Design in FreeCAD" />
 
 ### Real-World Applications
 
@@ -1089,6 +1087,10 @@ Everything should update cleanly!
 
 </TabItem>
 </Tabs>
+
+:::tip[Instrument it]
+The CAD model predicts how the output rocker swings for a given crank angle; instrument the built linkage to check it. Put a rotary encoder (a magnetic AS5600) on the input crank and another on the output joint, and the measured angle relationship is the real coupler motion, complete with the play your model leaves out. An [ESP32 or STM32](/education/sensor-actuator-interfacing-stm32/) reads both encoders, and the live input-versus-output trace can [sit beside the predicted curve on siliconwit.io](https://siliconwit.io) so wear and a loose joint show up as the two drifting apart.
+:::
 
 ## Learning Outcomes
 

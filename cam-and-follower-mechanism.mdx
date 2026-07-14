@@ -1652,6 +1652,10 @@ Watch how the cam profile adapts!
 </TabItem>
 </Tabs>
 
+:::tip[Instrument it]
+Once you have printed or machined this cam, instrument it to see whether the real follower behaves like the model. Mount a small accelerometer (an ADXL345, or the wider-band ADXL1002 for sharp impacts) on the follower along its line of motion, and add a Hall sensor or encoder for the cam angle so each event lines up with a position; this is exactly the rig in the [cam-follower experiments](/education/mechanism-design-simulation/cam-follower-experiments). Read both with an [ESP32 or STM32](/education/sensor-actuator-interfacing-stm32/) and you can [compare the measured motion against your design on siliconwit.io](https://siliconwit.io) and catch follower jump before it hammers the surface.
+:::
+
 ## Learning Outcomes
 
 <InArticleAd />
