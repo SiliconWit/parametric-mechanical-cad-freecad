@@ -26,7 +26,7 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 import YouTube from '../../../../components/YouTube.jsx';
 
-A single rotating shaft can drive a windshield wiper, a rocking sprinkler, or a walking robot leg, all with the same basic mechanism: four rigid links and four pin joints. The difference between a smooth, reliable motion and a mechanism that locks up mid-cycle comes down to link length ratios, which is exactly what Grashof's Theorem predicts. In this lesson you will design a four-bar linkage in FreeCAD using master sketch techniques and expression-driven dimensions, then verify Grashof's condition to guarantee full rotation of the input crank. #FreeCAD #FourBarLinkage #GrashofTheorem #MasterSketch
+A wiper linkage with one link 20 mm too long does not wipe. The motor turns part of the way, the links pull into one straight line, and the motor stalls or a pin breaks. Four lengths decide whether the driven link can turn a full circle, and one addition checks them before any metal is cut. In this lesson you model a four-bar linkage in FreeCAD from one master sketch that holds the four joint positions, so that every part follows when a length changes, and you test the rule on your own model. #FreeCAD #FourBarLinkage #GrashofTheorem #MasterSketch
 
 :::tip[Simulate before you build]
 Before designing the 3D model, try your link lengths in the [Four-Bar Linkage Simulator](/product-development/four-bar-linkage-simulator/) to verify Grashof classification, check transmission angle quality, and preview the coupler curve. For structured kinematic experiments with Python analysis, see the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
@@ -47,28 +47,13 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The four-bar linkage is one of the simplest yet most versatile planar mechanisms in mechanical engineering. It forms the backbone of countless mechanical systems, from vehicle suspensions to robotic arms, and understanding its design is fundamental to mechanism synthesis.
-</BionicText>
+A four-bar linkage is four rigid links joined by four pin joints into a closed loop, with one link fixed. A motor turns one link, and another link swings or turns in answer. Wiper linkages, excavator arms, folding hinges and vehicle suspensions use it.
 
 <YouTube videoId="F2NXWNiB2B4" title="Four-Bar Linkage (Crank-Rocker) Design in FreeCAD" />
 
-### Real-World Applications
-
-The four-bar linkage appears in countless engineering applications:
-
-:::note[Common Applications]
-- **Vehicle suspension systems** - Independent wheel movement with controlled geometry
-- **Excavator arms and construction equipment** - Coordinated multi-axis motion
-- **Door hinges and folding mechanisms** - Complex opening paths in tight spaces
-- **Windshield wiper linkages** - Converting rotary motor motion to sweeping action
-- **Robotic arm joints** - Precise positioning with parallel motion characteristics
-- **Adjustable desk and chair mechanisms** - Ergonomic height adjustment systems
-:::
-
 ### The Engineering Problem
 
-> **Design Challenge:** Given four rigid links connected by revolute joints with one link fixed, how do we create controlled motion transformation with predictable path characteristics and full rotation capability?
+A motor turns without stopping. An output link must swing back and forth through about 70°, as a wiper blade does. Which four lengths give this motion, and how do you make sure the motor is never stopped by the links?
 
 ## Mechanism Fundamentals
 
@@ -77,162 +62,66 @@ The four-bar linkage appears in countless engineering applications:
 
 ### Components and Motion
 
-A four-bar linkage consists of four elements working together:
+The four links and the four joints, A to D, have these names in the lesson:
 
-<Tabs>
-<TabItem label="Components">
+| Link | Name | Joins | What it does |
+|------|------|-------|--------------|
+| Link 1 | Ground | A to B | Fixed. Carries the two fixed pivots |
+| Link 2 | Crank | A to C | The link the motor drives |
+| Link 3 | Coupler | C to D | Joins the crank to the follower |
+| Link 4 | Follower | B to D | The output link |
 
-**1. Ground Link (Link 1)**
-- Fixed base providing reference frame
-- Contains pivot points for moving links
+### Grashof's Theorem
 
-**2. Input Link/Crank (Link 2)**
-- Driven link, may rotate fully or oscillate
-- Determines mechanism configuration
-
-**3. Coupler (Link 3)**
-- Connects crank and follower
-- Points on coupler trace complex curves
-
-**4. Output Link/Follower (Link 4)**
-- Produces desired motion output
-- May rotate or oscillate depending on design
-
-</TabItem>
-<TabItem label="Grashof's Theorem">
-
-<Card title="🎓 Grashof's Theorem" icon="star">
-
-The behavior depends critically on link length relationships.
+Not every set of four lengths lets the crank turn fully. If the crank and the ground together are too long for the other two links to follow, the coupler and the follower stretch into one straight line and the crank stops. Grashof's theorem tells you from the lengths alone. Call the shortest length $S$, the longest $L$ and the other two $P$ and $Q$, all in mm:
 
 $$S + L \leq P + Q$$
 
-Where:
-- **S** = shortest link length
-- **L** = longest link length
-- **P, Q** = intermediate link lengths
+If this holds, the shortest link can turn fully against its neighbors, and its place in the loop decides the motion:
 
-</Card>
+| The shortest link is | Motion | Name |
+|----------------------|--------|------|
+| The crank (link 2) | The crank turns fully, the follower swings | Crank-rocker |
+| The ground (link 1) | The crank and the follower both turn fully | Double-crank |
+| The coupler (link 3) | The crank and the follower both swing | Double-rocker |
 
-**If the inequality holds (Grashof linkage):**
-- At least one link can rotate 360°
-- Configuration depends on which link is ground
+If it does not hold, no link can turn fully.
 
-**Which link is ground determines behavior:**
-- **Crank-Rocker:** Crank rotates 360°, follower oscillates
-- **Double-Crank (Drag-link):** Both crank and follower rotate 360°
-- **Double-Rocker:** Both crank and follower oscillate
+### Dimensions for this lesson
 
-**If inequality doesn't hold (Non-Grashof):**
-- No link can rotate fully; all oscillate
+The motion asks for a crank-rocker, so the crank must be the shortest link and the sum test must pass. The lesson uses 100, 40, 80 and 70 mm for links 1 to 4:
 
-</TabItem>
-<TabItem label="Design Example">
+1. Shortest and longest: $S + L = 40 + 100 = 140 \text{ mm}$ ✅
+2. The other two: $P + Q = 80 + 70 = 150 \text{ mm}$ ✅
+3. Test: $140 \leq 150$, and the shortest link is the crank, so this is a crank-rocker ✅
 
-**For this lesson, we'll use:**
-
-| Link | Length | Role |
-|------|--------|------|
-| Link 1 (ground) | 100 mm | Fixed base |
-| Link 2 (crank) | 40 mm | Input rotator |
-| Link 3 (coupler) | 80 mm | Connector |
-| Link 4 (follower) | 70 mm | Output oscillator |
-
-**Grashof Check:**
-
-$$S = 40, L = 100, P = 70, Q = 80$$
-
-$$S + L = 140$$
-
-$$P + Q = 150$$
-
-$$140 \leq 150 \checkmark$$
-
-:::tip[Engineering Insight]
-This is a **Grashof Crank-Rocker** configuration! Link 2 (crank) can rotate fully through 360°, while Link 4 (follower) oscillates. This configuration is ideal for applications requiring continuous rotary input to produce oscillating output: exactly what windshield wipers need!
-:::
-
-</TabItem>
-</Tabs>
+With these lengths the follower swings through 69.8°. The margin is only 10 mm: a crank of 50 mm is exactly at the limit, and a crank of 60 mm fails.
 
 ## What You'll Build
 
 <InArticleAd />
 
 
-By completing this lesson, you'll create:
-
-<CardGrid>
-<Card title="Master Sketch Layout" icon="pencil">
-One kinematic sketch controlling all four parts simultaneously
-</Card>
-
-<Card title="Parametric Linkage" icon="puzzle">
-Four interacting parts driven by spreadsheet parameters
-</Card>
-
-<Card title="Working Assembly" icon="setting">
-Pin-jointed mechanism demonstrating Grashof's Theorem
-</Card>
-
-<Card title="Technical Drawing" icon="document">
-Professional documentation for manufacturing linkage plates
-</Card>
-</CardGrid>
+One master sketch, four link plates that take their joint positions from it, an assembly that moves, and a drawing of one plate.
 
 ## Parametric Design Strategy
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-We'll use a master sketch approach: defining the complete kinematic layout once, then referencing it from all parts. This is how professionals design mechanisms where geometric relationships between parts are more critical than individual part dimensions.
-</BionicText>
+In a model where each part has its own sketch, two parts agree only if you type the same numbers in both. A four-bar linkage has four joints, and each joint is shared by two parts. If one hole is 1 mm away from its partner, the loop does not close.
 
-### Our Design Approach
+A **master sketch** holds the four joint positions once, as a stick drawing of the linkage. It makes no solid. Each part copies its two joints from it, and the lengths in the master sketch come from the spreadsheet:
 
-<Card title="🎯 Master Sketch Philosophy" icon="rocket">
+```text
+ ┌─────────────┐    ┌───────────────┐    ┌──────────────┐
+ │ Spreadsheet │    │ Master sketch │    │ Four parts   │
+ │ 4 lengths   ├───►│ joints        ├───►│ two joints   │
+ │             │    │ A, B, C, D    │    │ each         │
+ └─────────────┘    └───────────────┘    └──────────────┘
+```
 
-We'll control the **entire four-bar mechanism** with one master sketch plus four length parameters:
-
-**Link1** = 100 mm
-**Link2** = 40 mm
-**Link3** = 80 mm
-**Link4** = 70 mm
-
-Change the master sketch → all parts update automatically!
-
-This is the power of kinematic-first parametric design.
-
-</Card>
-
-### Design Workflow
-
-<Steps>
-
-1. Create Spreadsheet (parameter table)
-
-2. Create Master Sketch (kinematic layout)
-
-3. Create Link 1 - Ground (reference master)
-
-4. Create Link 2 - Crank (reference master)
-
-5. Create Link 3 - Coupler (reference master)
-
-6. Create Link 4 - Follower (reference master)
-
-7. Assemble with pin joints
-
-8. Create technical drawing
-
-9. Test Grashof configurations
-
-</Steps>
-
-:::note[Why Master Sketch First?]
-By defining the **kinematic layout** before individual part geometry, we ensure all parts maintain correct positional relationships. The master sketch becomes the geometric truth: change joint positions once, every part adapts. This is essential for mechanism design where motion paths must remain coordinated.
-:::
+So the order of work is: spreadsheet, master sketch, four links, assembly, drawing, and then tests of the theorem on the model.
 
 ## Part 3: Creating the Parameter Spreadsheet
 
@@ -251,21 +140,15 @@ By defining the **kinematic layout** before individual part geometry, we ensure 
 
    Save it as `FourBarLinkage.FCStd`
 
-2. **Switch to Part Design workbench**
-
-   Use the workbench dropdown at top
+2. **Switch to Spreadsheet workbench**
 
 3. **Insert a spreadsheet**
 
    ```
-   Insert → Spreadsheet
+   Spreadsheet → Create Spreadsheet
    ```
 
-   A "Spreadsheet" object appears in the left tree
-
-4. **Double-click to open the spreadsheet**
-
-   Click on "Spreadsheet" in the tree
+4. **Double-click "Spreadsheet" in the tree to open it**
 
 </Steps>
 
@@ -274,43 +157,23 @@ By defining the **kinematic layout** before individual part geometry, we ensure 
 <Tabs>
 <TabItem label="Setup">
 
-In the spreadsheet, create this table:
+Type this table. The four link lengths are the ones checked above and they set the motion. The last three values are sizes for strength and fit: they do not change the motion.
 
-| Cell | Value | Meaning |
-|------|-------|---------|
-| **A1** | Parameter | Header |
-| **B1** | Value | Header |
-| **C1** | Unit | Header |
-| **A2** | Link1 | Ground link length |
-| **B2** | 100 | Numeric value |
-| **C2** | mm | Unit (documentation) |
-| **A3** | Link2 | Crank length |
-| **B3** | 40 | Numeric value |
-| **C3** | mm | Unit |
-| **A4** | Link3 | Coupler length |
-| **B4** | 80 | Numeric value |
-| **C4** | mm | Unit |
-| **A5** | Link4 | Follower length |
-| **B5** | 70 | Numeric value |
-| **C5** | mm | Unit |
-| **A6** | LinkWidth | Link plate width |
-| **B6** | 20 | Numeric value |
-| **C6** | mm | Unit |
-| **A7** | LinkThickness | Link plate thickness |
-| **B7** | 8 | Numeric value |
-| **C7** | mm | Unit |
-| **A8** | PinRadius | Pin hole radius |
-| **B8** | 4 | Numeric value |
-| **C8** | mm | Unit |
+| | A | B | C |
+|---|---|---|---|
+| **1** | Parameter | Value | Unit |
+| **2** | Link1 | 100 | mm |
+| **3** | Link2 | 40 | mm |
+| **4** | Link3 | 80 | mm |
+| **5** | Link4 | 70 | mm |
+| **6** | LinkWidth | 20 | mm |
+| **7** | LinkThickness | 8 | mm |
+| **8** | PinRadius | 4 | mm |
 
 </TabItem>
 <TabItem label="Creating Aliases">
 
-**Why Aliases?**
-
-Aliases let you reference cells by name instead of "B2", making formulas readable and meaningful.
-
-**Create aliases:**
+FreeCAD knows the cell that holds 100 only as B2. The text in column A is a label for you, and a sketch cannot use it. An **alias** gives the cell itself a name, so that a sketch can ask for `Spreadsheet.Link1`.
 
 <Steps>
 
@@ -318,37 +181,14 @@ Aliases let you reference cells by name instead of "B2", making formulas readabl
 2. Right-click → **Properties**
 3. In "Alias" field, type: `Link1`
 4. Click **OK**
-
-5. Repeat for all parameter cells (B2 through B8):
-   - B2: `Link1`
-   - B3: `Link2`
-   - B4: `Link3`
-   - B5: `Link4`
-   - B6: `LinkWidth`
-   - B7: `LinkThickness`
-   - B8: `PinRadius`
+5. Repeat for B3 to B8, each with the name in column A of its row: `Link2`, `Link3`, `Link4`, `LinkWidth`, `LinkThickness`, `PinRadius`
 
 </Steps>
-
-Now you can use `Spreadsheet.Link1` anywhere in your model!
-
-</TabItem>
-<TabItem label="Best Practices">
-
-:::tip[Spreadsheet Best Practices]
-- **Always use aliases** for values you'll reference throughout the model
-- **Include units** in column C for documentation (they're comments, not calculations)
-- **Use descriptive names** (Link1, not L1 or a)
-- **Keep it organized** - group related parameters together
-- **Add notes** in additional columns to document design decisions and Grashof calculations
-:::
 
 </TabItem>
 </Tabs>
 
 **Close the spreadsheet** when done (click the Close button).
-
-Your parameter foundation is ready!
 
 ## Part 4: Creating the Master Sketch
 
@@ -357,16 +197,13 @@ Your parameter foundation is ready!
 
 ### What is a Master Sketch?
 
-<Card title="🎯 Master Sketch Concept" icon="star">
+The master sketch is four lines, one for each link, joined end to end. Three kinds of constraint make it exact, and you met them in the slider crank:
 
-A **master sketch** defines the kinematic layout: where joints are located and how links connect. All parts reference this sketch geometry as their positional truth.
+- **Coincident** joins the end of one line to the end of the next. This is the pin joint.
+- **Distance** gives each line its length from the spreadsheet.
+- **Horizontal** and a coincident point on the origin hold the ground link in place.
 
-**Key Benefits:**
-- Change joint positions once → all parts update
-- Ensures geometric consistency across all links
-- Makes mechanism reconfiguration effortless
-
-</Card>
+A sketch counts the ways in which it can still move as **degrees of freedom**. A normal part sketch must reach zero. This one is different: after the constraints above it keeps exactly one, and that one is the crank angle, the motion of the real linkage.
 
 ### Creating the Master Sketch
 
@@ -380,7 +217,7 @@ A **master sketch** defines the kinematic layout: where joints are located and h
    - Select **XY_Plane**
    - Click **OK**
 
-   This sketch won't belong to a body; it's standalone reference geometry!
+   This sketch does not belong to a body. It only carries the joint positions.
 
 </Steps>
 
@@ -393,7 +230,7 @@ A **master sketch** defines the kinematic layout: where joints are located and h
 
 <Steps>
 
-1. **Line tool** (press L)
+1. **Line tool** (press G, L)
 
 2. Click at **origin** (0, 0)
 
@@ -421,11 +258,7 @@ A **master sketch** defines the kinematic layout: where joints are located and h
 
 </Steps>
 
-:::note[Joint Labels]
-Label this mentally as "ground link" with:
-- **Joint A** (left endpoint at origin)
-- **Joint B** (right endpoint)
-:::
+This is the **ground link**. Its left end, on the origin, is joint **A** and its right end is joint **B**.
 
 </TabItem>
 <TabItem label="Crank (Link 2)">
@@ -434,7 +267,7 @@ Label this mentally as "ground link" with:
 
 <Steps>
 
-1. **Line tool** (L)
+1. **Line tool** (G, L)
 
 2. Start at the **left endpoint** of Link 1 (point A)
 
@@ -467,7 +300,7 @@ This is the **crank**, connecting joints **A** and **C**.
 
 <Steps>
 
-1. **Line tool** (L)
+1. **Line tool** (G, L)
 
 2. Start at **right endpoint** of Link 1 (point B)
 
@@ -492,7 +325,7 @@ This is the **follower**, connecting joints **B** and **D**.
 
 <Steps>
 
-1. **Line tool** (L)
+1. **Line tool** (G, L)
 
 2. Start at free end of Link 2 (point **C**)
 
@@ -507,14 +340,12 @@ This is the **follower**, connecting joints **B** and **D**.
 
 </Steps>
 
-:::tip[Success!]
-You now have a closed four-bar linkage layout! All four links form a connected chain.
-:::
+The four lines now form a closed loop.
 
 </TabItem>
 <TabItem label="Construction Geometry">
 
-**Make sketch reference-only:**
+Construction geometry is a line that guides other geometry and makes no solid. The four lines are a stick drawing, not a part, so mark them as construction:
 
 <Steps>
 
@@ -522,53 +353,38 @@ You now have a closed four-bar linkage layout! All four links form a connected c
    - Press **Ctrl+A** or box-select all lines
 
 2. **Toggle construction geometry**
-   - Press **G** key
+   - Press **G, N**
    - Lines turn blue/dashed
 
 </Steps>
 
-<Card title="🎯 Why Construction Geometry?" icon="star">
-
-**Construction geometry is reference only:**
-- Won't create solid features
-- Parts can reference these lines without inheriting them
-- Perfect for kinematic layouts and design intent
-
-This is the key to master sketch workflows!
-
-</Card>
-
 </TabItem>
 <TabItem label="Finalize">
-
-**Check and close:**
 
 <Steps>
 
 1. **Check constraints:**
 
-   The sketch should be fully constrained. Verify:
+   The solver should report exactly 1 degree of freedom, the crank angle. The count agrees: 3 moving links with 3 freedoms each, less 2 for each of the 4 pin joints, gives $3(4-1) - 2(4) = 1$. Verify:
    - Link 1: horizontal, one end at origin, length ✓
    - Link 2: coincident at A, length ✓
    - Link 3: coincident at C and D, length ✓
    - Link 4: coincident at B, length ✓
 
-2. **Optional: Add angle dimension**
+2. **Add an angle dimension**
 
-   If under-constrained, add angle to Link 2:
+   The parts need one fixed position to copy, so remove the last degree of freedom with an angle on Link 2:
    - Angle constraint
    - Link 2 to horizontal
    - Type: `30` degrees
+
+   To see the linkage in another position later, change this one number.
 
 3. **Close the sketch**
 
    Click **Close** button in toolbar
 
 </Steps>
-
-:::note[Master Sketch Complete!]
-You now have the kinematic foundation for your entire four-bar linkage mechanism. This single sketch will control all four parts!
-:::
 
 </TabItem>
 </Tabs>
@@ -580,15 +396,7 @@ You now have the kinematic foundation for your entire four-bar linkage mechanism
 
 ### Design Intent
 
-<Card title="⚙️ Link 1 Requirements" icon="document">
-
-Link 1 is a rectangular plate with:
-
-- **Two circular holes** at joints A and B for pivot pins
-- **Parametric dimensions** controlled by spreadsheet
-- **References master sketch** for joint positions
-
-</Card>
+Link 1 is a flat plate with a pin hole at joint A and another at joint B. Its sketch does not place the holes with dimensions of its own. It copies the two joint points from the master sketch with the **External geometry** tool, which brings geometry of another sketch into this one as a reference that follows the original.
 
 ### Creating Link 1
 
@@ -616,7 +424,7 @@ Link 1 is a rectangular plate with:
 
 <Steps>
 
-1. **External geometry tool** (press E)
+1. **External geometry tool** (press G, X)
 
 2. Click the **master sketch** in the tree
 
@@ -628,9 +436,7 @@ Link 1 is a rectangular plate with:
 
 </Steps>
 
-:::tip[Purple Reference Geometry]
-The selected points now appear as **purple geometry** in your sketch. These are external references that track the master sketch!
-:::
+The selected points now appear in purple. They follow the master sketch, and you cannot move them here.
 
 </TabItem>
 <TabItem label="Pin Holes">
@@ -639,7 +445,7 @@ The selected points now appear as **purple geometry** in your sketch. These are 
 
 <Steps>
 
-1. **Circle tool** (C)
+1. **Circle tool** (G, C)
 
 2. Draw circle centered at **origin** (joint A)
 
@@ -665,8 +471,6 @@ The selected points now appear as **purple geometry** in your sketch. These are 
 </TabItem>
 <TabItem label="Link Body">
 
-**Create the connecting plate:**
-
 <Steps>
 
 1. **Rectangle tool**
@@ -679,18 +483,22 @@ The selected points now appear as **purple geometry** in your sketch. These are 
    - Select top edge of rectangle
    - Select bottom edge of rectangle
    - Select horizontal centerline between holes
-   - This centers the rectangle on the link axis!
+   - This centers the rectangle on the link axis
 
 5. **Dimension width:**
    - Distance constraint (perpendicular to link)
    - Click **ƒx** → `Spreadsheet.LinkWidth`
 
+6. **Lock the two ends:**
+   - Distance from the center of each hole to the short edge beyond it
+   - Click **ƒx** → `Spreadsheet.LinkWidth / 2`
+
+   Without these two, the solver reports 2 degrees of freedom: each end of the plate can slide. With them the plate is Link1 + LinkWidth long, 120 mm.
+
 </Steps>
 
 </TabItem>
 <TabItem label="Finalize">
-
-**Complete the sketch:**
 
 <Steps>
 
@@ -711,10 +519,6 @@ The selected points now appear as **purple geometry** in your sketch. These are 
 
 </Steps>
 
-:::note[Link 1 Complete!]
-You now have a parametric ground link that references the master sketch for joint positions!
-:::
-
 </TabItem>
 </Tabs>
 
@@ -725,8 +529,10 @@ You now have a parametric ground link that references the master sketch for join
 
 ### Quick Creation Process
 
-:::tip[Pattern Recognition]
-Link 2 follows the **exact same process** as Link 1, but references different joint points from the master sketch!
+Links 2, 3 and 4 repeat the steps of Link 1 with other joint points.
+
+:::caution[These links are not horizontal]
+In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined. The Rectangle tool makes sides that are held horizontal and vertical, so its rectangle cannot follow an inclined link. Draw the outline with four lines, and make the long sides parallel to the line between the two joints.
 :::
 
 <Steps>
@@ -736,10 +542,10 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
 2. **Create Sketch on XY_Plane**
 
 3. **Reference Master Sketch Geometry:**
-   - External geometry tool (E)
+   - External geometry tool (G, X)
    - Select master sketch from tree
    - Click **Link 2 endpoints** (point A and point C)
-   - Purple reference points appear!
+   - Purple reference points appear
 
 4. **Draw the Link:**
    - Circle at point A, radius = `Spreadsheet.PinRadius`
@@ -747,6 +553,7 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
    - Rectangle connecting them
    - Symmetric constraint about Link 2 centerline
    - Width = `Spreadsheet.LinkWidth`
+   - Each end `Spreadsheet.LinkWidth / 2` beyond its hole center
 
 5. **Verify fully constrained and Close sketch**
 
@@ -754,8 +561,6 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
    - Thickness = `Spreadsheet.LinkThickness`
 
 </Steps>
-
-**Link 2 complete!**
 
 ## Part 7: Creating Link 3 (Coupler)
 
@@ -782,8 +587,6 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
 
 </Steps>
 
-**Link 3 complete!**
-
 ## Part 8: Creating Link 4 (Follower)
 
 <InArticleAd />
@@ -807,31 +610,20 @@ Link 2 follows the **exact same process** as Link 1, but references different jo
 
 </Steps>
 
-:::note[All Four Links Complete!]
-You now have four parametric linkage plates, all referencing the same master sketch! Change the master sketch, and all four parts update together.
-:::
-
 ## Part 9: Assembly
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where your individual linkage plates come together as a functioning mechanism. By applying pin joint constraints, you'll see Grashof's Theorem in action as the crank rotates and the follower oscillates!
-</BionicText>
+The master sketch shows the linkage in one position. An assembly joins the four plates with constraints between parts, so that you can drag the crank and watch the motion that the theorem predicts.
+
+:::caution[Which Assembly workbench these steps use]
+These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The names below (Create Assembly, Fixed, Axial Align) are nearest to the **Assembly3** add-on, which says Axial Alignment. A2plus calls the same constraint axisCoincident. FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground Link 1 where this lesson says Fixed, and use a **Revolute** joint where it says Axial Align.
+:::
 
 ### Assembly Strategy
 
-<Card title="🎯 Constraint Plan" icon="rocket">
-
-1. **Link 1 (Ground):** Fixed; provides reference frame
-2. **Link 2 (Crank):** Rotates about joint A
-3. **Link 3 (Coupler):** Pivots at joints C and D
-4. **Link 4 (Follower):** Pivots at joints B and D (oscillates)
-
-All joints use **Axial Align** constraints to allow rotation!
-
-</Card>
+Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation free. So at each joint you line up two hole axes with **Axial Align**, and you never fix one moving link to another.
 
 ### Creating the Assembly
 
@@ -867,13 +659,9 @@ All joints use **Axial Align** constraints to allow rotation!
 
 2. Click **Fixed constraint** button
 
-3. Link 1 is now locked in place (ground reference)
+3. Link 1 is now locked in place. All motion is measured from it
 
 </Steps>
-
-:::note[Why Fix Link 1?]
-Every mechanism needs a ground reference. Link 1 provides the fixed frame from which all other motion is measured. This is fundamental to four-bar linkage analysis!
-:::
 
 </TabItem>
 <TabItem label="Pin Joints">
@@ -913,18 +701,14 @@ Every mechanism needs a ground reference. Link 1 provides the fixed frame from w
 
 1. **Drag Link 2** (the crank) in the assembly view
 
-2. **Observe motion:**
-   - Link 2 should rotate smoothly through 360°
-   - Link 3 follows with complex motion
-   - Link 4 oscillates back and forth!
+2. **Compare with the prediction:**
+   - Link 2 turns through a full 360°
+   - Link 4 swings through about 70° and returns
+   - Link 4 never makes a full turn
 
 </Steps>
 
-:::tip[Grashof's Theorem in Action!]
-You're witnessing a **Crank-Rocker mechanism**! Link 2 (shortest adjacent to ground) rotates fully, while Link 4 (follower) oscillates. This is exactly what Grashof's Theorem predicted!
-:::
-
-**Troubleshooting:**
+This is the crank-rocker that the sum test predicted from the lengths alone.
 
 :::caution[If Mechanism Won't Move]
 - Check that **only Link 1** has Fixed constraint
@@ -979,18 +763,12 @@ You're witnessing a **Crank-Rocker mechanism**! Link 2 (shortest adjacent to gro
 
 </Steps>
 
-:::tip[Professional Documentation]
-This drawing could be sent directly to a machine shop for manufacturing! You've created industry-standard engineering documentation.
-:::
-
 ## Part 11: Testing Parametric Control
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-This is the moment of truth! A truly parametric mechanism updates correctly when you change parameters. Let's verify your design is intelligent, test Grashof's Theorem, and explore different linkage configurations.
-</BionicText>
+Now change lengths and see what the model does. Before each recompute, add the shortest to the longest and compare with the other two, so that you know what to expect.
 
 ### Verification Tests
 
@@ -1015,48 +793,47 @@ This is the moment of truth! A truly parametric mechanism updates correctly when
 
 4. **Observe changes:**
 
-   - Crank is now longer!
-   - Master sketch updates!
-   - All four parts adapt!
-   - Assembly maintains constraints!
+   - The crank line in the master sketch is longer
+   - Joint C has moved, and with it the holes of Link 2 and Link 3
+   - The assembly still closes
 
 </Steps>
 
-✅ **Success!** Your mechanism is parametric!
+One number moved a joint in three objects. Note that 50 mm is exactly the limit, $50 + 100 = 80 + 70$. Set Link2 back to 40 before you test motion.
 
 </TabItem>
 <TabItem label="Test 2: Grashof Configurations">
 
-**Try these link length configurations:**
-
 **Configuration 1: Crank-Rocker (original)**
 
 Link1 = 100, Link2 = 40, Link3 = 80, Link4 = 70
-$$S + L = 140 \leq P + Q = 150 \text{ (Grashof ✓)}$$
+
+$$S + L = 40 + 100 = 140 \leq P + Q = 80 + 70 = 150 \text{ (Grashof ✓)}$$
 
 - Link2 rotates fully 360°
 - Link4 oscillates
 
 **Configuration 2: Double-Rocker**
 
-Link1 = 40, Link2 = 100, Link3 = 80, Link4 = 70
-$$S + L = 140 \leq P + Q = 150 \text{ (Grashof ✓)}$$
+Link1 = 100, Link2 = 80, Link3 = 40, Link4 = 70
 
-- Now Link1 is shortest (but fixed)
-- Both moving links oscillate!
+$$S + L = 40 + 100 = 140 \leq P + Q = 80 + 70 = 150 \text{ (Grashof ✓)}$$
+
+- Now Link3 (the coupler) is shortest
+- Both links joined to ground oscillate, and only the coupler can turn fully
+- If instead the shortest link is the ground (Link1 = 40, Link2 = 100), both Link2 and Link4 rotate fully: a double-crank
 
 **Configuration 3: Non-Grashof**
 
-Link1 = 100, Link2 = 20, Link3 = 80, Link4 = 70
-$$S + L = 120 \leq P + Q = 150 \text{ (Grashof ✓, but barely)}$$
+Link1 = 100, Link2 = 60, Link3 = 80, Link4 = 70
 
-- Try even more extreme: Link1=100, Link2=10
-- Mechanism may lock up!
+$$S + L = 60 + 100 = 160 > P + Q = 80 + 70 = 150 \text{ (not Grashof)}$$
+
+- No link can rotate fully: Link2 only rocks between two limits
+- Compare with Link2 = 50, where $S + L = 150 = P + Q$: the limiting case, in which the links can line up and the mechanism may lock up
 
 </TabItem>
 <TabItem label="Test 3: Extreme Values">
-
-**Push the limits:**
 
 <Steps>
 
@@ -1064,7 +841,7 @@ $$S + L = 120 \leq P + Q = 150 \text{ (Grashof ✓, but barely)}$$
 
 2. Recompute
 
-3. **Entire mechanism scales up!**
+3. The model rebuilds, but check the sums: $60 + 120 = 180$ is more than $100 + 70 = 170$, so this linkage cannot turn fully
 
 </Steps>
 
@@ -1073,16 +850,8 @@ Try different ratios:
 - Short follower: Link4 = 40
 - Balanced: All links ≈ 80mm
 
-Everything should update cleanly!
-
-:::caution[If Updates Fail]
-**Problem:** Some parts don't update
-
-**Check:**
-- Did you use formulas (`Spreadsheet.Link1`) not hardcoded values?
-- Are all sketches fully constrained?
-- Did you reference master sketch with External Geometry tool?
-- Try recomputing individual bodies
+:::caution[When the sketch cannot be solved]
+With Link3 = 150 and the crank at 30°, the loop cannot close. The end of the crank is less than 70 mm from joint B, and links of 150 mm and 70 mm cannot span less than $150 - 70 = 80 \text{ mm}$. The master sketch reports a solver error. The error is correct: the linkage does not exist in that position. Set the crank angle to 60° and it closes.
 :::
 
 </TabItem>
@@ -1092,204 +861,27 @@ Everything should update cleanly!
 The CAD model predicts how the output rocker swings for a given crank angle; instrument the built linkage to check it. Put a rotary encoder (a magnetic AS5600) on the input crank and another on the output joint, and the measured angle relationship is the real coupler motion, complete with the play your model leaves out. An [ESP32 or STM32](/education/sensor-actuator-interfacing-stm32/) reads both encoders, and the live input-versus-output trace can [sit beside the predicted curve on siliconwit.io](https://siliconwit.io) so wear and a loose joint show up as the two drifting apart.
 :::
 
-## Learning Outcomes
-
-<InArticleAd />
-
-
-**Congratulations!** By completing this lesson, you have:
-
-<CardGrid>
-<Card title="✅ Master Sketch Technique" icon="approve-check">
-Created kinematic layout controlling multiple parts
-</Card>
-
-<Card title="✅ Construction Geometry" icon="pencil">
-Used reference-only geometry for design intent
-</Card>
-
-<Card title="✅ External References" icon="star">
-Referenced geometry across multiple sketches
-</Card>
-
-<Card title="✅ Grashof's Theorem" icon="document">
-Applied link length theory in practice
-</Card>
-
-<Card title="✅ Pin-Jointed Assembly" icon="puzzle">
-Assembled four-link mechanism with motion
-</Card>
-
-<Card title="✅ Parametric Mechanism" icon="setting">
-Built intelligent, reconfigurable design
-</Card>
-</CardGrid>
-
-**Most importantly:** You've designed a complete four-bar linkage mechanism using professional kinematic-first methodology!
-
-## Design Verification Checklist
-
-<InArticleAd />
-
-
-Use this checklist to verify your design:
-
-:::note[Verification Questions]
-
-**Mechanism Function:**
-- [ ] Does the mechanism assemble without interference?
-- [ ] Can Link 2 rotate smoothly through 360° (in Crank-Rocker mode)?
-- [ ] Does Link 4 oscillate as expected?
-- [ ] Do all pin joints move freely?
-
-**Parametric Behavior:**
-- [ ] Changing Link1 updates ground link and all references?
-- [ ] Changing Link2 updates crank and motion characteristics?
-- [ ] Master sketch changes propagate to all four parts?
-- [ ] All constraints maintain when parameters change?
-
-**Model Quality:**
-- [ ] All sketches show "Fully constrained"?
-- [ ] No regeneration errors when recomputing?
-- [ ] Assembly moves without binding?
-
-**Grashof Analysis:**
-- [ ] Can you calculate S + L and P + Q for your configuration?
-- [ ] Does observed motion match Grashof prediction?
-- [ ] Can you change to different Grashof configurations?
-
-:::
-
 ## Extension Challenges
 
 <InArticleAd />
 
 
-Ready for more? Try these enhancements:
-
-<Tabs>
-<TabItem label="Beginner">
-
-<Steps>
-
-1. **Add fillets**
-
-   Use Fillet tool to round sharp edges (2mm radius)
-
-2. **Add more parameters**
-
-   Control all dimensions via spreadsheet (currently some are hardcoded)
-
-3. **Create drawings for all four links**
-
-   Generate complete documentation set
-
-</Steps>
-
-</TabItem>
-<TabItem label="Intermediate">
-
-<Steps>
-
-1. **Design connecting pins**
-
-   Create separate pin parts for each joint
-
-2. **Add a coupler point**
-
-   Place a marker on Link 3, observe its path
-
-3. **Create assembly drawing**
-
-   Show full mechanism with dimensions
-
-</Steps>
-
-</TabItem>
-<TabItem label="Advanced">
-
-<Steps>
-
-1. **Plot coupler curves**
-
-   Use Python to trace coupler point paths
-
-2. **Motion study**
-
-   Create animation showing one complete cycle
-
-3. **Design straight-line mechanism**
-
-   Find link ratios that create approximate straight-line motion (Chebyshev linkage)
-
-4. **Add velocity analysis**
-
-   Calculate and plot link angular velocities
-
-</Steps>
-
-</TabItem>
-</Tabs>
+1. Model a pin for each joint as a separate part.
+2. Add a point on Link 3 away from the line C to D, and find its path as the crank turns.
+3. Make drawings of the other three links.
 
 ## Common Issues and Solutions
 
 <InArticleAd />
 
 
-<Tabs>
-<TabItem label="Assembly Issues">
-
-**"Parts don't align in assembly"**
-
-:::caution[Solution]
-- Ensure you referenced the **same master sketch points** in all part sketches
-- Check that pin hole radii are **identical** where links connect
-- Verify External Geometry references are correct
-:::
-
-**"Mechanism is locked/won't move"**
-
-:::caution[Solution]
-- Check that **only Link 1** has Fixed constraint
-- All other links should have **only Axial Align** constraints at pins
-- Too many constraints will over-constrain the system
-- Remove any accidental Fixed constraints on moving parts
-:::
-
-</TabItem>
-<TabItem label="Sketch Issues">
-
-**"Master sketch is under-constrained"**
-
-:::caution[Solution]
-- Each link needs **length dimension**
-- Need one **angle dimension** to set initial configuration
-- One point must be **fixed** (origin)
-- Check solver messages for missing constraints
-:::
-
-**"External geometry not updating"**
-
-:::caution[Solution]
-- Ensure you used **External Geometry tool** (E), not just coincident
-- Master sketch must be **closed** before referencing
-- Try recomputing master sketch first, then parts
-:::
-
-</TabItem>
-<TabItem label="Parametric Issues">
-
-**"Parts don't update with spreadsheet"**
-
-:::caution[Solution]
-- Check you used **formulas** (`Spreadsheet.Link1`), not hardcoded values
-- Verify **aliases** were created in spreadsheet Properties
-- Check dimension shows **ƒx** icon
-- Manually recompute individual bodies
-:::
-
-</TabItem>
-</Tabs>
+| Problem | What to check |
+|---------|---------------|
+| Parts do not line up in the assembly | Every part sketch must take its two points from the same master sketch, with the External Geometry tool (G, X) |
+| The assembly does not move | Only Link 1 is Fixed. Every joint is Axial Align, and no moving link is fixed to another |
+| The master sketch has more than 1 degree of freedom | Each line needs its length, and the left end of Link 1 must be on the origin |
+| A part does not follow the spreadsheet | The dimension must show the ƒx sign. Check that the alias exists |
+| The master sketch gives a solver error after a change | The four lengths cannot close at this crank angle. Check the sums, or change the angle |
 
 ## Next Steps
 
@@ -1300,27 +892,7 @@ Ready for more? Try these enhancements:
 - **Run experiments:** Follow the [Four-Bar Linkage Experiments](/education/mechanism-design-simulation/four-bar-linkage-experiments) for nine structured lab exercises with Python data analysis.
 - **Read more:** See the [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/) for a full overview of the simulator's capabilities and downloadable resources.
 
-In **Lesson 3: Scissor Lift Mechanism**, you'll explore:
-
-<CardGrid>
-<Card title="Repeating Linkages" icon="star">
-Create arrays of identical four-bar units
-</Card>
-
-<Card title="Symmetric Design" icon="pencil">
-Mirror constraints and balanced mechanisms
-</Card>
-
-<Card title="Motion Amplification" icon="rocket">
-How cascading linkages multiply displacement
-</Card>
-
-<Card title="Load Path Analysis" icon="document">
-Understanding forces in pin-jointed structures
-</Card>
-</CardGrid>
-
-Each lesson builds on the parametric CAD fundamentals while introducing new mechanism types and advanced design techniques!
+The next mechanism is the [scissor lift](/education/parametric-mechanical-cad-freecad/scissor-lift-mechanism/). There one arm is modelled once and used several times, and the geometry trades a short push for a tall lift.
 
 
 

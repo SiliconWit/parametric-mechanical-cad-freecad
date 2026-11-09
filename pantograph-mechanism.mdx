@@ -24,49 +24,38 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 
-Copying a shape at a different scale by hand is slow and error-prone, and resizing with software distorts curves unless you control the transformation carefully. A pantograph uses similar triangles to scale motion mechanically with zero distortion, which is why it has been used for centuries in engraving, map duplication, and precision manufacturing. Changing the pivot position changes the scale ratio, making it a natural fit for parametric CAD where a single dimension drives the entire geometry. In this lesson you will design a pantograph in FreeCAD with expression-based parametric control over the scaling ratio. #FreeCAD #Pantograph #MotionScaling #SimilarTriangles
+A sign painter must copy a small drawing onto a board at twice the size. Measured point by point, the work takes hours and every measured point adds a small error. A pantograph does it in one pass: you move a stylus along the small drawing and a pen draws the large one, with every length multiplied by the same ratio. The ratio is fixed by the lengths of four bars and by nothing else. In this lesson you learn which lengths set the ratio, and you model a pantograph in FreeCAD in which one number, the scaling ratio, sizes every bar. #FreeCAD #Pantograph #MotionScaling #SimilarTriangles
 
 ## Learning Objectives
 
 By the end of this lesson, you will be able to:
 
-1. Design mechanisms based on ratio relationships and similar triangle geometry
-2. Implement expressions to link multiple dimensions mathematically
-3. Create master sketch approach for coordinated multi-part design
-4. Control motion scaling with single parameter (scaling ratio k)
-5. Verify geometric relationships through parametric testing
+1. Explain with similar triangles why a pantograph copies at one fixed ratio
+2. Use spreadsheet formulas so that one ratio $k$ sets several lengths
+3. Use a master sketch to give several parts the same hinge points
+4. Count the degrees of freedom of a linkage, and of a sketch
+5. Test the scaling ratio in the assembly and after a change of $k$
 
 ## Engineering Context: Why This Mechanism Matters
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-A pantograph is an elegant mechanical linkage that scales motion through similar triangle geometry. It can enlarge, reduce, or exactly copy a path traced by one point as output at another point, with applications ranging from engraving to drafting tools.
-</BionicText>
-
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
-    ![Pantograph Mechanism](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/pantograph-mechanism.gif)
+    ![Animation of a pantograph made of four wooden bars. One point follows a small red heart, and the end of the longest bar draws the same heart larger in green.](https://cdn.siliconwit.com/education/parametric-mechanical-CAD-with-FreeCAD/pantograph-mechanism.gif)
   </TailwindWrapper>
 </div>
 
+The animation shows the common arrangement, with the fixed pivot at the end of one long bar. The pantograph of this lesson uses the same parallelogram but arranges its bars differently: two links start at the fixed pivot O.
+
 ### Real-World Applications
 
-The pantograph appears in diverse engineering applications:
-
-:::note[Common Applications]
-- **Engraving and routing machines** - Copying patterns at different scales
-- **Drafting tools** - Enlarging or reducing technical drawings
-- **Manufacturing equipment** - Motion scaling in production lines
-- **Educational demonstrators** - Teaching similar triangles and geometry
-- **Robotic manipulators** - Coordinated motion control
-- **Historical devices** - Pre-computer enlargement/reduction tools
-:::
+Pantographs copy patterns in engraving and routing machines, enlarge and reduce drawings, and scale the motion of a hand down to small movements in some manipulators.
 
 ### The Engineering Problem
 
-> **Design Challenge:** Given a path traced by an input stylus or pointer, reproduce that path at a different scale while maintaining geometric similarity and smooth motion.
+> **Design Challenge:** A stylus follows a path. Make a pen draw the same path at another size, with no change of shape.
 
 ## Mechanism Fundamentals
 
@@ -75,66 +64,69 @@ The pantograph appears in diverse engineering applications:
 
 ### Pantograph Principle
 
+The pantograph of this lesson has four bars on a fixed base:
+
+```text
+                              P  pen (output)
+                             ╱
+                            ╱
+       A ─────── I ─────── Q
+      ╱       stylus       ╱
+     ╱        (input)     ╱
+    O ───────────────── B
+    fixed pivot
+```
+
+- **O** is the fixed pivot on the base. **Link OA** and **Link OB** both turn about it.
+- The **input arm** runs from A through I to Q. It is hinged to Link OA at A and carries the stylus at I.
+- The **output arm** runs from B through Q to P. It is hinged to Link OB at B and carries the pen at P.
+- **Q** is the hinge that joins the two arms.
+- O, A, Q and B are the corners of a parallelogram: $AQ = OB$ and $BQ = OA$.
+- No link joins A and B. The part "Creating Link AB" shows that such a link locks the mechanism.
+
+The lengths follow one rule. With a base length $L$ (BaseLength, 100 mm) and a scaling ratio $k$ (ScalingRatio, 2):
+
+$$
+OA = AI = BQ = L \qquad OB = AQ = BP = k \times L
+$$
+
+With these lengths the pen P is always on the straight line from O through the stylus I, and $k$ times as far from O:
+
+$$
+\frac{OP}{OI} = k
+$$
+
+This holds in every position, so P draws the path of I, $k$ times larger.
+
 <Tabs>
-  <TabItem label="Similar Triangles">
+  <TabItem label="Why It Works">
 
-    **Core Geometric Principle:**
+    A parallelogram keeps its opposite sides parallel while it changes shape. So AI stays parallel to OB, and BP stays parallel to OA. Now compare triangle OAI with triangle PBO:
 
-    A pantograph consists of four links forming a parallelogram-like structure with specific length ratios.
+    - The angle at A equals the angle at B, because their sides are parallel in pairs.
+    - The sides around these angles have the same ratio: $OB / AI = k$ and $BP / OA = k$.
 
-    **Key Setup:**
-    - One pivot is fixed (O)
-    - Input point (I) traces a path
-    - Output point (P) is positioned on an extension of link OI
+    Two triangles with an equal angle between sides in the same ratio are similar, so the third sides have that ratio too: $OP = k \times OI$. The equal angles of the two triangles also put P on the line from O through I.
 
-    **Magic Relationship:**
-
-    $$\frac{OP}{OI} = k \text{ (constant ratio)}$$
-
-    This ratio k is the **scaling factor**!
+    The same result with vectors: $\vec{OI} = \vec{OA} + \tfrac{1}{k}\,\vec{OB}$ and $\vec{OP} = \vec{OB} + k\,\vec{OA} = k\,\vec{OI}$.
 
   </TabItem>
   <TabItem label="Scaling Factor">
 
-    <Card title="⚙️ Understanding Scaling Ratio k" icon="setting">
-
-    **k > 1: Enlargement**
-    - Output motion larger than input
-    - Example: k = 2 means output is 2× input
-    - Used for: Enlarging drawings, patterns
-
-    **k = 1: Exact Copy**
-    - 1:1 pantograph
-    - Output exactly matches input
-    - Used for: Duplicating patterns
-
-    **k < 1: Reduction**
-    - Output smaller than input
-    - Example: k = 0.5 means output is half input
-    - Used for: Miniaturization, engraving
-
-    </Card>
+    - **$k > 1$ enlarges.** With $k = 2$ the pen moves twice as far as the stylus.
+    - **$k = 1$ cannot be built.** The points I, Q and P become one point, so the stylus and the pen would need the same hole.
+    - **To reduce,** build with $k = 2$ and exchange the two tools: the stylus at P and the pen at I give a ratio of 0.5.
 
   </TabItem>
-  <TabItem label="Geometric Requirements">
+  <TabItem label="Mobility">
 
-    **Link Arrangement:**
+    A degree of freedom is one independent way in which a mechanism can move. Grübler's equation counts them for a flat mechanism with $n$ bodies (the base included) and $j$ pin joints. Each free body has 3 (two directions and a rotation), and each pin removes 2. Here $n = 5$ (base, two links, two arms) and $j = 5$ (two at O, one each at A, B and Q):
 
-    ```
-    - OA and OB: Two links from fixed pivot O
-    - A and B: Moving pivots
-    - AB: Connecting link
-    - I (input): On link OA extended
-    - P (output): On link OB extended
-    ```
+    $$
+    M = 3(n - 1) - 2j = 3(5 - 1) - 2(5) = 2
+    $$
 
-    **Critical Length Relationships:**
-
-    $$\frac{OA}{OI} = \frac{OB}{OP} = \frac{AB}{IP} = k$$
-
-    :::tip[Why This Works]
-    The parallelogram OAIB ensures that triangles OIA and OPB remain similar as the mechanism moves. This geometric similarity is what maintains the constant scaling ratio throughout the entire range of motion!
-    :::
+    Two degrees of freedom is what a drawing tool needs: the stylus can move left and right, and up and down.
 
   </TabItem>
 </Tabs>
@@ -144,25 +136,7 @@ The pantograph appears in diverse engineering applications:
 <InArticleAd />
 
 
-By completing this lesson, you'll create:
-
-<CardGrid>
-  <Card title="Ratio-Driven Design" icon="pencil">
-    All dimensions controlled by scaling ratio k and base length
-  </Card>
-
-  <Card title="Expression-Based Parts" icon="puzzle">
-    Automatic dimension calculation using spreadsheet formulas
-  </Card>
-
-  <Card title="Master Sketch" icon="document">
-    Single reference sketch controlling all link geometries
-  </Card>
-
-  <Card title="Scalable Mechanism" icon="setting">
-    Change k value, entire pantograph updates automatically
-  </Card>
-</CardGrid>
+You will build a spreadsheet in which formulas calculate every length from BaseLength and ScalingRatio, a master sketch that places the six points, five parts that take their hole positions from that sketch, and an assembly with five pin joints.
 
 ## Part 1: Getting Started with FreeCAD
 
@@ -245,9 +219,11 @@ All other dimensions calculated automatically using expressions!
 
 $$\text{InputLength} = \text{BaseLength} \times \text{ScalingRatio}$$
 
-$$\text{OutputLength} = \text{BaseLength} \times \text{ScalingRatio}^2$$
+$$\text{OutputLength} = \text{BaseLength} \times \text{ScalingRatio}$$
 
 $$\text{CrossLink} = \text{BaseLength} \times \text{ScalingRatio}$$
+
+The short dimensions ($OA$, $AI$, $BQ$) are equal to BaseLength. The long dimensions ($AQ$, $BP$, $OB$) are InputLength, OutputLength and CrossLink.
 
 This is parametric design at its most powerful.
 
@@ -261,18 +237,20 @@ This is parametric design at its most powerful.
     **Our Pantograph Configuration:**
 
     - Fixed pivot O at origin
-    - Scaling ratio $$k = 2:1$$ (output is 2× input)
+    - Scaling ratio $k = 2:1$ (output is $2\times$ input)
     - Input stylus at point I
     - Output tracer at point P
+    - O, I and P always on one straight line, with $OP = k \times OI$
 
     **Link Naming:**
 
     1. **Base** - Fixed ground (mounting plate)
-    2. **Link OA** - From fixed pivot O to moving pivot A
-    3. **Link OB** - From fixed pivot O to moving pivot B
-    4. **Link AB** - Connecting moving pivots A and B
-    5. **Input Arm (OI)** - From O through A to input point I
-    6. **Output Arm (OP)** - From O through B to output point P
+    2. **Link OA** - From fixed pivot O to moving pivot A (length BaseLength)
+    3. **Link OB** - From fixed pivot O to moving pivot B (length CrossLink)
+    4. **Input Arm** - From A through input point I to hinge Q (length InputLength)
+    5. **Output Arm** - From B through hinge Q to output point P (length OutputLength)
+
+    There is no link between A and B. Part 7 shows why.
 
   </TabItem>
   <TabItem label="Build Sequence">
@@ -287,11 +265,11 @@ This is parametric design at its most powerful.
 
     4. Create Link OB
 
-    5. Create Link AB
+    5. Check the mobility (why there is no Link AB)
 
-    6. Create Input Arm (OI)
+    6. Create Input Arm (A to Q, with input point I)
 
-    7. Create Output Arm (OP)
+    7. Create Output Arm (B to P, with hinge Q)
 
     8. Create Base
 
@@ -356,13 +334,13 @@ This is parametric design at its most powerful.
     | **C1** | Unit | Header |
     | **D1** | Formula/Note | Header |
     | **A2** | ScalingRatio | Parameter name |
-    | **B2** | 2 | Numeric value (k) |
+    | **B2** | 2 | Numeric value ($k$) |
     | **C2** | ratio | Unit |
     | **D2** | k (output/input) | Note |
     | **A3** | BaseLength | Parameter name |
     | **B3** | 100 | Numeric value |
     | **C3** | mm | Unit |
-    | **D3** | Length OA = OB | Note |
+    | **D3** | Length OA = AI = BQ | Note |
 
   </TabItem>
   <TabItem label="Calculated Values">
@@ -372,20 +350,26 @@ This is parametric design at its most powerful.
     | Cell | Value | Formula | Meaning |
     |------|-------|---------|---------|
     | **A4** | InputLength | - | Parameter name |
-    | **B4** | =B3*B2 | $$\text{BaseLength} \times k$$ | Auto-calculated! |
+    | **B4** | =B3*B2 | $\text{BaseLength} \times k$ | Auto-calculated! |
     | **C4** | mm | - | Unit |
-    | **D4** | $$OI = \text{BaseLength} \times k$$ | Note |
+    | **D4** | $AQ = \text{BaseLength} \times k$ | - | Note (input arm, A to Q) |
     | **A5** | OutputLength | - | Parameter name |
-    | **B5** | =B3*B2*B2 | $$\text{BaseLength} \times k^2$$ | Auto-calculated! |
+    | **B5** | =B3*B2 | $\text{BaseLength} \times k$ | Auto-calculated! |
     | **C5** | mm | - | Unit |
-    | **D5** | $$OP = \text{BaseLength} \times k^2$$ | Note |
+    | **D5** | $BP = \text{BaseLength} \times k$ | - | Note (output arm, B to P) |
     | **A6** | CrossLink | - | Parameter name |
-    | **B6** | =B3*B2 | $$\text{BaseLength} \times k$$ | Auto-calculated! |
+    | **B6** | =B3*B2 | $\text{BaseLength} \times k$ | Auto-calculated! |
     | **C6** | mm | - | Unit |
-    | **D6** | $$AB = IP = \text{InputLength}$$ | Note |
+    | **D6** | $OB = \text{BaseLength} \times k$ | - | Note (Link OB, O to B) |
+
+    With the default values, BaseLength is 100 mm and the three calculated values are each 200 mm.
 
     :::tip[Expression Power]
     The expressions in column B ensure the similar triangle relationships are maintained automatically! Change BaseLength or ScalingRatio, all dependent values update instantly.
+    :::
+
+    :::caution[Keep k greater than 1]
+    Use a ScalingRatio greater than 1. At exactly 1 the points I, Q and P become one point and the pantograph cannot be built.
     :::
 
   </TabItem>
@@ -450,7 +434,7 @@ Your expression-based parameter foundation is ready!
 
 The master sketch defines the **kinematic layout** of the pantograph:
 
-- All critical points (O, A, B, I, P)
+- All critical points (O, A, B, I, Q, P)
 - All link lengths with parametric control
 - Geometric relationships between components
 
@@ -478,7 +462,7 @@ Think of it as the "blueprint" that all parts will reference.
 
     **The center of rotation:**
 
-    The origin (0, 0) is our fixed pivot point O.
+    The origin $(0, 0)$ is our fixed pivot point O.
 
     No need to draw anything - the origin marker is already there!
 
@@ -490,8 +474,8 @@ Think of it as the "blueprint" that all parts will reference.
     <Steps>
 
     1. **Line tool** (press L)
-    2. Click at **origin** (0, 0)
-    3. Draw at approximately 45° upward-right
+    2. Click at **origin** $(0, 0)$
+    3. Draw at approximately $45^\circ$ upward-right
     4. Click to place endpoint
     5. Press **Escape**
 
@@ -532,86 +516,104 @@ Think of it as the "blueprint" that all parts will reference.
     7. **Add length constraint:**
        - Distance constraint
        - Click the line
-       - ƒx → `Spreadsheet.BaseLength`
+       - ƒx → `Spreadsheet.CrossLink`
        - Enter
 
     </Steps>
 
     Label this endpoint as "B"
 
-  </TabItem>
-  <TabItem label="Cross Link AB">
-
-    **Connecting link:**
-
-    <Steps>
-
-    1. **Line tool**
-    2. Connect point A to point B
-    3. Escape
-
-    4. **Add length constraint:**
-       - Distance constraint
-       - Click the line
-       - ƒx → `Spreadsheet.CrossLink`
-       - Enter
-
-    </Steps>
-
-    This forms triangle OAB - the core parallelogram structure!
+    OA and OB are two sides of the parallelogram. With $k = 2$, OB is 200 mm and OA is 100 mm.
 
   </TabItem>
-  <TabItem label="Input Arm OI">
+  <TabItem label="Input Arm AQ">
 
-    **Extension to input point:**
+    **The arm that carries the input point:**
+
+    The input arm starts at A and is parallel to OB. Draw it as two lines, A to I and I to Q, so that the sketch has a point at I.
 
     <Steps>
 
     1. **Line tool**
     2. Start at **A** (endpoint of OA)
-    3. Draw along the same 45° angle (extending OA)
-    4. Click to place endpoint
-    5. Escape
+    3. Draw horizontally to the right
+    4. Click to place endpoint (this is point I)
+    5. Start a second line at **I** and draw horizontally to the right
+    6. Click to place endpoint (this is point Q), then Escape
 
-    6. **Collinear constraint:**
-       - Select the new line
-       - Select line OA
-       - Apply **Collinear** constraint
-       - This ensures they're on the same line!
+    7. **Make both lines horizontal:**
+       - Select line AI, press **H**
+       - Select line IQ, press **H**
+       - Both lines are now parallel to OB and on one straight line
 
-    7. **Total distance O to I:**
+    8. **Length A to I:**
        - Distance constraint
-       - Click **origin**
-       - Click **far endpoint** (point I)
+       - Click line AI
+       - ƒx → `Spreadsheet.BaseLength`
+       - Enter
+
+    9. **Total distance A to Q:**
+       - Distance constraint
+       - Click **point A**
+       - Click **far endpoint** (point Q)
        - ƒx → `Spreadsheet.InputLength`
        - Enter
 
     </Steps>
 
-  </TabItem>
-  <TabItem label="Output Arm OP">
+    Point I is the input point. With $k = 2$ it is at the middle of AQ.
 
-    **Extension to output point:**
+  </TabItem>
+  <TabItem label="Closing Side BQ">
+
+    **The fourth side of the parallelogram:**
 
     <Steps>
 
     1. **Line tool**
-    2. Start at **B**
-    3. Draw horizontally right (extending OB)
+    2. Click on point **B** (endpoint of OB)
+    3. Click on point **Q** (far endpoint of the input arm)
+    4. Escape
+
+    </Steps>
+
+    Both ends of this line are coincident with points that are already fixed. **Do not add a length or an angle to this line.**
+
+    :::tip[Why No Dimension Here?]
+    AQ is parallel to OB and has the same length ($k \times \text{BaseLength}$). So OAQB is already a parallelogram, and BQ is already parallel to OA with length BaseLength. One more dimension on BQ would be a redundant constraint.
+    :::
+
+  </TabItem>
+  <TabItem label="Output Arm BP">
+
+    **Extension to output point:**
+
+    The output arm runs from B through Q to P. The part from B to Q is the line you just drew. Now add the extension from Q to P.
+
+    <Steps>
+
+    1. **Line tool**
+    2. Start at **Q**
+    3. Draw upward-right, continuing the direction of line BQ
     4. Click to place endpoint
     5. Escape
 
-    6. **Collinear constraint:**
-       - Select new line and line OB
-       - Apply **Collinear** constraint
+    6. **Add angle constraint:**
+       - Angle constraint tool
+       - Click the new line
+       - Type: `45` (the same angle as OA, so the line continues BQ)
+       - Enter
 
-    7. **Total distance O to P:**
+    7. **Total distance B to P:**
        - Distance constraint
-       - Origin → far endpoint (P)
+       - Click **point B**
+       - Click **far endpoint** (point P)
        - ƒx → `Spreadsheet.OutputLength`
        - Enter
 
     </Steps>
+
+    Point P is the output point. Check it: O, I and P are on one straight line.
 
   </TabItem>
   <TabItem label="Construction Mode">
@@ -632,7 +634,7 @@ Think of it as the "blueprint" that all parts will reference.
     Construction geometry is **reference only** - it won't be extruded into 3D. It's perfect for master sketches that define layout but aren't physical parts themselves.
     :::
 
-    **Optional:** Add small circles (radius 2mm) at points O, A, B, I, P for visualization
+    **Optional:** Add small circles (radius 2mm) at points O, A, B, I, Q, P for visualization
 
   </TabItem>
   <TabItem label="Verify Constraints">
@@ -643,18 +645,36 @@ Think of it as the "blueprint" that all parts will reference.
 
     **What's defined:**
     - O is at origin (coincident)
-    - OA length and angle (45°)
+    - OA length and angle ($45^\circ$)
     - OB length and horizontal
-    - AB length (cross link)
-    - OI total length (input arm)
-    - OP total length (output arm)
+    - AI length and horizontal
+    - IQ horizontal, and total distance A to Q
+    - QP angle ($45^\circ$), and total distance B to P
+    - BQ: coincident at both ends, no dimension
+
+    **Count the degrees of freedom:**
+
+    | Item | Count | Degrees of freedom |
+    |------|-------|--------------------|
+    | Lines (OA, OB, AI, IQ, BQ, QP) | 6 | $6 \times 4 = +24$ |
+    | Coincident points (O twice, A, I, B, Q twice) | 7 | $7 \times 2 = -14$ |
+    | Horizontal (OB, AI, IQ) | 3 | $-3$ |
+    | Angle (OA, QP) | 2 | $-2$ |
+    | Length or distance (OA, OB, AI, AQ, BP) | 5 | $-5$ |
+    | **Remaining** | | $24 - 14 - 3 - 2 - 5 = 0$ |
+
+    The **sketch** has zero degrees of freedom because it shows the pantograph in one fixed position. The angle constraints and the horizontal constraints fix this position. The **assembly** in Part 11 does not have these constraints, so it keeps two degrees of freedom and can move.
+
+    With the default values the points are at $O = (0, 0)$, $A = (70.7, 70.7)$, $B = (200, 0)$, $I = (170.7, 70.7)$, $Q = (270.7, 70.7)$ and $P = (341.4, 141.4)$, in mm. Notice that $P = 2 \times I$.
 
     :::caution[If Not Fully Constrained]
     Missing constraints might include:
     - Origin coincident with O
-    - Horizontal constraint on OB
-    - Angle constraint on OA
-    - Collinear constraints on extensions
+    - Horizontal constraint on OB, AI or IQ
+    - Angle constraint on OA or QP
+    - Distance A to Q or distance B to P
+
+    If the solver reports a redundant constraint, remove any length or angle that you added to line BQ.
     :::
 
   </TabItem>
@@ -743,7 +763,7 @@ Link from fixed pivot O to moving pivot A:
 <InArticleAd />
 
 
-Same process as Link OA, but reference points O and B:
+Same process as Link OA, but reference points O and B. This link is longer: its length is CrossLink ($k \times \text{BaseLength}$, 200 mm with the default values).
 
 <Steps>
 
@@ -770,27 +790,44 @@ Same process as Link OA, but reference points O and B:
 <InArticleAd />
 
 
-The connecting link between moving pivots A and B:
+A working pantograph has **no link between A and B**. Do not create one. This part shows why, with a mobility count.
 
-<Steps>
+### Counting the Degrees of Freedom
 
-1. **Body:** `Link_AB`
+Grübler's equation gives the mobility $M$ of a planar mechanism with $n$ bodies (the base included) and $j$ pin joints:
 
-2. **Sketch on XY_Plane**
+$$M = 3(n - 1) - 2j$$
 
-3. **External Geometry:**
-   - Reference MasterSketch
-   - Select points A and B
+<Tabs>
+  <TabItem label="Without Link AB">
 
-4. **Draw profile:**
-   - Circles at A and B (PinRadius)
-   - Rectangle body (LinkWidth)
+    **Bodies:** Base, Link_OA, Link_OB, InputArm, OutputArm, so $n = 5$.
 
-5. **Pad:** LinkThickness
+    **Pin joints:** Link_OA to Base at O, Link_OB to Base at O, InputArm to Link_OA at A, OutputArm to Link_OB at B, InputArm to OutputArm at Q, so $j = 5$.
 
-</Steps>
+    $$M = 3(5 - 1) - 2(5) = 2$$
 
-**Link AB complete!**
+    ✓ Two degrees of freedom. The input point I can move in $x$ and in $y$, and P follows it.
+
+  </TabItem>
+  <TabItem label="With Link AB">
+
+    **Bodies:** one more, so $n = 6$.
+
+    **Pin joints:** two more (Link AB to Link_OA at A, Link AB to Link_OB at B), so $j = 7$.
+
+    $$M = 3(6 - 1) - 2(7) = 1$$
+
+    Only one degree of freedom remains. O, A and B now form a rigid triangle, so the parallelogram cannot change shape. The whole mechanism can only turn about O as one rigid piece. It cannot scale a drawing.
+
+  </TabItem>
+</Tabs>
+
+:::tip[Design Rule]
+Each hinge joins two bars with one pin. No bar is pinned twice to the same bar. Two pins between the same two bars make them one rigid body.
+:::
+
+**Mobility check complete!** The pantograph needs four moving parts, not five.
 
 ## Part 8: Creating Input Arm (OI)
 
@@ -801,11 +838,11 @@ The connecting link between moving pivots A and B:
 
 <Card title="📍 Input Arm Purpose" icon="puzzle">
 
-This arm extends from O through A all the way to I (input stylus):
+This arm carries the input point I (input stylus). It does not touch O. It runs from A through I to Q:
 
-- **Pivot at O** (shares with base links)
-- **Passes through A** (coordinates with Link OA)
-- **Extends to I** (input point for user to control)
+- **Pivot at A** (joins Link OA)
+- **Hole at I** (input point for user to control), at distance BaseLength from A
+- **Pivot at Q** (joins the Output Arm), at distance InputLength from A
 - **Stylus holder** at point I
 
 </Card>
@@ -820,12 +857,12 @@ This arm extends from O through A all the way to I (input stylus):
 
 3. **External Geometry:**
    - Reference MasterSketch
-   - Select points O, A, and I
+   - Select points A, I, and Q
 
 4. **Draw arm profile:**
 
-   - **Long rectangle** from O to I
-   - **Holes at O and A** for pin joints (PinRadius)
+   - **Long rectangle** from A to Q
+   - **Holes at A and Q** for pin joints (PinRadius)
    - **Width:** LinkWidth (or slightly narrower if needed)
    - **Stylus holder at I:** Small protrusion or marking hole
 
@@ -837,6 +874,8 @@ This arm extends from O through A all the way to I (input stylus):
 
 </Steps>
 
+With the default values the holes are at 0 mm (A), 100 mm (I) and 200 mm (Q) along the arm.
+
 **Input Arm complete!**
 
 ## Part 9: Creating Output Arm (OP)
@@ -844,7 +883,7 @@ This arm extends from O through A all the way to I (input stylus):
 <InArticleAd />
 
 
-This arm extends from O through B to P (output tracer).
+This arm carries the output point P (output tracer). It does not touch O. It runs from B through Q to P.
 
 ### Step-by-Step: Output Arm
 
@@ -855,18 +894,20 @@ This arm extends from O through B to P (output tracer).
 2. **Sketch on XY_Plane**
 
 3. **External Geometry:**
-   - Reference O, B, and P
+   - Reference B, Q, and P
 
 4. **Draw arm profile:**
 
-   - **Rectangle from O to P**
-   - **Holes at O and B** (PinRadius)
+   - **Rectangle from B to P**
+   - **Holes at B and Q** (PinRadius)
    - **Width:** LinkWidth (or narrower)
    - **Tracer mount at P:** Protruding pin or marking feature
 
 5. **Pad:** LinkThickness
 
 </Steps>
+
+With the default values the holes are at 0 mm (B), 100 mm (Q) and 200 mm (P) along the arm. The hole spacing is the same as on the Input Arm.
 
 **Output Arm complete!**
 
@@ -881,7 +922,7 @@ This arm extends from O through B to P (output tracer).
 
 Fixed mounting plate providing:
 
-- **Pivot mount at O** for all rotating links
+- **Pivot mount at O** for Link OA and Link OB
 - **Stable foundation** for the mechanism
 - **Mounting holes** for securing to work surface
 
@@ -912,7 +953,7 @@ Fixed mounting plate providing:
 5. **Optional: Add mounting holes**
 
    - Four circles in corners for bolt holes
-   - Radius: `4` mm (M8 clearance)
+   - Radius: `4.5` mm (M8 clearance, 9 mm hole)
    - Position: 10mm from edges
 
 6. **Check:** Fully constrained
@@ -929,7 +970,7 @@ Fixed mounting plate providing:
 
 
 <BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where the pantograph comes to life! With six separate parts all sharing a common pivot point at O, proper constraint strategy is critical. We'll use axial alignment to create revolute joints while maintaining the parallelogram geometry.
+Assembly is where the pantograph comes to life! With five separate parts and five hinges, proper constraint strategy is critical. We'll use axial alignment to create one revolute joint at each hinge while maintaining the parallelogram geometry.
 </BionicText>
 
 ### Assembly Strategy
@@ -937,12 +978,19 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
 <Card title="🎯 Assembly Constraints Plan" icon="rocket">
 
 1. **Base:** Fixed (ground link)
-2. **Four links pivot at O:** Link_OA, Link_OB, InputArm, OutputArm
-3. **Joint at A:** Link_OA, Link_AB, InputArm meet
-4. **Joint at B:** Link_OB, Link_AB, OutputArm meet
-5. **All motion in XY plane**
+2. **Two links pivot at O:** Link_OA, Link_OB
+3. **Joint at A:** Link_OA and InputArm meet
+4. **Joint at B:** Link_OB and OutputArm meet
+5. **Joint at Q:** InputArm and OutputArm meet
+6. **All motion in XY plane**
+
+Five joints in total. Each joint connects two parts once. This leaves two degrees of freedom, as calculated in Part 7.
 
 </Card>
+
+:::note[Two Levels]
+Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, and Link_OB and InputArm on the upper level. Then the two parts at every hinge are on different levels and no bar collides with another.
+:::
 
 ### Creating the Assembly
 
@@ -965,7 +1013,6 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
        - Base
        - Link_OA
        - Link_OB
-       - Link_AB
        - InputArm
        - OutputArm
 
@@ -991,7 +1038,7 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
   </TabItem>
   <TabItem label="Central Pivot at O">
 
-    **All four moving links pivot at O:**
+    **Two links pivot at O:**
 
     <Steps>
 
@@ -1004,30 +1051,18 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
        - Link_OB hole at O → Base hole at O
        - Axial Align
 
-    3. **InputArm to Base:**
-       - InputArm hole at O → Base hole at O
-       - Axial Align
-
-    4. **OutputArm to Base:**
-       - OutputArm hole at O → Base hole at O
-       - Axial Align
-
     </Steps>
 
-    All four links can now rotate about O!
+    Both links can now rotate about O! The two arms do not connect to O.
 
   </TabItem>
   <TabItem label="Joint at A">
 
-    **Three links meet at point A:**
+    **Two parts meet at point A:**
 
     <Steps>
 
-    1. **Link_OA to Link_AB:**
-       - Link_OA hole at A → Link_AB hole at A
-       - Axial Align
-
-    2. **InputArm to Link_OA:**
+    1. **InputArm to Link_OA:**
        - InputArm hole at A → Link_OA hole at A
        - Axial Align
 
@@ -1038,21 +1073,36 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
   </TabItem>
   <TabItem label="Joint at B">
 
-    **Three links meet at point B:**
+    **Two parts meet at point B:**
 
     <Steps>
 
-    1. **Link_OB to Link_AB:**
-       - Link_OB hole at B → Link_AB hole at B
-       - Axial Align
-
-    2. **OutputArm to Link_OB:**
+    1. **OutputArm to Link_OB:**
        - OutputArm hole at B → Link_OB hole at B
        - Axial Align
 
     </Steps>
 
     Point B is now a complete pin joint!
+
+  </TabItem>
+  <TabItem label="Joint at Q">
+
+    **The two arms meet at point Q:**
+
+    <Steps>
+
+    1. **InputArm to OutputArm:**
+       - InputArm hole at Q → OutputArm hole at Q
+       - Axial Align
+
+    </Steps>
+
+    Point Q closes the parallelogram OAQB. This is the fifth and last joint.
+
+    :::caution[One Joint per Hinge]
+    Do not add a second Axial Align between two parts that are already joined. Two pins between the same two parts lock them together and the pantograph stops working.
+    :::
 
   </TabItem>
   <TabItem label="Testing Motion">
@@ -1068,6 +1118,7 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
     3. **Verify scaling:**
        - Input moves 10mm → Output should move 20mm
        - Ratio should be 2:1
+       - O, I and P should stay on one straight line
 
     </Steps>
 
@@ -1075,11 +1126,11 @@ Assembly is where the pantograph comes to life! With six separate parts all shar
     **If mechanism won't move:**
     - Check that only Base is Fixed
     - All pin joints should be Axial Align (not Fixed!)
-    - Remove any redundant constraints
+    - Remove any redundant constraints (five joints only, and no Link AB)
     - Links may need Z-offset to avoid interference
 
     **If parts interfere:**
-    - InputArm and OutputArm may need to be offset in Z
+    - Link_OB and InputArm may need to be offset in Z (the upper level)
     - Or make them narrower (LinkWidth - 2mm)
     :::
 
@@ -1119,7 +1170,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
        - Check new position of P
        - Calculate displacement
-       - Should be 20mm (2× input) with k=2
+       - Should be 20mm ($2\times$ input) with $k = 2$
 
     4. **Test vertical motion**
 
@@ -1128,7 +1179,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
     </Steps>
 
-    ✅ **Success indicator:** Output displacement = k × Input displacement
+    ✅ **Success indicator:** Output displacement = $k \times$ Input displacement
 
   </TabItem>
   <TabItem label="Parametric Test">
@@ -1153,16 +1204,17 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
     4. **Observe automatic updates:**
 
-       - InputLength now = 300mm (100 × 3)
-       - OutputLength now = 900mm (100 × 3²)
+       - InputLength now = 300mm ($100 \times 3$)
+       - OutputLength now = 300mm ($100 \times 3$)
        - CrossLink now = 300mm
+       - Link OA and the distances AI and BQ stay at 100mm
        - All parts update geometry!
        - Assembly adjusts automatically!
 
     5. **Test motion again**
 
        - Move input 10mm
-       - Output should now move 30mm (3× input)
+       - Output should now move 30mm ($3\times$ input)
 
     </Steps>
 
@@ -1173,23 +1225,25 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
     **Verify the math:**
 
-    For a pantograph with scaling ratio k:
+    For a pantograph with scaling ratio $k$:
 
     ```
     If input point I is at (x, y) relative to O,
     Then output point P is at (k×x, k×y) relative to O
     ```
 
-    **Example with k = 2:**
-    - Input moves to I = (50, 50) mm
-    - Output should be at P = (100, 100) mm
+    **Example with $k = 2$:**
+    - Input moves to $I = (50, 50)\ \text{mm}$
+    - Output should be at $P = (100, 100)\ \text{mm}$
+
+    **Why:** $\vec{OI} = \vec{OA} + \tfrac{1}{k}\,\vec{OB}$ and $\vec{OP} = \vec{OB} + k\,\vec{OA}$, so $\vec{OP} = k\,\vec{OI}$ in every position.
 
     **Test this:**
 
     <Steps>
-    1. Position input at I = (50, 50)
-    2. Measure P coordinates
-    3. Verify P = (100, 100)
+    1. Position input at $I = (50, 50)$
+    2. Measure $P$ coordinates
+    3. Verify $P = (100, 100)$
     </Steps>
 
     :::tip[Perfect Geometry]
@@ -1227,24 +1281,24 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
    Create text box showing:
 
-   **Scaling Ratio:** $$k = 2:1$$
+   **Scaling Ratio:** $k = 2:1$
 
    **Link Lengths:**
-   - $$OA = OB = 100 \text{ mm (BaseLength)}$$
-   - $$OI = 200 \text{ mm} (k \times \text{BaseLength})$$
-   - $$OP = 400 \text{ mm} (k^2 \times \text{BaseLength})$$
-   - $$AB = 200 \text{ mm} (k \times \text{BaseLength})$$
+   - $OA = AI = BQ = 100 \text{ mm (BaseLength)}$
+   - $OB = 200 \text{ mm} (k \times \text{BaseLength})$
+   - $AQ = 200 \text{ mm} (k \times \text{BaseLength})$
+   - $BP = 200 \text{ mm} (k \times \text{BaseLength})$
 
 5. **Add motion diagram (optional)**
 
    - Show two positions of mechanism
-   - Dimension: ΔI = 10mm, ΔP = 20mm
+   - Dimension: $\Delta I = 10\ \text{mm}$, $\Delta P = 20\ \text{mm}$
    - Demonstrates scaling relationship
 
 6. **Title block**
 
    - Part name: "Pantograph Mechanism"
-   - Scaling ratio: $$k = 2:1$$
+   - Scaling ratio: $k = 2:1$
    - Scale, date, your name
 
 7. **Export**
@@ -1267,40 +1321,40 @@ This is where expression-based parametric design really shines. Watch as a singl
 ### Parametric Experiments
 
 <Tabs>
-  <TabItem label="Experiment 1: k = 1">
+  <TabItem label="Experiment 1: k = 1.5">
 
-    **Create a 1:1 copy pantograph:**
+    **Create a small enlargement, close to a 1:1 copy:**
 
     <Steps>
 
     1. **Open Spreadsheet**
 
     2. **Change ScalingRatio**
-       - Cell B2: Type `1`
+       - Cell B2: Type `1.5`
        - Enter
 
     3. **Recompute** (Ctrl+R)
 
     4. **Observe:**
-       - InputLength = 100mm (same as BaseLength)
-       - OutputLength = 100mm (k² = 1)
-       - CrossLink = 100mm
-       - All arms same length!
+       - InputLength = 150mm ($100 \times 1.5$)
+       - OutputLength = 150mm
+       - CrossLink = 150mm
+       - On each arm the last two holes are now only 50mm apart
 
     5. **Test motion:**
-       - Input and output now move identically
-       - Perfect 1:1 copy!
+       - Input 10mm → Output 15mm
+       - 1.5:1 scaling ratio
 
     </Steps>
 
-    :::note[Use Case]
-    A 1:1 pantograph is perfect for duplicating patterns, tracing designs, or creating symmetrical copies.
+    :::note[Why Not k = 1?]
+    As $k$ approaches 1, the points I, Q and P move together. At exactly $k = 1$ they are one point, so the stylus and the pen would need the same hole. This pantograph cannot make a 1:1 copy. Keep ScalingRatio greater than 1.
     :::
 
   </TabItem>
   <TabItem label="Experiment 2: k = 3">
 
-    **Create a 3× enlargement:**
+    **Create a $3\times$ enlargement:**
 
     <Steps>
 
@@ -1310,9 +1364,9 @@ This is where expression-based parametric design really shines. Watch as a singl
 
     3. **Observe:**
        - InputLength = 300mm
-       - OutputLength = 900mm (3² = 9× BaseLength!)
+       - OutputLength = 300mm ($3\times$ BaseLength)
        - CrossLink = 300mm
-       - Mechanism is much larger
+       - Mechanism is larger
 
     4. **Test motion:**
        - Input 10mm → Output 30mm
@@ -1323,21 +1377,23 @@ This is where expression-based parametric design really shines. Watch as a singl
   </TabItem>
   <TabItem label="Experiment 3: Reduction">
 
-    **Create a 0.5× reduction:**
+    **Create a $0.5\times$ reduction:**
+
+    A pantograph works in both directions. To reduce, exchange the stylus and the pen.
 
     <Steps>
 
-    1. **Change ScalingRatio to 0.5**
+    1. **Keep ScalingRatio at 2**
 
     2. **Recompute**
 
-    3. **Observe:**
-       - InputLength = 50mm
-       - OutputLength = 25mm (0.5² = 0.25× BaseLength)
-       - Output is now smaller than input!
+    3. **Exchange the roles:**
+       - Point P is now the input (stylus)
+       - Point I is now the output (pen)
+       - The ratio is $1/k = 1/2 = 0.5$
 
     4. **Test motion:**
-       - Input 10mm → Output 5mm
+       - Move P 10mm → I moves 5mm
        - Perfect reduction pantograph
 
     </Steps>
@@ -1363,9 +1419,11 @@ This is where expression-based parametric design really shines. Watch as a singl
 
     4. **Observe:**
        - Entire mechanism scales up proportionally
-       - InputLength = 300mm (150 × 2)
-       - OutputLength = 600mm (150 × 2²)
-       - Scaling ratio remains k = 2
+       - InputLength = 300mm ($150 \times 2$)
+       - OutputLength = 300mm ($150 \times 2$)
+       - CrossLink = 300mm
+       - Link OA and the distances AI and BQ = 150mm
+       - Scaling ratio remains $k = 2$
 
     </Steps>
 
@@ -1412,16 +1470,16 @@ By completing this lesson, you have:
 
 ### Calculating Output Position
 
-For a pantograph with scaling ratio k:
+For a pantograph with scaling ratio $k$:
 
 $$\text{If input point } I \text{ is at } (x, y) \text{ relative to } O,$$
 
 $$\text{Then output point } P \text{ is at } (k \cdot x, k \cdot y) \text{ relative to } O$$
 
 **Example:**
-- Input moves to $$I = (50, 50)$$
-- With $$k = 2$$
-- Output should be at $$P = (100, 100)$$
+- Input moves to $I = (50, 50)$
+- With $k = 2$
+- Output should be at $P = (100, 100)$
 
 Test this in your assembly!
 
@@ -1432,7 +1490,7 @@ Test this in your assembly!
 <InArticleAd />
 
 
-1. **Design a reduction pantograph** (k = 0.5, output smaller than input)
+1. **Design a reduction pantograph** ($k = 0.5$, output smaller than input, with the stylus at P and the pen at I)
 2. **Add a stylus holder** at input point (removable, adjustable)
 3. **Add a pen/pencil holder** at output point
 4. **Create a locking mechanism** to fix position
@@ -1450,13 +1508,13 @@ Test this in your assembly!
 
 - **Cause:** Incorrect link length ratios
 - **Solution:** Verify expressions in spreadsheet
-- **Fix:** InputLength must = BaseLength × k
-- **Fix:** OutputLength must = BaseLength × k²
+- **Fix:** InputLength, OutputLength and CrossLink must each = BaseLength $\times\ k$
+- **Fix:** Distance AI must = BaseLength, so that O, I and P are on one line
 
 ### ``Mechanism binds or locks up"
 
-- **Cause:** Links interfering, or over-constrained assembly
-- **Solution:** Check clearances, ensure only Base is Fixed
+- **Cause:** Links interfering, or over-constrained assembly (a link between A and B, or two joints between the same two parts)
+- **Solution:** Check clearances, ensure only Base is Fixed, and count five joints
 - **Fix:** May need to offset arms in Z-direction
 
 ### ``Scaling ratio parameter doesn't update links"

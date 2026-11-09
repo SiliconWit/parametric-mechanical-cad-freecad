@@ -142,7 +142,7 @@ A complete 360° rotation typically includes four phases:
 
 **Rise: Outward Motion**
 - Follower moves away from cam center
-- Lift distance: L
+- Lift distance: $L$
 - Rise angle: typically 90-120°
 
 **Dwell: High Position**
@@ -170,7 +170,7 @@ The rise and return sections require careful motion law selection. Sudden veloci
 <Tabs>
 <TabItem label="Geometric Parameters">
 
-**Base Circle Radius (R_b)**
+**Base Circle Radius ($R_b$)**
 - Minimum cam radius
 - Determines minimum follower position
 - Foundation of cam geometry
@@ -180,9 +180,9 @@ The rise and return sections require careful motion law selection. Sudden veloci
 - Distance from base to peak position
 - Critical design parameter
 
-**Prime Circle Radius (R_p)**
-- R_p = R_b + L
-- Maximum cam radius
+**Prime Circle Radius ($R_p$)**
+- $R_p = R_b + L$
+- Maximum cam radius (cam textbooks use the name "prime circle" for the base radius plus the roller radius; in this lesson the name means the maximum radius)
 - Defines peak follower position
 
 </TabItem>
@@ -324,7 +324,7 @@ For this lesson, you'll use:
 | **Zoom** | Mouse wheel scroll |
 | **Fit all** | Press "V" then "F" |
 | **View front** | Press "1" on numpad |
-| **View top** | Press "7" on numpad |
+| **View top** | Press "2" |
 
 Practice Now!
 
@@ -383,13 +383,13 @@ ShaftDiameter = 20 mm
 
 <Steps>
 
-1. **Switch to Part Design workbench**
+1. **Switch to Spreadsheet workbench**
 
    Use the workbench dropdown at top
 
 2. **Insert a spreadsheet**
 
-   Insert → Spreadsheet
+   Spreadsheet → Create Spreadsheet
 
    A "Spreadsheet" object appears in the left tree
 
@@ -548,9 +548,9 @@ $$
 | Angle | Displacement | Radius |
 |-------|--------------|--------|
 | 0° | 0 mm | 40 mm |
-| 30° | 2.68 mm | 42.68 mm |
+| 30° | 2.93 mm | 42.93 mm |
 | 60° | 10 mm | 50 mm |
-| 90° | 17.32 mm | 57.32 mm |
+| 90° | 17.07 mm | 57.07 mm |
 | 120° | 20 mm | 60 mm |
 
 </TabItem>
@@ -636,7 +636,7 @@ Professional cam design often uses specialized software or Python scripts to gen
 
 1. **Draw the base circle**
 
-   - Click **Circle tool** (or press C)
+   - Click **Circle tool** (or press G, C)
    - Click at the **origin** (look for white/yellow dot at center)
    - Move mouse outward
    - Click to complete circle
@@ -652,6 +652,8 @@ Professional cam design often uses specialized software or Python scripts to gen
 
    Base circle is now parametrically controlled!
 
+   Now select the circle and press **G, N** to make it construction geometry. The base circle is only a reference: the closed cam outline is built from the four sections below, and a full circle left inside that outline would be padded as a hole.
+
 </Steps>
 
 ### Drawing the Rise Section
@@ -665,14 +667,14 @@ We'll use construction geometry to establish angular positions:
 
 1. **Draw horizontal reference line**
 
-   - **Line tool** (press L)
+   - **Line tool** (press G, L)
    - Draw from origin horizontally to the right
    - Press **Escape**
 
 2. **Make it construction geometry**
 
    - Select the line
-   - Press **G** key (toggles construction mode)
+   - Press **G, N** (toggles construction mode)
    - Line turns blue (construction)
 
 3. **Constrain it horizontal**
@@ -699,7 +701,7 @@ This horizontal line at 0° is our angular reference.
 
 1. **Draw arc from base to prime circle**
 
-   - **Arc tool** (or press A)
+   - **Arc tool** (or press G, A)
    - Click at angle 0°, radius 40mm (on base circle, at horizontal line)
    - Click at angle 120°, radius 60mm (estimate position)
    - Click a third point to define arc curvature
@@ -711,6 +713,7 @@ This horizontal line at 0° is our angular reference.
    - Arc start point → Base circle
    - Arc start point → Horizontal reference line
    - This locks it at 0°, 40mm radius
+   - **Tangent constraint:** Arc → Base circle, so the rise leaves the base circle smoothly (with the end point fixed in the next steps, this also removes the last freedom of the arc)
 
 3. **Constrain end point angle**
 
@@ -740,9 +743,9 @@ The rise section is now constrained!
 
    Using the table from earlier:
    - Point 1: 0°, 40mm radius
-   - Point 2: 30°, 42.68mm radius
+   - Point 2: 30°, 42.93mm radius
    - Point 3: 60°, 50mm radius
-   - Point 4: 90°, 57.32mm radius
+   - Point 4: 90°, 57.07mm radius
    - Point 5: 120°, 60mm radius
 
 2. **Use Point tool**
@@ -799,8 +802,8 @@ High dwell maintains follower at maximum lift while cam rotates 60°.
 
 1. **Create symmetry axis**
 
-   - Draw vertical construction line through origin
-   - Make it vertical (press **V**)
+   - Draw a construction line through origin
+   - **Angle constraint:** 150° from the horizontal reference (the middle of the high dwell, so that 0° maps to 300° and 120° maps to 180°)
 
 2. **Select rise geometry**
 
@@ -810,7 +813,7 @@ High dwell maintains follower at maximum lift while cam rotates 60°.
 
    - **Symmetry constraint** tool
    - Select rise geometry
-   - Create mirrored copy about vertical axis
+   - Create mirrored copy about the 150° axis
 
 4. **Position correctly**
 
@@ -974,23 +977,23 @@ The follower system consists of three parts:
 
 2. **Create Sketch on XZ_Plane**
 
-   Why XZ? The follower moves vertically (Z-axis) and we'll revolve around a horizontal axis
+   Why XZ? The roller axis is parallel to the cam shaft (Z-axis), and a revolve needs a sketch plane that contains the axis
 
    - Select Roller body
    - Create Sketch → **XZ_Plane**
 
 3. **Draw roller profile**
 
-   - **Circle tool**
-   - Center position: X = 0, Z = 70 (above cam - we'll position precisely in assembly)
-   - Click to place circle
+   - **Rectangle tool**
+   - First corner at the **origin**, opposite corner up and to the right (we'll position the roller in assembly)
+   - This rectangle is half of the roller cross-section: its left edge lies on the rotation axis
    - Press **Escape**
 
-4. **Constrain the circle**
+4. **Constrain the rectangle**
 
-   - **Horizontal constraint:** Circle center → Origin (to center it on rotation axis)
-   - **Distance constraint:** Circle center to origin in Z direction: `70` mm
-   - **Radius constraint** → Click **ƒx** → `Spreadsheet.RollerRadius`
+   - **Coincident constraint:** Bottom left corner → Origin (puts the left edge on the rotation axis)
+   - **Distance constraint:** Height: Click **ƒx** → `Spreadsheet.CamThickness`
+   - **Distance constraint:** Width: Click **ƒx** → `Spreadsheet.RollerRadius`
 
 5. **Check and close sketch**
 
@@ -1027,7 +1030,7 @@ Perfect for:
 2. **Click Revolve tool** in Part Design toolbar
 
 3. **In the Revolve panel:**
-   - Axis: Select **Vertical** or **Z-axis**
+   - Axis: Select **Vertical sketch axis** (the Z-axis)
    - Angle: `360°` (full rotation)
    - Symmetric to plane: Off
 
@@ -1048,7 +1051,7 @@ Perfect for:
 
    - Create Body → Rename: `FollowerStem`
 
-2. **Create Sketch on XZ_Plane**
+2. **Create Sketch on XY_Plane** (the plane of the cam, so that the stem moves toward and away from the cam center)
 
 3. **Draw stem profile**
 
@@ -1056,12 +1059,12 @@ Perfect for:
    - Draw vertical rectangle
    - Width: 15mm
    - Height: 80mm (long enough for full stroke plus clearance)
-   - Position: Centered horizontally, extending upward from around Z=30
+   - Position: Centered horizontally, extending upward from around Y=50
 
 4. **Constrain the rectangle**
 
-   - **Symmetric constraint:** Left and right edges about X-axis (centers horizontally)
-   - **Distance constraint:** Bottom edge from origin: `30` mm
+   - **Symmetric constraint:** Left and right edges about Y-axis (centers horizontally)
+   - **Distance constraint:** Bottom edge from origin: `50` mm (the lowest roller center: BaseCircleRadius + RollerRadius)
    - **Distance constraint:** Width: `15` mm
    - **Distance constraint:** Height: `80` mm
 
@@ -1070,7 +1073,7 @@ Perfect for:
 6. **Pad the stem**
 
    - Pad tool
-   - Length: `10` mm (creates rectangular bar in Y direction)
+   - Length: `10` mm (the bar thickness, in the Z direction)
    - OK
 
 </Steps>
@@ -1152,6 +1155,7 @@ The frame provides:
 
    - **Symmetric:** Left and right lines about Y-axis
    - **Distance between:** `20` mm
+   - Make both lines construction geometry (**G, N**): open lines cannot be padded. They mark where the guide rails go. To model real rails, draw each one as a narrow closed rectangle in a second sketch and pad it.
 
 6. **Close sketch**
 
@@ -1180,7 +1184,7 @@ Assembly transforms individual parts into a functioning mechanism. For the cam a
 
 1. **Frame:** Fixed (ground link)
 2. **Cam:** Rotates about Z-axis through shaft hole
-3. **Follower Stem:** Constrained to vertical (Z-direction) translation only
+3. **Follower Stem:** Constrained to vertical (Y-direction, in the plane of the cam) translation only
 4. **Roller:** Positioned at bottom of stem, contacts cam surface
 
 </Card>
@@ -1270,13 +1274,13 @@ Every mechanism needs a fixed reference point. The frame provides this ground li
 3. **Apply constraints for vertical sliding:**
 
    - **Plane constraint:** Aligns stem face to frame reference
-   - **Linear motion constraint:** Allows only Z-direction movement
+   - **Linear motion constraint:** Allows only Y-direction movement
 
    The exact constraint type depends on your Assembly workbench version
 
 </Steps>
 
-**Goal:** Follower can slide up and down (Z-axis) but cannot move sideways or rotate
+**Goal:** Follower can slide up and down (Y-axis) but cannot move sideways or rotate
 
 </TabItem>
 <TabItem label="Roller Position">
@@ -1493,14 +1497,14 @@ Use the motion law formulas to calculate displacement at multiple angles, then p
 | Angle | Displacement |
 |-------|--------------|
 | 0° | 0 mm |
-| 30° | 2.68 mm |
+| 30° | 2.93 mm |
 | 60° | 10 mm |
-| 90° | 17.32 mm |
+| 90° | 17.07 mm |
 | 120° | 20 mm |
 | 180° | 20 mm |
-| 210° | 17.32 mm |
+| 210° | 17.07 mm |
 | 240° | 10 mm |
-| 270° | 2.68 mm |
+| 270° | 2.93 mm |
 | 300° | 0 mm |
 | 360° | 0 mm |
 

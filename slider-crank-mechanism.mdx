@@ -26,7 +26,7 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 import YouTube from '../../../../components/YouTube.jsx';
 
-Every internal combustion engine, every reciprocating compressor, and every hand-operated water pump relies on the same kinematic chain: a crank, a connecting rod, and a slider. Despite its simplicity, the mechanism's behavior changes significantly when you adjust the crank-to-rod ratio or add an offset, and predicting those changes from a sketch alone is difficult. In this lesson you will build a complete slider-crank mechanism in FreeCAD from scratch, with parametric dimensions that let you explore how link lengths affect stroke, velocity, and mechanical advantage. #FreeCAD #SliderCrank #ReciprocatingMotion #KinematicDesign
+A pump piston that stops short of the end of its cylinder delivers less water on every turn, and a connecting rod that is too short pushes the piston sideways until the cylinder wall wears out. Two lengths decide both faults: the crank radius and the rod length. If you draw the parts with typed numbers, a change to either length means drawing four parts again. In this lesson you model a slider crank in FreeCAD so that two values in a table drive every part. On the way you learn the FreeCAD basics: sketches, constraints, solid parts, an assembly and a drawing. #FreeCAD #SliderCrank #ReciprocatingMotion #KinematicDesign
 
 :::tip[Simulate before you build]
 Before designing the 3D model, try your link lengths in the [Crank-Slider Mechanism Simulator](/product-development/crank-slider-mechanism-simulator/) to see how the crank-to-rod ratio and offset change the stroke, velocity, and acceleration, and to preview the quick-return behavior. For structured kinematic experiments with Python analysis, see the [Mechanism Design and Simulation](/education/mechanism-design-simulation/) course.
@@ -47,41 +47,13 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The slider crank mechanism is one of the most fundamental and widely used motion conversion mechanisms in mechanical engineering. It converts continuous rotational motion into reciprocating linear motion (or vice versa), powering everything from internal combustion engines to reciprocating compressors and pumps.
-</BionicText>
+A slider crank turns rotation into straight motion that goes back and forth, or the reverse. Engine pistons, compressors, hand pumps and sewing machine needles use it.
 
 <YouTube videoId="ulr2Bykphto" title="Slider Crank Mechanism Design in FreeCAD" />
 
-### Real-World Applications
-
-The slider crank appears everywhere in engineering:
-
-:::note[Common Applications]
-- **Internal combustion engines** - Piston-crankshaft system converting combustion force to rotation
-- **Reciprocating compressors** - Converting motor rotation to piston compression cycles
-- **Reciprocating pumps** - Fluid pumping through linear piston motion
-- **Sewing machines** - Converting motor rotation to needle reciprocation
-- **Hand-operated water pumps** - Manual rotation creating pumping action
-:::
-
 ### The Engineering Problem
 
-> **Design Challenge:** Given a rotating crankshaft, how do we create linear reciprocating motion with controlled stroke length and predictable motion characteristics?
-
-:::tip[Why Slider Cranks Are Engineering Workhorses]
-**Key Advantages:**
-- **Simple and reliable** - Only three moving parts plus frame
-- **Predictable motion** - Well-understood kinematics and dynamics
-- **Scalable design** - Works from tiny medical devices to massive ship engines
-- **Efficient power transmission** - Direct conversion of rotary to linear motion
-- **Easy to manufacture** - Standard parts and conventional machining
-
-**Design Trade-offs:**
-- Side forces on slider guides (requires robust guide design)
-- Non-sinusoidal motion profile (differs slightly from pure harmonic motion)
-- Connecting rod length affects motion characteristics (l/r ratio critical)
-:::
+A slider must move 60 mm along a straight guide and return, once for every turn of a shaft, without being pushed hard against the guide. Which crank and which rod do this?
 
 ## Mechanism Fundamentals
 
@@ -90,92 +62,58 @@ The slider crank appears everywhere in engineering:
 
 ### Components and Motion
 
-A slider crank consists of four elements working together:
+A slider crank has four parts, called links:
 
-<Tabs>
-  <TabItem label="Components">
+| Link | What it does | Its length |
+|------|--------------|------------|
+| Frame | Fixed. Holds the crank pivot and guides the slider | |
+| Crank | Turns about the pivot | Radius $r$, pivot to crank pin, mm |
+| Connecting rod | Joins the crank pin to the slider | Length $l$, hole to hole, mm |
+| Slider | Moves on a straight line through the pivot | Position $x$, pivot to slider pin, mm |
 
-    **1. Crank (Link 2)**
-    - Rotates about fixed pivot (crankshaft)
-    - Radius r determines stroke length
+The slider is farthest from the pivot when the crank points at it, and nearest when the crank points away. In both positions the crank and the rod lie on one line:
 
-    **2. Connecting Rod (Link 3)**
-    - Transmits motion between crank and slider
-    - Length l affects motion profile
+```text
+ Slider farthest: the crank points at the slider
 
-    **3. Slider (Link 4)**
-    - Moves linearly along fixed path
-    - Provides reciprocating output
+   O────────●───────────────────────■
+   pivot    pin        rod          slider
+   │◄─ r ──►│◄────────── l ────────►│     x = l + r
 
-    **4. Frame (Link 1)**
-    - Fixed reference
-    - Provides pivot and guide
+ Slider nearest: the crank points away
 
-  </TabItem>
-  <TabItem label="Key Parameters">
+   ●────────O──────────────■
+   pin      pivot          slider
+            │◄─── l − r ──►│              x = l − r
+```
 
-    <Card title="⚙️ Critical Design Parameters" icon="setting">
+The distance between the two positions is the stroke $S$, in mm. The rod length drops out:
 
-    **Crank radius (r)**
-    - Distance from crank pivot to rod connection
-    - Directly determines stroke: S = 2r
+$$S = (l + r) - (l - r) = 2r$$
 
-    **Connecting rod length (l)**
-    - Distance between rod pivots
-    - Affects motion profile and side forces
+So the crank radius alone sets the stroke. The rod length sets how far the rod leans. The rod leans most when the crank stands at 90° to the line of travel. There the crank and the rod make a right triangle, and the largest rod angle $\phi_{\max}$ is:
 
-    **Length ratio (l/r)**
-    - Typical range: l/r ≥ 3
-    - Higher ratio = more sinusoidal motion
-    - Lower ratio = higher side forces
+$$\sin\phi_{\max} = \frac{r}{l}$$
 
-    </Card>
+A leaning rod pushes the slider sideways against its guide, which means friction and wear. A common rule is $l/r \geq 3$, which keeps the angle below 19.5°. Car engines use 3 to 4.
 
-  </TabItem>
-  <TabItem label="Motion Analysis">
+### Dimensions for this lesson
 
-    **Stroke Relationship:**
+The dimensions come from the motion, not from what looks right on the screen. The slider must travel 60 mm:
 
-    $$S = 2r$$
+1. Crank radius: $r = S / 2 = 60 / 2 = 30 \text{ mm}$ ✅
+2. Rod length: $l \geq 3r = 3 \times 30 = 90 \text{ mm}$. Choose $l = 100 \text{ mm}$, so $l/r = 3.33$ ✅
+3. Largest rod angle: $\sin\phi_{\max} = 30 / 100 = 0.30$, so $\phi_{\max} = 17.5^\circ$ ✅
+4. Slider pin: farthest $l + r = 130 \text{ mm}$, nearest $l - r = 70 \text{ mm}$ from the pivot ✅
 
-    where $S$ is the stroke and $r$ is the crank radius.
-
-    **Design Guidelines:**
-    - l/r ≥ 3 for minimal side forces
-    - l/r = 4 to 5 common in engines
-    - Shorter rods = more compact but higher loads
-
-    :::tip[Engineering Insight]
-    The connecting rod length ratio (l/r) is critical. Too short creates excessive side forces on the slider guides; too long makes the mechanism unnecessarily large. Engine designers carefully optimize this ratio for each application.
-    :::
-
-  </TabItem>
-</Tabs>
+Only these two values, 30 and 100, set the motion. Every other dimension (a hole, a thickness) is chosen for fit and strength.
 
 ## What You'll Build
 
 <InArticleAd />
 
 
-By completing this lesson, you'll create:
-
-<CardGrid>
-  <Card title="Parametric Parts" icon="pencil">
-    Four fully constrained parts controlled by spreadsheet parameters
-  </Card>
-
-  <Card title="Working Assembly" icon="puzzle">
-    Complete mechanism with motion constraints that actually moves
-  </Card>
-
-  <Card title="Technical Drawing" icon="document">
-    Professional engineering drawing suitable for manufacturing
-  </Card>
-
-  <Card title="Parameter Control" icon="setting">
-    Change two values, entire mechanism updates automatically
-  </Card>
-</CardGrid>
+Four parts, an assembly that moves when you drag the crank, and a drawing of one part, all driven by two values in a spreadsheet.
 
 ## Part 1: Getting Started with FreeCAD
 
@@ -186,18 +124,11 @@ By completing this lesson, you'll create:
 
 <Steps>
 
-1. **Download FreeCAD 0.21 or later**
+1. **Download FreeCAD 0.21**
 
-   Download Instructions [Software Requirements and Download](https://siliconwit.com/education/parametric-mechanical-cad-freecad/#software-requirements)
-
-   Free & Open Source
-   Cross-Platform
+   The link is in [Software Requirements and Download](/education/parametric-mechanical-cad-freecad/#software-requirements). The steps were written for version 0.21. In a later version some menus have other names, and the assembly tools differ (see the assembly part).
 
 2. **Install and launch**
-
-   Follow the installer for your operating system
-
-3. **Verify installation**
 
    You should see the Start Page with recent files and examples
 
@@ -205,121 +136,43 @@ By completing this lesson, you'll create:
 
 ### Understanding the Interface
 
-<Tabs>
-  <TabItem label="Main Areas">
+The model tree on the left lists every object in the document: click to select, double-click to edit. The 3D view in the center shows the model.
 
-    When you first open FreeCAD, you'll see four key areas:
+FreeCAD groups its tools by task. Each group is a **workbench**, and the selector in the top toolbar changes from one to another. This lesson uses five: Spreadsheet (the table of named values), Part Design (solid parts), Sketcher (the flat outlines of parts), Assembly, and TechDraw (drawings).
 
-    **Top toolbar**
-    - Workbench selector (dropdown)
-    - Common tools and commands
-
-    **Left sidebar (Model Tree)**
-    - Shows all objects in your document
-    - Hierarchical organization
-    - Click to select, double-click to edit
-
-    **Center (3D Viewport)**
-    - Where you see and interact with your model
-    - Navigate in 3D space
-    - Primary design area
-
-    **Bottom (Report View)**
-    - Console messages
-    - Python console access
-    - Error reporting
-
-  </TabItem>
-  <TabItem label="Workbenches">
-
-    <Card title="🔧 What Are Workbenches?" icon="star">
-
-    FreeCAD organizes tools into **workbenches** - specialized tool collections for different tasks. Think of them as different "modes" optimized for specific workflows.
-
-    </Card>
-
-    **Key Workbenches for This Lesson:**
-
-    - **Part Design** - Creating individual parametric parts (primary workbench)
-    - **Sketcher** - Creating 2D constraint-based sketches
-    - **Spreadsheet** - Parameter tables and calculations
-    - **Assembly** - Combining parts with constraints
-    - **TechDraw** - Creating engineering drawings
-
-    :::tip[Switching Workbenches]
-    Use the dropdown in the top toolbar labeled "Workbench". You'll switch frequently as you work!
-    :::
-
-  </TabItem>
-  <TabItem label="Navigation">
-
-    **Essential Navigation Controls:**
-
-    | Action | Control |
-    |--------|---------|
-    | **Rotate view** | Middle mouse button + drag<br/>*or* Shift + Right mouse button |
-    | **Pan view** | Shift + Middle mouse button + drag |
-    | **Zoom** | Mouse wheel scroll |
-    | **Fit all** | Press "V" then "F" |
-    | **View front** | Press "1" on numpad |
-    | **View top** | Press "7" on numpad |
-
-    Practice Now!
-
-    Spend 2 minutes navigating the empty 3D view using these controls. Muscle memory now saves time later!
-
-  </TabItem>
-</Tabs>
+| Action | Control |
+|--------|---------|
+| **Rotate view** | Middle mouse button + drag<br/>*or* Shift + Right mouse button |
+| **Pan view** | Shift + Middle mouse button + drag |
+| **Zoom** | Mouse wheel scroll |
+| **Fit all** | Press "V" then "F" |
+| **View front** | Press "1" on numpad |
+| **View top** | Press "2" |
 
 ## Part 2: Parametric Design Strategy
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Unlike direct modeling where you just "draw shapes," parametric design means defining design intent through relationships, controlling geometry with parameters, and ensuring changes propagate correctly throughout your model. This is how professionals design—build it once, change it instantly.
-</BionicText>
+In a plain drawing, a hole 30 mm from the center is only a circle at that place. When the stroke must grow, you move the hole by hand and then check every other part, and one forgotten edit gives parts that do not fit. In a **parametric** model a dimension refers to a named value, such as `Spreadsheet.CrankRadius`. You change the value once, and FreeCAD rebuilds everything that uses it.
 
-### Our Design Approach
+```text
+ ┌─────────────┐   ┌──────────┐   ┌────────┐   ┌──────────┐
+ │ Spreadsheet │   │ Sketch   │   │ Part   │   │ Assembly │
+ │ r = 30      ├──►│ outline  ├──►│ solid  ├──►│ parts    │
+ │ l = 100     │   │ + rules  │   │        │   │ + joints │
+ └─────────────┘   └──────────┘   └────────┘   └──────────┘
+```
 
-<Card title="🎯 Two-Parameter Control Philosophy" icon="rocket">
+Three ideas make this work:
 
-We'll control the **entire slider crank mechanism** with just two parameters:
+| Idea | What it is | Without it |
+|------|------------|------------|
+| Parameter | A named value in the spreadsheet | The same number is typed in several places, and one is forgotten |
+| Constraint | A rule on sketch geometry: a line is horizontal, a distance is 30 mm | The geometry is only where you clicked, near 30 mm and not at it |
+| Fully constrained sketch | A sketch whose rules fix every point | When a value changes, the free geometry moves where you did not choose, and no error is shown |
 
-**CrankRadius** = 30 mm
-**RodLength** = 100 mm
-
-Change these two values → entire mechanism updates automatically!
-
-This is the power of parametric design.
-
-</Card>
-
-### Design Workflow
-
-<Steps>
-
-1. **Create Spreadsheet** - Parameter table
-
-2. **Create Crank** - Part 1
-
-3. **Create Connecting Rod** - Part 2
-
-4. **Create Slider** - Part 3
-
-5. **Create Frame** - Part 4
-
-6. **Assemble with constraints**
-
-7. **Create technical drawing**
-
-8. **Test parametric control**
-
-</Steps>
-
-:::note[Why Start with Spreadsheet?]
-By defining parameters **first**, we can reference them throughout our design. The spreadsheet becomes the single source of truth—change it once, everything updates. This is the foundation of intelligent parametric control.
-:::
+You work in the order of the drawing, and finish by changing the two values to see whether the model follows.
 
 ## Part 3: Creating the Parameter Spreadsheet
 
@@ -327,6 +180,8 @@ By defining parameters **first**, we can reference them throughout our design. T
 
 
 ### Building Your Parameter Table
+
+The spreadsheet comes first because the sketches refer to it. A sketch cannot use a name that does not exist yet.
 
 <Steps>
 
@@ -344,8 +199,6 @@ By defining parameters **first**, we can reference them throughout our design. T
 
 2. **Switch to Spreadsheet workbench**
 
-   Use the workbench dropdown at top
-
 3. **Create a spreadsheet**
 
    ```
@@ -356,13 +209,11 @@ By defining parameters **first**, we can reference them throughout our design. T
 
    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', margin: '1rem 0' }}>
      <TailwindWrapper>
-       ![FreeCAD Spreadsheet Workbench](./images/crank-slider/freecad-spreadsheet-workbench.png)
+       ![FreeCAD with Spreadsheet chosen in the workbench selector, the Spreadsheet menu in the menu bar, and a new Spreadsheet object in the model tree under the SliderCrank document](./images/crank-slider/freecad-spreadsheet-workbench.png)
      </TailwindWrapper>
    </div>
 
-4. **Double-click to open the spreadsheet**
-
-   Click on "Spreadsheet" in the tree
+4. **Double-click "Spreadsheet" in the tree to open it**
 
 </Steps>
 
@@ -371,28 +222,18 @@ By defining parameters **first**, we can reference them throughout our design. T
 <Tabs>
   <TabItem label="Setup">
 
-    In the spreadsheet, create this table:
+    Type these nine cells. The two values are the ones calculated above: 30 mm from the stroke and 100 mm from the rod rule. Columns A and C are notes for the reader, and FreeCAD does not use them.
 
-    | Cell | Value | Meaning |
-    |------|-------|---------|
-    | **A1** | Parameter | Header |
-    | **B1** | Value | Header |
-    | **C1** | Unit | Header |
-    | **A2** | CrankRadius | Parameter name |
-    | **B2** | 30 | Numeric value |
-    | **C2** | mm | Unit (documentation) |
-    | **A3** | RodLength | Parameter name |
-    | **B3** | 100 | Numeric value |
-    | **C3** | mm | Unit |
+    | | A | B | C |
+    |---|---|---|---|
+    | **1** | Parameter | Value | Unit |
+    | **2** | CrankRadius | 30 | mm |
+    | **3** | RodLength | 100 | mm |
 
   </TabItem>
   <TabItem label="Creating Aliases">
 
-    **Why Aliases?**
-
-    Aliases let you reference cells by name instead of "B2", making formulas readable.
-
-    **Create aliases:**
+    FreeCAD knows the cell that holds 30 only as B2. The text in cell A2 is a label for you, and a sketch cannot use it. An **alias** gives the cell itself a name. Without it, the formula you type in the crank sketch fails.
 
     <Steps>
 
@@ -400,33 +241,14 @@ By defining parameters **first**, we can reference them throughout our design. T
     2. Right-click → **Properties**
     3. In "Alias" field, type: `CrankRadius`
     4. Click **OK**
-
-    5. Click cell **B3**
-    6. Right-click → **Properties**
-    7. In "Alias" field, type: `RodLength`
-    8. Click **OK**
+    5. Repeat for cell **B3** with the alias `RodLength`
 
     </Steps>
-
-    Now you can use `Spreadsheet.CrankRadius` anywhere in your model!
-
-  </TabItem>
-  <TabItem label="Best Practices">
-
-    :::tip[Spreadsheet Best Practices]
-    - **Always use aliases** for values you'll reference
-    - **Include units** in column C for documentation (they're comments, not calculations)
-    - **Use descriptive names** (CrankRadius, not CR or r)
-    - **Keep it organized** - group related parameters together
-    - **Add notes** in additional columns to document design decisions
-    :::
 
   </TabItem>
 </Tabs>
 
-`Ctrl+S` to **Save the spreadsheet** and then **Close** it when done (click the Close button).
-
-Your parameter foundation is ready!
+Press `Ctrl+S` to save, then close the spreadsheet.
 
 ## Part 4: Creating the Crank
 
@@ -435,15 +257,7 @@ Your parameter foundation is ready!
 
 ### Design Intent
 
-<Card title="⚙️ Crank Requirements" icon="document">
-
-The crank is a rotating disc with:
-
-- **Central hole** for the fixed pivot (shaft)
-- **Offset hole** for the connecting rod pin
-- **Parametric control** - radius driven by `Spreadsheet.CrankRadius`
-
-</Card>
+The crank is a disc with a center hole for the shaft and a pin hole for the connecting rod. One dimension sets the motion: the distance from the center to the pin hole, `Spreadsheet.CrankRadius`. The rest are chosen for fit: a shaft hole of radius 8 mm (the same as the pivot hole of the frame), a pin hole of radius 5 mm, and a disc of radius 40 mm, which leaves 5 mm of material outside the pin hole (30 + 5 = 35 mm).
 
 ### Step-by-Step: Crank Part
 
@@ -451,76 +265,31 @@ The crank is a rotating disc with:
 
 1. **Create a Body**
 
+   A Body is the container for one solid part.
+
    - Switch to **Part Design workbench**
    - Click **Create Body** button (or Part Design → Create body)
-   - A "Body" object appears in the tree
-   - Right-click → Rename → type `Crank`
+   - Right-click the new "Body" in the tree → Rename → type `Crank`
 
 2. **Create a Sketch**
 
+   A sketch is a flat outline. It needs a plane to lie on.
+
    - Select the "Crank" body in tree
    - Click **Create Sketch** button (or Sketch → Create Sketch)
-   - Dialog asks: Choose a plane
-   - Select **XY_Plane**
+   - When the dialog asks for a plane, select **XY_Plane**
 
-   You're now in **Sketcher workbench** (automatic switch)
+   FreeCAD changes to the **Sketcher workbench** by itself.
 
 </Steps>
 
 ### Understanding the Sketcher
 
-<Tabs>
-  <TabItem label="Sketcher Basics">
+What you click in a sketch is only a rough shape. Constraints make it exact. A **geometric constraint** is a rule with no number: two points are coincident (they share one position), a line is horizontal, a line is tangent to a circle. A **dimensional constraint** has a number: a radius, a distance, an angle.
 
-    The Sketcher is where you create 2D profiles that become 3D parts.
+Think of a tent. Each peg removes one way in which the tent can move, and a tent with one peg missing stands well until the wind comes. In a sketch the wind is a changed value. FreeCAD counts the ways in which the sketch can still move, calls them **degrees of freedom**, and shows the count in the Solver messages panel. One circle has 3: its center can move in two directions, and its radius can change. The crank sketch has three circles, so it starts with 9.
 
-    **Key Concept: Constraints**
-
-    A sketch is "fully constrained" when every dimension is defined—zero degrees of freedom (DOF). This is the goal!
-
-    **Why full constraints matter:**
-    - ✅ Predictable behavior when parameters change
-    - ✅ No unexpected movement or sizing
-    - ✅ Professional parametric design
-
-  </TabItem>
-  <TabItem label="Sketcher Tools">
-
-    **Geometry Tools:**
-    - Line (L)
-    - Circle (C)
-    - Arc
-    - Rectangle
-    - B-spline (S)
-
-    **Constraint Tools:**
-    - Coincident (joins points)
-    - Horizontal / Vertical
-    - Parallel / Perpendicular
-    - Equal (equal lengths)
-    - Symmetric
-    - Distance
-    - Radius
-    - Angle
-
-    **Check Status:**
-    - Look at "Solver messages" panel
-    - "Fully constrained" = perfect!
-    - "X degrees of freedom" = need more constraints
-
-  </TabItem>
-  <TabItem label="Pro Tips">
-
-    :::tip[Sketcher Efficiency Tips]
-    1. **Use keyboard shortcuts** - C for circle, L for line, Escape to exit tool
-    2. **Select first, constrain second** - Click what you want to constrain, then apply constraint
-    3. **Watch the solver messages** - It tells you what's missing
-    4. **Use Ctrl+click** to select multiple items at once
-    5. **Right-click for context menus** - Often faster than toolbar
-    :::
-
-  </TabItem>
-</Tabs>
+Apply the geometric constraints first. A dimension typed onto a rough shape can turn the shape inside out.
 
 ### Drawing the Crank Profile
 
@@ -535,136 +304,60 @@ The crank is a rotating disc with:
 
 2. **Draw the shaft hole**
 
-   - **Circle tool** again
-   - Click at **origin**
-   - Draw a smaller circle inside
-   - Press **Escape**
+   **Circle tool** again: click at the **origin**, draw a smaller circle inside, press **Escape**
 
 3. **Draw the rod pin hole**
 
-   - **Circle tool** again
-   - Click somewhere to the **right** of center, at the origin horizontal line
-   - Draw a small circle
-   - Press **Escape**
+   **Circle tool** again: click to the **right** of center, on the horizontal line through the origin, draw a small circle, press **Escape**
 
-   You now have 3 circles, but they're not constrained properly yet!
+   You now have 3 circles of rough size. Nothing fixes their radii yet, and the pin hole can slide.
 
 </Steps>
 
 ### Adding Geometric Constraints
 
-<Tabs>
-  <TabItem label="Center Hole">
+If you clicked exactly on the origin and on the horizontal line, FreeCAD added these two constraints by itself. If not, add them now:
 
-    **Make shaft hole concentric with origin (if you did not already *'Click at the origin'* above):**
+<Steps>
 
-    <Steps>
-    1. Click **Coincident constraint** tool
-    2. Click the **center** of the inner small circle
-    3. Click the **origin point**
-    4. Press **Escape**
-    </Steps>
+1. **Shaft hole on the center:** click the **Coincident constraint** tool, the **center** of the inner circle, then the **origin point**
 
-    The shaft hole is now locked to the center!
+2. **Pin hole level with the center:** click the **Horizontal constraint** tool, the **center** of the offset circle, then the **origin**. The pin hole can now move only along the horizontal line through the center
 
-  </TabItem>
-  <TabItem label="Pin Alignment">
-
-    **Make rod pin horizontally aligned (if you did not already *'Click at the origin horizontal line'* above):**
-
-    <Steps>
-    1. Click **Horizontal constraint** tool
-    2. Click the **center** of the offset circle
-    3. Click the **origin**
-    4. Press **Escape**
-    </Steps>
-
-    Alternative shortcut:
-    - Select both points (Ctrl+click)
-    - Press **H** key
-
-    The pin hole is now horizontally aligned!
-
-  </TabItem>
-  <TabItem label="Why Geometric First?">
-
-    :::note[Constraint Strategy]
-    **Always apply geometric constraints before dimensions!**
-
-    **Geometric** (Coincident, Horizontal, Parallel, etc.)
-    - Define relationships and design intent
-    - Lock down the configuration
-
-    **Dimensional** (Distance, Radius, Angle)
-    - Set the sizes
-    - Should come after geometry is locked
-
-    This order creates stable, predictable parametric behavior.
-    :::
-
-  </TabItem>
-</Tabs>
+</Steps>
 
 ### Adding Dimensions (The Parametric Part!)
 
 <Tabs>
-  <TabItem label="Outer Radius">
+  <TabItem label="Three Radii">
+
+    These three sizes are for fit, so you type them.
 
     <Steps>
-    1. Click the **outer circle**, then **press 'K' and 'R' in quick succession** to activate the **Radius Constraint Dimensioning Tool** (or go to Sketch → Sketcher Constraints → Constrain Radius).
-    2. Type `40`
-    3. Click **OK**.
+    1. Click the **outer circle**, then **press 'K' and 'R' in quick succession** to activate the **Radius Constraint Dimensioning Tool** (or go to Sketch → Sketcher Constraints → Constrain Radius). Type `40` and click **OK**.
+    2. Click the **inner circle**, press **K, R**, type `8` and press **Enter**.
+    3. Click the **offset circle**, press **K, R**, type `5` and press **Enter**.
     </Steps>
 
-    Crank disk is now 40mm radius.
-
   </TabItem>
-  <TabItem label="Shaft Hole">
+  <TabItem label="Parametric Distance">
+
+    This dimension sets the motion, so it must come from the spreadsheet and not from the keyboard.
 
     <Steps>
-    1. Click the **inner circle**, then **press 'K' and 'R' in quick succession**
-    2. Type: `8`
-    3. Press **Enter**
-    </Steps>
-
-    8mm radius shaft hole created.
-
-  </TabItem>
-  <TabItem label="Rod Pin Hole">
-
-    <Steps>
-    1. Click the **offset circle**, then **press 'K' and 'R' in quick succession**
-    2. Type: `5`
-    3. Press **Enter**
-    </Steps>
-
-    5mm radius pin hole created.
-
-  </TabItem>
-  <TabItem label="Parametric Distance!">
-
-    <Card title="🎯 Critical Parametric Link" icon="star">
-
-    This is where it gets powerful!
-
-    </Card>
-
-    <Steps>
-    1. Click the **origin point**, then click the **origin point of the Rod Pin Hole circle**.
-    2. **Press 'L'** to activate the **Constraint Horizontal Distance Dimensioning Tool**. **Don't type a number!** 
+    1. Click the **origin point**, then click the **center point of the pin hole circle**.
+    2. **Press 'L'** to activate the **Constraint Horizontal Distance Dimensioning Tool**. Do not type a number.
     3. Click the small **fx** button and in the formula editor, start typing *Spreadsh...* and `<<Spreadsheet>>` will appear. Then, click it. Next, start typing the alias *Crank...* and `CrankRadius` will appear. Click it.
-    4. Click **OK** and you will see `Radius: 30.00`.
+    4. The editor shows the result, 30 mm. Click **OK**.
     5. Click **OK** again.
     </Steps>
 
-    **Magic!** The dimension now shows "30mm" and will update whenever you change the spreadsheet!
-
-    :::tip[This Is Parametric Design]
-    You just linked a dimension to a parameter. This single step is what separates amateur CAD from professional parametric design. The geometry is now **'intelligent'** and **controllable**.
-    :::
+    The dimension shows 30 mm and now follows cell B2.
 
   </TabItem>
 </Tabs>
+
+Count what you removed: 2 for each of the two centers on the origin, 1 for the pin hole level with the origin, 3 for the radii and 1 for the distance. That is $2 + 2 + 1 + 3 + 1 = 9$, all the degrees of freedom of the three circles.
 
 ### Finalizing the Sketch
 
@@ -673,67 +366,36 @@ The crank is a rotating disc with:
 1. **Check the solver**
 
    Look at "Solver Messages" panel (left side):
-   - Should say **"Fully constrained"**
-   - If it says "X degrees of freedom", you're missing constraints
+   - It must say **"Fully constrained"**
+   - If it says "X degrees of freedom", compare your sketch with the count above to find the missing constraint
 
 2. **Close the sketch**
 
    Click the **Close** button in the toolbar
 
-   The sketch is now a 2D profile visible in the 3D view
+   The sketch is now a flat outline in the 3D view
 
 </Steps>
 
 ### Creating 3D: Pad Operation
 
-<Tabs>
-  <TabItem label="What is Pad?">
+**Pad** pushes a flat sketch out at a right angle to its plane and makes a solid. The two inner circles become holes.
 
-    <Card title="📦 Pad Operation" icon="document">
+<Steps>
 
-    **Pad** extrudes a 2D sketch into a 3D solid by adding thickness perpendicular to the sketch plane.
+1. **Select the sketch** in the tree (under Crank body)
 
-    Think: "Push the sketch upward to create volume"
+2. Click **Pad** tool in Part Design toolbar
 
-    </Card>
+3. In the Pad panel (left side):
+   - Type: **Dimension**
+   - Length: `10` mm (crank thickness)
 
-  </TabItem>
-  <TabItem label="Applying Pad">
+4. Click **OK**
 
-    <Steps>
+</Steps>
 
-    1. **Select the sketch** in the tree (under Crank body)
-
-    2. Click **Pad** tool in Part Design toolbar
-
-    3. In the Pad panel (left side):
-       - Type: **Dimension**
-       - Length: `10` mm (crank thickness)
-
-    4. Click **OK**
-
-    </Steps>
-
-    **You now have a 3D crank!**
-
-  </TabItem>
-  <TabItem label="Viewing Your Part">
-
-    **Navigate the 3D view:**
-
-    - Press **V** then **F** to fit all
-    - Rotate view with middle mouse button
-    - See the disc with holes!
-
-    :::note[What You Created]
-    - A parametric 3D part
-    - Controlled by spreadsheet
-    - Fully constrained
-    - Ready for assembly
-    :::
-
-  </TabItem>
-</Tabs>
+Press **V** then **F** to fit the view. You see a disc 10 mm thick with two holes.
 
 ## Part 5: Creating the Connecting Rod
 
@@ -742,15 +404,7 @@ The crank is a rotating disc with:
 
 ### Design Intent
 
-The connecting rod is a rectangular plate with circular holes at each end for pins.
-
-<Card title="🔧 Rod Requirements" icon="puzzle">
-
-- **Parametric length** - Controlled by `Spreadsheet.RodLength`
-- **Holes at both ends** - For crank pin and slider pin
-- **Rectangular body** - Structural beam between holes
-
-</Card>
+The connecting rod is a flat bar with a pin hole at each end. Only the distance between the holes sets the motion: `Spreadsheet.RodLength`. The outline is two circles joined by two lines that are tangent to both, so it follows the holes when the rod length changes and needs no width dimension.
 
 ### Creating the Rod
 
@@ -775,61 +429,34 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
 <Tabs>
   <TabItem label="Outer Circles">
 
-    **Create the end profiles:**
-
     <Steps>
     1. **Circle tool** (press **G, C**)
     2. Click **anywhere on the left side** of the sketch area and draw the first circle
-    3. Repeat the process **to the right** of the first circle (arbitrary distance) to draw the second circle
+    3. Draw a second circle **to the right** of the first, at any distance
     4. Press **Escape**
-
-    5. Select the **left circle**
-    6. Radius constraint: Press **K, R**
-       - Type: `10` mm  
-       - Enter
-
-    7. **Repeat for right circle:**
-       - **K, R** → Radius = `8` mm
-       - Enter
+    5. Select the **left circle**, press **K, R**, type `10` mm, then Enter
+    6. Select the **right circle**, press **K, R**, type `8` mm, then Enter
     </Steps>
-
-    The two circles define the rod ends. Their spacing will be controlled later using constraints.
 
   </TabItem>
 
   <TabItem label="Top & Bottom Lines">
 
-    **Create tangent boundaries:**
-
     <Steps>
     1. **Line tool** (press **G, L**)
-    2. Draw a **long horizontal line above** both circles  
-       - Start **well before** the left circle  
-       - End **well after** the right circle
-    3. Press **Escape**
-
-    4. Draw a **second horizontal line below** both circles
-       - Again, extend it past both circles
-    5. Press **Escape**
+    2. Draw a **long horizontal line above** both circles. Start **well before** the left circle and end **well after** the right circle
+    3. Draw a **second horizontal line below** both circles in the same way
+    4. Press **Escape**
     </Steps>
-
-    These lines will later become tangent to the circles and trimmed to form the rod body.
 
   </TabItem>
 
   <TabItem label="Tangent Constraints & Trim">
 
-    **Constrain and clean geometry:**
-
     <Steps>
     1. **Apply tangent constraints**:
        - Click **top line**, then **left circle arc**, press **T**
-       - Repeat for:
-         - Top line → left circle
-         - Top line → right circle
-         - Bottom line → left circle
-         - Bottom line → right circle  
-       *(4 tangents total)*
+       - Repeat for top line and right circle, bottom line and left circle, bottom line and right circle *(4 tangents total)*
 
     2. **Trim excess geometry**:
        - Trim tool (**G, T**)
@@ -838,35 +465,19 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
     3. Press **Escape**
     </Steps>
 
-    The rod outline is now defined by tangency — strong, clean constraints with minimal dimensions.
+    Tangency now fixes the outline: each line must touch both circles.
 
   </TabItem>
 
   <TabItem label="Alignment & Length">
 
-    **Align and parametrize the sketch:**
+    The two circles can still drift apart, tilt, and move as a pair. Three constraints stop that, and the second is the link to the spreadsheet:
 
     <Steps>
-    1. **Align circle centers horizontally**:
-       - Click **left circle center**
-       - Click **right circle center**
-       - Press **H**
-
-    2. **Set rod length parametrically**:
-       - Click **left circle center**
-       - Click **right circle center**
-       - Press **L** (horizontal distance)
-       - Click **ƒx**
-       - Enter: `Spreadsheet.RodLength`
-       - OK
-
-    3. **Fix left end to origin**:
-       - Click **left circle center**
-       - Click **origin**
-       - Press **C** (coincident)
+    1. **Level:** click the **left circle center**, then the **right circle center**, and press **H**
+    2. **Length:** click the same two centers, press **L** (horizontal distance), click **ƒx**, enter `Spreadsheet.RodLength`, then OK
+    3. **Position:** click the **left circle center**, then the **origin**, and press **C** (coincident)
     </Steps>
-
-    The rod length is now fully driven by the spreadsheet and anchored to the origin.
 
   </TabItem>
 </Tabs>
@@ -874,16 +485,7 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
 <Tabs>
   <TabItem label="Check & Pad">
 
-    **Verify and create solid:**
-
-    :::caution[Check Solver]
-    Solver should report: **"Fully constrained"**
-
-    If not:
-    - Missing tangent constraint?
-    - Circle centers not horizontally aligned?
-    - Left circle not coincident with origin?
-    :::
+    The solver must report **"Fully constrained"**. If it does not, look for a missing tangent, centers that are not level, or a left circle that is not on the origin.
 
     <Steps>
     1. Confirm **Fully constrained**
@@ -892,13 +494,9 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
     4. OK
     </Steps>
 
-    The outer rod body is complete.
-
   </TabItem>
 
   <TabItem label="Inner Holes">
-
-    **Create pin holes using a secondary sketch:**
 
     <Steps>
     1. Click the **top face** of the rod
@@ -919,29 +517,25 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
        - OK
     </Steps>
 
-    Using external geometry guarantees perfect alignment with the outer profile.
+    External geometry lets a sketch use an edge that already exists. The hole takes its center from the arc of the rod end, so it stays in the middle of that end when RodLength changes.
+
+    :::caution[Check the pin sizes]
+    The left hole (radius 8 mm) meets the pin hole of the crank (radius 5 mm). The assembly only lines up the two axes, so it still works, but one real pin cannot fit both. For a rod you intend to make, use 5 mm here.
+    :::
 
   </TabItem>
 
   <TabItem label="Hole Feature & Finish">
 
-    **Cut through the body:**
-
     <Steps>
     1. Close sketch
-    2. Select **one hole circle sketch**
-       - If hidden, click the **eye icon** or double-click the sketch
-    3. Click **Hole tool**
-       - Depth: **Through all**
-       - Diameter: `R × 2`
-       - OK
-
+    2. Select **one hole circle sketch** (if hidden, click the **eye icon**)
+    3. Click **Hole tool**, set Depth: **Through all** and Diameter: `R × 2`, then OK
     4. **Repeat** for the second hole
-    5. Press **V, F** → View Fit
-    6. **Save**: **Ctrl + S**
+    5. Press **V, F** to fit the view, then **Ctrl + S** to save
     </Steps>
 
-    **Connecting rod complete and fully parametric!**
+    The Hole tool takes only the centers from the sketch and applies the diameter you type. If your two holes come out equal, use **Pocket** with **Through all**: it cuts each circle at the radius you drew.
 
   </TabItem>
 </Tabs>
@@ -953,7 +547,7 @@ The connecting rod is a rectangular plate with circular holes at each end for pi
 
 ### Design Intent
 
-The slider is a block that moves linearly, with a hole for the connecting rod pin.
+The slider is a block 40 mm long, 30 mm high and 20 mm thick. It is drawn symmetric about the origin, so its pin hole is in the middle: 20 mm from each end and 15 mm above the bottom face. The frame needs these two numbers.
 
 ### Quick Creation Steps
 
@@ -978,14 +572,12 @@ The slider is a block that moves linearly, with a hole for the connecting rod pi
 
    - Click the pad and select the top face
    - Go to *Sketch* → *Create Sketch*
-   - Press **G, C** to draw a circle of an arbitrary radius starting from the **origin** within the slider block, then **right click** or **Escape**
-   - Click the **circle arc**, press **K, R**, then enter radius `10` mm (arbitrary within the block to achieve a fully constrained sketch), and **close** the sketch
-   - Click the **Hole tool**, set depth to **Through all**, and diameter to be `12 mm`, then **OK**
-   - Press **CRTL + S** to save your part design
+   - Press **G, C** and draw a circle from the **origin**, then **Escape**
+   - Click the **circle arc**, press **K, R**, then enter radius `10` mm (any radius inside the block makes the sketch fully constrained), and **close** the sketch
+   - Click the **Hole tool**, set depth to **Through all**, and diameter to be `12 mm`, then **OK**. The circle only marks the center. The 12 mm matches the right hole of the rod (radius 6 mm)
+   - Press **Ctrl + S** to save your part design
 
 </Steps>
-
-**Slider complete!**
 
 ## Part 7: Creating the Frame
 
@@ -994,9 +586,11 @@ The slider is a block that moves linearly, with a hole for the connecting rod pi
 
 ### Design Intent
 
-The frame provides:
-- Pivot mount for the crank
-- Linear guide for the slider
+The frame is the fixed link. Each of its dimensions has a reason:
+
+- Pivot hole: radius 8 mm at the origin, the same as the shaft hole of the crank.
+- Guide surface: the slider pin is 15 mm above the bottom face of the slider, so the surface must be 15 mm below the origin. At any other height the slider leaves the line through the pivot, and the stroke is no longer exactly $2r$.
+- Length: the far end of the slider reaches $l + r + 20 = 100 + 30 + 20 = 150 \text{ mm}$ from the pivot, so 160 mm leaves 10 mm to spare.
 
 ### Creating the Frame
 
@@ -1006,37 +600,33 @@ The frame provides:
 
 2. **Sketch on XY_Plane:**
 
-   - Rectangle below origin: 160mm × 20mm
+   - Rectangle below origin: 160mm × 20mm, with its top edge 15 mm below the origin
    - Circle at origin: radius = `8` mm (crank pivot)
-   - Optional: Add slider guide features (rails)
 
 3. **Pad:** `15` mm
 
 </Steps>
 
-**Frame complete!**
-
-All four parts are now ready for assembly!
+:::caution[Join the pivot hole to the guide]
+A circle alone at the origin does not touch a rectangle 15 mm below it, and Pad in FreeCAD 0.21 refuses a sketch that gives two separate solids. Draw the pivot support as part of the same closed outline, for example a post that rises from the rectangle to 10 mm above the origin, with the circle inside it as the hole.
+:::
 
 ## Part 8: Assembly
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where your individual parts come together as a functioning mechanism. FreeCAD's Assembly workbench uses constraints to define how parts relate to each other, allowing you to test motion and verify your design before manufacturing.
-</BionicText>
+The four parts now lie on top of each other at the origin. An assembly joins them with constraints between parts: this hole shares an axis with that hole, this face lies on that face. Then you can drag the crank and see whether the slider moves as calculated.
+
+:::caution[Which Assembly workbench these steps use]
+These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The names below are nearest to the **Assembly3** add-on (Axial Alignment, Plane Coincident). A2plus calls the same two axisCoincident and planeCoincident.
+
+FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground the frame where this lesson says Fixed, use a **Revolute** joint for Axial Align, and a **Slider** joint for the slider on its guide.
+:::
 
 ### Assembly Strategy
 
-<Card title="🎯 Assembly Constraints Plan" icon="rocket">
-
-1. **Frame:** Fixed (ground link)
-2. **Crank:** Rotates about fixed pivot at origin
-3. **Connecting Rod:** Pivots on crank pin and slider pin
-4. **Slider:** Constrained to linear horizontal motion
-
-</Card>
+A pin joint must leave one motion free: rotation about the pin. So at each pin you line up two hole axes, and you do not fix one part to the other. Count the freedoms in the plane: three moving parts have 3 each, 9 in all. Three pin joints remove 2 each, and the guide removes 2 (the slider cannot leave the surface and cannot turn). That leaves $9 - 6 - 2 = 1$: the crank angle. If your assembly cannot move, a constraint removes too much.
 
 ### Creating the Assembly
 
@@ -1055,69 +645,29 @@ Assembly is where your individual parts come together as a functioning mechanism
 
     3. **Add parts**
 
-       Drag parts from tree or use "Add Part" button:
-       - Frame
-       - Crank
-       - ConnectingRod
-       - Slider
+       Drag Frame, Crank, ConnectingRod and Slider from the tree, or use the "Add Part" button
+
+    4. **Fix the frame**
+
+       Select **Frame** in the assembly tree and click the **Fixed constraint** button. All motion is measured from the frame
 
     </Steps>
 
   </TabItem>
-  <TabItem label="Fixing Frame">
+  <TabItem label="Three Pin Joints">
 
     <Steps>
 
-    1. Select **Frame** in assembly tree
+    1. **Frame to crank:** select the **crank center hole axis**, then the **frame pivot hole axis**, and click **Axial Align constraint**. The two holes now share one axis, and the crank can still turn about it
 
-    2. Click **Fixed constraint** button
+    2. **Crank to rod:** rod left hole axis → crank offset pin hole axis, then Axial Align constraint
 
-    3. Frame is now locked in place (ground link)
+    3. **Rod to slider:** rod right hole axis → slider pin hole axis, then Axial Align constraint
 
-    </Steps>
-
-    :::note[Why Fix the Frame?]
-    Every mechanism needs a ground reference. The frame provides this fixed reference point from which all other motion is measured.
-    :::
-
-  </TabItem>
-  <TabItem label="Crank Rotation">
-
-    **Allow crank to rotate:**
-
-    <Steps>
-
-    1. Select **crank center hole axis**
-
-    2. Select **frame pivot hole axis**
-
-    3. Click **Axial Align constraint**
-
-    </Steps>
-
-    This aligns the axes and allows rotation! Crank can now spin about its shaft.
-
-  </TabItem>
-  <TabItem label="Rod Connections">
-
-    **Connect rod to crank:**
-
-    <Steps>
-    1. Rod left hole axis → Crank offset pin hole axis
-    2. Axial Align constraint
-    </Steps>
-
-    **Connect rod to slider:**
-
-    <Steps>
-    1. Rod right hole axis → Slider pin hole axis
-    2. Axial Align constraint
     </Steps>
 
   </TabItem>
   <TabItem label="Slider Motion">
-
-    **Constrain slider to linear motion:**
 
     <Steps>
     1. Select **slider bottom face**
@@ -1125,25 +675,17 @@ Assembly is where your individual parts come together as a functioning mechanism
     3. Apply **Plane coincident** or **Linear constraint**
     </Steps>
 
-    This keeps slider on the guide!
+    The slider now stays on the guide surface and cannot turn.
 
   </TabItem>
   <TabItem label="Testing">
 
-    **Test the mechanism:**
+    Drag the crank in the assembly view and compare with the calculation:
+    - The crank turns a full circle
+    - The slider pin moves between 70 mm and 130 mm from the pivot, a stroke of 60 mm
+    - The rod leans most, about 17.5°, when the crank stands at 90° to the guide
 
-    Try dragging the crank in the assembly view:
-    - Crank should rotate
-    - Rod should follow
-    - Slider should move linearly!
-
-    :::tip[Troubleshooting Motion]
-    **If mechanism won't move:**
-    - Check that only Frame is Fixed
-    - All pin joints should be Axial Align (not Fixed!)
-    - Remove any redundant constraints
-    - Ensure DOF (degrees of freedom) allows rotation
-    :::
+    If nothing moves, see Common Issues and Solutions below.
 
   </TabItem>
 </Tabs>
@@ -1154,6 +696,8 @@ Assembly is where your individual parts come together as a functioning mechanism
 
 
 ### Creating Professional Documentation
+
+The workshop does not open your model. It reads a drawing. TechDraw makes views that stay linked to the part, so a drawing follows the spreadsheet as the parts do.
 
 <Steps>
 
@@ -1185,21 +729,21 @@ Assembly is where your individual parts come together as a functioning mechanism
 
 </Steps>
 
-You now have professional engineering documentation!
-
 ## Part 10: Testing Parametric Control
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-This is the moment of truth! A truly parametric model updates correctly when you change parameters. Let's verify your design is intelligent and responsive.
-</BionicText>
+The test of a parametric model is to change a value and see what breaks. Before each recompute, calculate what the slider should do, then compare.
 
 ### Verification Tests
 
 <Tabs>
   <TabItem label="Test 1: Crank Radius">
+
+    :::caution[Let the crank disc grow with the pin]
+    The disc has a typed radius of 40 mm, so the pin hole stays inside it only while CrankRadius + 5 mm is less than 40 mm. Before these tests, open the crank sketch and replace the outer radius `40` with the expression `Spreadsheet.CrankRadius + 10`. The frame keeps its 160 mm length, so with the larger values the slider travels past its end unless you lengthen it.
+    :::
 
     <Steps>
 
@@ -1217,16 +761,12 @@ This is the moment of truth! A truly parametric model updates correctly when you
 
        Press **Ctrl+R** or click Recompute button
 
-    4. **Observe changes:**
+    4. **Compare with the calculation:**
 
-       - Crank pin moves outward!
-       - Stroke increases to 80mm!
-       - Rod adjusts!
-       - Assembly updates!
+       - Stroke: $2 \times 40 = 80 \text{ mm}$. The slider pin moves between $100 - 40 = 60 \text{ mm}$ and $100 + 40 = 140 \text{ mm}$
+       - $l/r = 100 / 40 = 2.5$, below the rule of 3. The rod leans up to 23.6°, so this crank needs a longer rod
 
     </Steps>
-
-    ✅ **Success!** Your model is parametric!
 
   </TabItem>
   <TabItem label="Test 2: Rod Length">
@@ -1240,15 +780,12 @@ This is the moment of truth! A truly parametric model updates correctly when you
 
     2. **Recompute** (Ctrl+R)
 
-    3. **Verify:**
+    3. **Compare with the calculation** (CrankRadius is still 40):
 
-       - Connecting rod is now longer!
-       - Motion profile changes slightly
-       - All constraints maintain
+       - The stroke is still 80 mm, because the rod length does not set it
+       - $l/r = 120 / 40 = 3$. The slider pin moves between 80 mm and 160 mm, and the rod leans up to 19.5°
 
     </Steps>
-
-    ✅ **Your rod is parametric too!**
 
   </TabItem>
   <TabItem label="Test 3: Combination">
@@ -1261,237 +798,47 @@ This is the moment of truth! A truly parametric model updates correctly when you
 
     </Steps>
 
-    **Entire mechanism scales up!**
+    The stroke grows to $2 \times 50 = 100 \text{ mm}$. With $l/r = 150 / 50 = 3$ the largest rod angle is 19.5°.
 
-    Try extreme values:
-    - CrankRadius = 20, RodLength = 80
-    - CrankRadius = 60, RodLength = 200
-
-    Everything should update cleanly!
-
-    :::caution[If Updates Fail]
-    **Problem:** Some parts don't update
-
-    **Check:**
-    - Did you use formulas (`Spreadsheet.CrankRadius`) not hardcoded values?
-    - Are all sketches fully constrained?
-    - Try recomputing individual bodies
-    :::
+    Then try CrankRadius 20 with RodLength 80, and 60 with 200. Each time the model must rebuild with no error.
 
   </TabItem>
   <TabItem label="Design Exploration">
 
     **Try these ratios:**
 
-    | l/r Ratio | CrankRadius | RodLength | Character |
-    |-----------|-------------|-----------|-----------|
-    | 3:1 | 30 | 90 | Compact, higher side forces |
-    | 4:1 | 30 | 120 | Balanced design |
-    | 5:1 | 30 | 150 | Low side forces, larger |
+    | l/r Ratio | CrankRadius | RodLength | Largest rod angle | Character |
+    |-----------|-------------|-----------|-------------------|-----------|
+    | 3:1 | 30 | 90 | 19.5° | Compact, higher side forces |
+    | 4:1 | 30 | 120 | 14.5° | Balanced design |
+    | 5:1 | 30 | 150 | 11.5° | Low side forces, larger |
 
-    Watch how motion characteristics change!
+    The stroke is 60 mm in all three rows. Only the lean of the rod and the length of the machine change.
 
   </TabItem>
 </Tabs>
-
-## Learning Outcomes
-
-<InArticleAd />
-
-
-**Congratulations!** By completing this lesson, you have:
-
-<CardGrid>
-  <Card title="✅ Navigated FreeCAD" icon="approve-check">
-    Interface, workbenches, 3D navigation
-  </Card>
-
-  <Card title="✅ Created Constrained Sketches" icon="pencil">
-    Geometric and dimensional constraints
-  </Card>
-
-  <Card title="✅ Built Parametric Parts" icon="setting">
-    Spreadsheet-driven design
-  </Card>
-
-  <Card title="✅ Assembled Mechanisms" icon="puzzle">
-    Motion constraints and testing
-  </Card>
-
-  <Card title="✅ Generated Drawings" icon="document">
-    Professional documentation
-  </Card>
-
-  <Card title="✅ Tested Parametric Control" icon="star">
-    Verified intelligent updates
-  </Card>
-</CardGrid>
-
-**Most importantly:** You've designed a complete, functional mechanism from scratch using professional parametric CAD methodology!
-
-## Design Verification Checklist
-
-<InArticleAd />
-
-
-Use this checklist to verify your design:
-
-:::note[Verification Questions]
-
-**Mechanism Function:**
-- [ ] Does the crank rotate 360° smoothly?
-- [ ] Does the slider move purely linearly (no lateral drift)?
-- [ ] Is stroke = 2 × CrankRadius? (Measure in assembly)
-
-**Parametric Behavior:**
-- [ ] Changing CrankRadius updates crank, rod, slider correctly?
-- [ ] Changing RodLength updates rod geometry?
-- [ ] All constraints maintain when parameters change?
-
-**Model Quality:**
-- [ ] All sketches show "Fully constrained"?
-- [ ] No regeneration errors when recomputing?
-- [ ] Assembly moves without binding?
-
-**Documentation:**
-- [ ] Can you export a PDF drawing of any part?
-- [ ] Drawing shows critical dimensions?
-- [ ] Title block filled out?
-
-:::
 
 ## Extension Challenges
 
 <InArticleAd />
 
 
-Ready for more? Try these enhancements:
-
-<Tabs>
-  <TabItem label="Beginner">
-
-    <Steps>
-
-    1. **Add fillets**
-
-       Use Fillet tool to round sharp edges (3mm radius)
-
-    2. **Change materials**
-
-       Assign different materials to parts (steel, aluminum)
-
-    3. **Add more parameters**
-
-       Control crank thickness, rod width, slider size via spreadsheet
-
-    </Steps>
-
-  </TabItem>
-  <TabItem label="Intermediate">
-
-    <Steps>
-
-    1. **Create wrist pin**
-
-       Separate part connecting rod and slider
-
-    2. **Add piston ring groove**
-
-       Use Pocket tool to cut groove in slider
-
-    3. **Exploded view**
-
-       Create exploded assembly view in TechDraw
-
-    </Steps>
-
-  </TabItem>
-  <TabItem label="Advanced">
-
-    <Steps>
-
-    1. **Motion study**
-
-       Calculate slider velocity and acceleration formulas
-
-    2. **Multiple configurations**
-
-       Create versions with different l/r ratios
-
-    3. **FEA analysis**
-
-       Apply FEM workbench to analyze rod stresses
-
-    </Steps>
-
-  </TabItem>
-</Tabs>
+1. Put the crank thickness and the slider size in the spreadsheet.
+2. Model the pin that joins the rod to the slider as a separate part.
+3. Make the frame length an expression of CrankRadius and RodLength, so that the guide is always long enough.
 
 ## Common Issues and Solutions
 
 <InArticleAd />
 
 
-<Tabs>
-  <TabItem label="Sketch Issues">
-
-    **"Sketch not fully constrained"**
-
-    :::caution[Solution]
-    - Check Solver Messages: "X degrees of freedom"
-    - Add missing constraints until DOF = 0
-    - Common missing: Horizontal/Vertical on lines, Coincident on centers
-    :::
-
-    **"Cannot pad sketch"**
-
-    :::caution[Solution]
-    - Sketch must form closed regions
-    - Check for gaps in your profile
-    - Ensure lines connect at endpoints
-    :::
-
-  </TabItem>
-  <TabItem label="Parametric Issues">
-
-    **"Formula error in dimension"**
-
-    :::caution[Solution]
-    - Check spelling: `Spreadsheet.CrankRadius` (case-sensitive!)
-    - Verify alias was created in spreadsheet properties
-    - Try re-entering the formula
-    :::
-
-    **"Part doesn't update with parameter"**
-
-    :::caution[Solution]
-    - Did you use formula or hardcode value?
-    - Check dimension: Should show formula icon (ƒx)
-    - Manually recompute that body (right-click → Recompute)
-    :::
-
-  </TabItem>
-  <TabItem label="Assembly Issues">
-
-    **"Parts don't move"**
-
-    :::caution[Solution]
-    - Only Frame should be Fixed!
-    - All pins should be Axial Align (not Fixed)
-    - Remove redundant constraints
-    - Check for over-constraint (too many constraints)
-    :::
-
-    **"Parts misaligned"**
-
-    :::caution[Solution]
-    - Verify hole radii match between mating parts
-    - Check that axes are properly selected
-    - Try removing and re-applying constraint
-    :::
-
-  </TabItem>
-</Tabs>
+| Problem | What to check |
+|---------|---------------|
+| Sketch is not fully constrained | The solver message gives the number of degrees of freedom left. Look for a center that is not coincident or a line that is not horizontal |
+| Pad fails | The outline must be closed: every line must end on the next one |
+| Formula error in a dimension | The spelling of `Spreadsheet.CrankRadius` (capital letters count), and that the alias exists |
+| A part does not follow the spreadsheet | The dimension must show the ƒx sign. A typed number does not update |
+| The assembly does not move | Only the frame is Fixed. Every pin is Axial Align |
 
 ## Related Resources
 
@@ -1509,27 +856,7 @@ Ready for more? Try these enhancements:
 <InArticleAd />
 
 
-In **Lesson 2: Four-Bar Linkage Mechanism**, you'll explore:
-
-<CardGrid>
-  <Card title="Master Sketch Approach" icon="star">
-    Control multiple parts from one kinematic layout
-  </Card>
-
-  <Card title="Construction Geometry" icon="pencil">
-    Reference-only geometry for design intent
-  </Card>
-
-  <Card title="Grashof's Theorem" icon="document">
-    Link length relationships and motion types
-  </Card>
-
-  <Card title="External References" icon="puzzle">
-    Parts referencing shared geometry
-  </Card>
-</CardGrid>
-
-Each lesson builds on these fundamentals while introducing new mechanisms and CAD techniques!
+The next mechanism is the [four-bar linkage](/education/parametric-mechanical-cad-freecad/four-bar-linkage-mechanism/). There one master sketch holds the joint positions for all four parts, and a rule on the four lengths tells you whether the crank can turn a full circle.
 
 
 

@@ -105,7 +105,7 @@ Where:
 - $\omega$ = angular velocity
 - $t$ = time
 
-**Key Characteristic:** Yoke displacement is exactly proportional to sin(θ), where θ is crank angle.
+**Key Characteristic:** Yoke displacement is exactly proportional to $\sin(\theta)$, where $\theta$ is crank angle.
 
 :::tip[Engineering Insight]
 The acceleration being proportional and opposite to displacement is the hallmark of simple harmonic motion. This is the same physics governing pendulums, springs, and waves!
@@ -337,7 +337,7 @@ By using spreadsheet formulas for dependent dimensions (Stroke = 2r, SlotWidth =
 
 2. **Insert a spreadsheet**
 
-   Insert → Spreadsheet
+   Switch to the Spreadsheet workbench, then Spreadsheet → Create Spreadsheet
 
    A "Spreadsheet" object appears in the tree
 
@@ -413,7 +413,7 @@ Notice how SlotWidth and SlotLength automatically update based on other paramete
 | Cell | Value/Formula | Notes |
 |------|---------------|-------|
 | **A8** | YokeWidth | |
-| **B8** | 60 | |
+| **B8** | =B7+30 | 140, auto-sized: must be wider than the slot |
 | **C8** | mm | |
 | **A9** | YokeHeight | |
 | **B9** | 80 | |
@@ -527,7 +527,7 @@ The crank is a rotating disk with:
 
 1. **Draw the outer circle**
 
-   - Click **Circle tool** (or press C)
+   - Click **Circle tool** (or press G, C)
    - Click at the **origin** (white/yellow dot at center)
    - Move mouse outward and click to complete
    - Press **Escape**
@@ -551,7 +551,7 @@ The crank is a rotating disk with:
 
 1. **Draw shaft hole circle**
 
-   - **Circle tool** (C)
+   - **Circle tool** (G, C)
    - Click at **origin**
    - Draw smaller circle inside
    - Press **Escape**
@@ -584,7 +584,7 @@ The crank is a rotating disk with:
 
 1. **Draw pin circle**
 
-   - **Circle tool** (C)
+   - **Circle tool** (G, C)
    - Click to the **right** of center (approximate)
    - Draw a small circle
    - Press **Escape**
@@ -618,6 +618,8 @@ The crank is a rotating disk with:
    - Press **Enter**
 
    6mm radius pin (half of 12mm diameter)
+
+   Now select this pin circle and press **G, N** to make it construction geometry. It marks the pin position, but it must not cut a hole in the disk: the pin is added as solid material in the next section.
 
 </Steps>
 
@@ -683,15 +685,15 @@ We'll create it as a separate pad feature on the crank face.
 
 2. **Draw pin circle**
 
-   - **Circle tool** (C)
-   - Click at the position where the eccentric pin hole is
-   - The sketch should snap to the existing pin center
+   - **Circle tool** (G, C)
+   - Click at the position of the eccentric pin (on the horizontal axis, to the right of center)
+   - Constrain it as before: horizontal with the origin, distance from origin `Spreadsheet.CrankRadius`
    - Press **Escape**
 
 3. **Constrain to existing geometry**
 
-   - The circle center should automatically be coincident with the pin hole center
-   - If not, add **Coincident constraint** manually
+   - The circle center must be at the same position as the pin circle of the first sketch
+   - You can also import that circle with the External Geometry tool (**G, X**) and add a **Coincident constraint** to its center
 
 4. **Set radius**
 
@@ -787,7 +789,7 @@ The yoke is a sliding block with:
    - Click left edge
    - Click right edge
    - Click **ƒx** → `Spreadsheet.YokeWidth`
-   - Enter (60mm)
+   - Enter (140mm = SlotLength + 30mm, so that the 110mm slot stays inside the yoke)
 
 4. **Dimension height (vertical)**
 
@@ -1092,7 +1094,7 @@ Assembly is where individual parts become a functioning mechanism. For the Scotc
 
 1. **Frame:** Fixed (ground reference)
 2. **Crank:** Rotates about shaft axis on frame
-3. **Yoke:** Constrained to horizontal linear motion by guide rails
+3. **Yoke:** Constrained to linear motion along the Y-axis (at a right angle to its slot) by guide rails
 4. **Pin-in-slot:** Conceptual connection (pin travels within slot)
 
 </Card>
@@ -1184,7 +1186,7 @@ Axial Align constraint makes two cylindrical axes coincident, allowing rotation 
 
 </Steps>
 
-The yoke should now only be able to move horizontally (along Y-axis)!
+The yoke should now only be able to move in one direction (along the Y-axis)!
 
 </TabItem>
 <TabItem label="Pin-in-Slot Connection">
@@ -1216,16 +1218,18 @@ Position the crank at different angles (0°, 90°, 180°, 270°) and manually po
 
 | Crank Angle | Pin Position | Yoke Position |
 |-------------|--------------|---------------|
-| **0°** | Right (+X) | x = +40mm (max right) |
-| **90°** | Top (+Z) | x = 0mm (center) |
-| **180°** | Left (-X) | x = -40mm (max left) |
-| **270°** | Bottom (-Z) | x = 0mm (center) |
-| **360°** | Right (+X) | x = +40mm (returns to start) |
+| **0°** | Right (+X) | x = 0mm (center) |
+| **90°** | Top (+Y) | x = +40mm (maximum) |
+| **180°** | Left (-X) | x = 0mm (center) |
+| **270°** | Bottom (-Y) | x = -40mm (minimum) |
+| **360°** | Right (+X) | x = 0mm (returns to start) |
+
+Here x is the yoke displacement $x = r \sin\theta$, measured along its direction of travel (the Y-axis of the model). The pin moves the yoke only through the part of its motion that is at a right angle to the slot.
 
 <Steps>
 
 1. Rotate crank to 0° (pin pointing right)
-2. Position yoke at maximum right position
+2. Position yoke at its center position
 3. Verify pin is in slot
 4. Repeat for other angles
 
@@ -1238,11 +1242,11 @@ Position the crank at different angles (0°, 90°, 180°, 270°) and manually po
 
 <Steps>
 
-1. Measure yoke position at maximum right (crank at 0°)
+1. Measure yoke position at its maximum (crank at 90°)
 
    Should be: x = +CrankRadius = +40mm
 
-2. Measure yoke position at maximum left (crank at 180°)
+2. Measure yoke position at its minimum (crank at 270°)
 
    Should be: x = -CrankRadius = -40mm
 
@@ -1317,7 +1321,7 @@ In a separate area of the drawing:
 
 1. Draw crank at 4 positions: 0°, 90°, 180°, 270°
 2. Show corresponding yoke positions
-3. Plot curve: x = r × sin(θ)
+3. Plot curve: $x = r \times \sin(\theta)$
 
 **Table of values:**
 
@@ -1570,8 +1574,8 @@ Use this checklist to verify your design:
 - [ ] Do formulas in spreadsheet calculate correctly?
 
 **Motion Verification:**
-- [ ] At crank 0°, is yoke at x = +CrankRadius?
-- [ ] At crank 180°, is yoke at x = -CrankRadius?
+- [ ] At crank 90°, is yoke at x = +CrankRadius?
+- [ ] At crank 270°, is yoke at x = -CrankRadius?
 - [ ] Is total yoke travel = Stroke = 2 × CrankRadius?
 - [ ] Can crank rotate full 360° without binding?
 
@@ -1679,7 +1683,7 @@ Where:
 
 **Why Scotch yoke has higher friction than slider-crank:**
 - Continuous sliding contact vs. pivoting joints
-- Sliding velocity = $r \times \omega \times \cos(\theta)$ (not zero)
+- Sliding velocity of the pin along the slot = $r \times \omega \times \sin(\theta)$ in size (zero only twice per turn)
 
 </TabItem>
 </Tabs>
@@ -1842,7 +1846,7 @@ Ready for more? Try these enhancements:
 :::caution[Solution]
 - Check crank pin distance from origin: should equal CrankRadius exactly
 - Verify distance constraint on pin uses formula: `Spreadsheet.CrankRadius`
-- Measure yoke position at crank 0° and 180°
+- Measure yoke position at crank 90° and 270°
 - Difference should equal 2r (80mm for r=40mm)
 :::
 

@@ -123,22 +123,22 @@ A Geneva mechanism consists of three key elements working together:
 
     <Card title="⚙️ Critical Design Parameters" icon="setting">
 
-    **Number of slots (n)**
+    **Number of slots ($n$)**
     - Typically 4, 5, 6, or 8
-    - Determines index angle: θ = 360° / n
+    - Determines index angle: $\theta = 360° / n$
     - More slots = smaller index steps
 
-    **Driver radius (R_d)**
+    **Driver radius ($R_d$)**
     - Distance from driver center to pin center
-    - Controls mechanism size and geometry
+    - Calculated: $R_d = C \times \sin(180° / n)$, where $C$ is the center distance
 
-    **Driven wheel radius (R_g)**
+    **Driven wheel radius ($R_g$)**
     - Distance from center to slot entry
-    - Calculated: R_g = R_d × tan(180° / n)
+    - Calculated: $R_g = R_d / \tan(180° / n) = C \times \cos(180° / n)$
 
     **Dwell ratio**
     - Fraction of driver rotation where driven wheel is stationary
-    - For n slots: Dwell = (n - 2) / n of full rotation
+    - For $n$ slots: Dwell $= (n + 2) / (2n)$ of full rotation
 
     </Card>
 
@@ -154,12 +154,14 @@ For an external Geneva mechanism with n slots:
 
     **Driven wheel radius calculation:**
 
-    $$R_g = R_d \times \tan\left(\frac{180°}{n}\right)$$
+    $$R_g = \frac{R_d}{\tan\left(\frac{180°}{n}\right)}$$
 
     **Where:**
-    - R_g = Geneva wheel radius (center to slot entry)
-    - R_d = Driver radius (center to pin)
-    - n = Number of slots
+    - $R_g$ = Geneva wheel radius (center to slot entry)
+    - $R_d$ = Driver radius (center to pin), with $R_d = C \sin(180°/n)$ for center distance $C$
+    - $n$ = Number of slots
+
+    These two radii make the pin enter and leave each slot along the slot direction, with no impact: at entry the crank is at a right angle to the slot, so $R_d^2 + R_g^2 = C^2$.
 
     **Slot spacing:**
 
@@ -174,16 +176,16 @@ For an external Geneva mechanism with n slots:
 
     **Dwell angle:**
 
-    $$\text{Dwell} = \frac{360° \times (n - 2)}{n}$$
+    $$\text{Dwell} = 180° + \frac{360°}{n} = \frac{360° \times (n + 2)}{2n}$$
 
     **Index duration:**
 
-    $$\text{Index} = \frac{360°}{n}$$
+    $$\text{Index} = 180° - \frac{360°}{n}$$
 
     :::note[Example: 6-Slot Geneva]
     - Index angle: 360° / 6 = 60° per step
-    - Dwell: 360° × (4/6) = 240° of driver rotation
-    - Index: 360° / 6 = 60° of driver rotation
+    - Dwell: 180° + 60° = 240° of driver rotation
+    - Index: 180° - 60° = 120° of driver rotation
     - The driven wheel is stationary for 2/3 of each cycle!
     :::
 
@@ -192,9 +194,9 @@ For an external Geneva mechanism with n slots:
 
     | Slots | Index Angle | Dwell Ratio | Application |
     |-------|-------------|-------------|-------------|
-    | **4-slot** | 90° | 50% (180°) | Film projectors |
+    | **4-slot** | 90° | 75% (270°) | Film projectors |
     | **6-slot** | 60° | 67% (240°) | Machine tool changers |
-    | **8-slot** | 45° | 75% (270°) | High-frequency indexing |
+    | **8-slot** | 45° | 62.5% (225°) | High-frequency indexing |
 
     We'll build a **6-slot Geneva** for balanced performance and clear learning.
 
@@ -387,7 +389,7 @@ We'll design a **6-slot external Geneva mechanism**:
 
 2. **Insert a spreadsheet**
 
-   Insert → Spreadsheet
+   Switch to the Spreadsheet workbench, then Spreadsheet → Create Spreadsheet
 
    A "Spreadsheet" object appears in the left tree
 
@@ -434,11 +436,11 @@ We'll design a **6-slot external Geneva mechanism**:
     | **C7** | deg | |
     | **D7** | Angular spacing | |
     | **A8** | DriverRadius | Driver radius |
-    | **B8** | =B3/2 | **Formula!** |
+    | **B8** | =B3*sin(180/B2) | **Formula!** |
     | **C8** | mm | |
     | **D8** | To pin center | |
     | **A9** | DrivenRadius | Geneva wheel radius |
-    | **B9** | =B8*TAN(180/B2) | **Formula!** |
+    | **B9** | =B8/tan(180/B2) | **Formula!** |
     | **C9** | mm | |
     | **D9** | Geometrically calculated | |
     | **A10** | WheelThickness | Thickness |
@@ -469,9 +471,12 @@ We'll design a **6-slot external Geneva mechanism**:
     - Changes with number of slots!
     - 6 slots → 60°, 4 slots → 90°
 
-    **DrivenRadius** (B9): `=B8*TAN(180/B2)`
+    **DriverRadius** (B8): `=B3*sin(180/B2)`
+    - For 6 slots: $R_d = 80 \times \sin(30°) = 40 \text{ mm}$
+
+    **DrivenRadius** (B9): `=B8/tan(180/B2)`
     - This is the **geometric relationship** from the formula!
-    - For 6 slots: R_g = R_d × tan(30°)
+    - For 6 slots: $R_g = R_d / \tan(30°) = 69.28 \text{ mm}$
     - FreeCAD calculates this automatically
 
     **SlotWidth** (B13): `=B5*2.5`
@@ -481,7 +486,7 @@ We'll design a **6-slot external Geneva mechanism**:
     </Card>
 
     :::caution[TAN Function Note]
-    In FreeCAD spreadsheet, `TAN()` expects degrees by default. The formula `TAN(180/B2)` uses the angle in degrees (30° for 6 slots). If you get unexpected values, verify your FreeCAD version's angle mode or use `TAN(RADIANS(180/B2))`.
+    In the FreeCAD spreadsheet the function names are written in lower case, and `sin()` and `tan()` read a plain number as degrees. The formula `tan(180/B2)` uses the angle in degrees (30° for 6 slots). To make the unit explicit, write `tan(180 deg / B2)`.
     :::
 
 </TabItem>
@@ -520,8 +525,8 @@ We'll design a **6-slot external Geneva mechanism**:
     - **Use formulas liberally** - Let FreeCAD do the geometry math!
     - **Document calculated values** - Column D explains what formulas mean
     - **Include units** for clarity (even though they're just documentation)
-    - **Verify calculated values** - Check that B9 shows ~46mm for 6-slot config
-    - **Test formulas** - Change NumSlots to 4, verify DrivenRadius updates
+    - **Verify calculated values** - Check that B8 shows 40 mm and B9 shows ~69.28 mm for 6-slot config
+    - **Test formulas** - Change NumSlots to 4, verify DriverRadius and DrivenRadius both update to ~56.57 mm
     :::
 
 </TabItem>
@@ -580,14 +585,14 @@ The driver wheel is a rotating disc with:
     **Draw the outer circle:**
 
     <Steps>
-    1. Click **Circle tool** (or press C)
+    1. Click **Circle tool** (or press G, C)
     2. Click at the **origin** (white/yellow dot at center)
     3. Move mouse outward and click to complete circle
     4. Press **Escape**
 
     5. **Radius constraint:**
        - Click the circle
-       - Type: `50` mm (slightly larger than DriverRadius)
+       - Click **ƒx** and type: `Spreadsheet.DriverRadius + 10` (50 mm here, so the disk stays larger than the pin circle when DriverRadius changes)
        - Press **Enter**
     </Steps>
 
@@ -599,7 +604,7 @@ The driver wheel is a rotating disc with:
     **Draw the center shaft hole:**
 
     <Steps>
-    1. **Circle tool** again (press C)
+    1. **Circle tool** again (press G, C)
     2. Click at **origin**
     3. Draw a smaller circle inside
     4. Press **Escape**
@@ -623,7 +628,7 @@ The driver wheel is a rotating disc with:
     **Draw the offset driving pin:**
 
     <Steps>
-    1. **Circle tool** (press C)
+    1. **Circle tool** (press G, C)
     2. Click somewhere to the **right** of center (on horizontal axis)
     3. Draw a small circle
     4. Press **Escape**
@@ -663,7 +668,7 @@ The driver wheel is a rotating disc with:
     - All dimensions linked to spreadsheet
 
     :::tip[Locking Arc Note]
-    For simplicity, the driver disk's outer periphery acts as the locking arc. In advanced designs, you'd create a specific arc geometry, but the circular disk works perfectly for our 6-slot Geneva!
+    For simplicity, the driver disk's outer periphery acts as the locking arc. The driver disk (radius 50 mm) and the Geneva wheel (radius 69 mm) overlap at a center distance of 80 mm, so place the driver disk on a level below the wheel in the assembly, with the pin rising into the slots. In advanced designs, you'd create a specific arc geometry, but the circular disk works perfectly for our 6-slot Geneva!
     :::
 
 </TabItem>
@@ -736,7 +741,7 @@ The Geneva wheel is the heart of the mechanism with:
     **Draw the main wheel circle:**
 
     <Steps>
-    1. **Circle tool** (press C)
+    1. **Circle tool** (press G, C)
     2. Click at **origin**
     3. Move mouse outward and click
     4. Press **Escape**
@@ -753,8 +758,8 @@ The Geneva wheel is the heart of the mechanism with:
 
     :::note[Verify Calculation]
     For 6 slots with DriverRadius = 40mm:
-    - DrivenRadius should show approximately 23mm
-    - This is R_d × tan(30°) ≈ 40 × 0.577 ≈ 23mm
+    - DrivenRadius should show approximately 69mm
+    - This is $R_d / \tan(30°) \approx 40 / 0.577 \approx 69 \text{ mm}$
     :::
 
 </TabItem>
@@ -1176,8 +1181,8 @@ Assembly is where the Geneva mechanism comes alive! You'll see discrete indexing
 All geometry updates:
 - Slots now 90° apart
 - Index angle = 90°
-- Driven radius recalculated
-- 4 slots appear on Geneva wheel
+- Driver radius and driven radius recalculated (both 56.57 mm for 4 slots)
+- 4 slots appear on Geneva wheel (after you repeat the polar pattern with 4 copies, see the Pattern Limitation note)
 
 **Test different values:**
 - NumSlots = 8 (45° indexing)
@@ -1230,7 +1235,7 @@ By completing this lesson, you have:
 
 For an external Geneva mechanism:
 
-$$R_g = R_d \times \tan\left(\frac{180°}{n}\right)$$
+$$R_g = \frac{R_d}{\tan\left(\frac{180°}{n}\right)}$$
 
 Where:
 - $R_g$ = Geneva wheel radius (center to slot entry)
@@ -1239,25 +1244,25 @@ Where:
 
 **For n = 6:**
 
-$$R_g = R_d \times \tan(30°)$$
+$$R_g = \frac{R_d}{\tan(30°)}$$
 
-$$R_g = R_d \times 0.577$$
+$$R_g = \frac{R_d}{0.577} = 1.732 \times R_d$$
 
-If $R_d = 40 \text{ mm}$, then $R_g \approx 23 \text{ mm}$.
+If $R_d = 40 \text{ mm}$, then $R_g \approx 69 \text{ mm}$.
 
 ### Dwell vs. Index Time
 
 **Dwell angle:**
 
-$$\text{Dwell} = \frac{360° \times (n - 2)}{n}$$
+$$\text{Dwell} = 180° + \frac{360°}{n} = \frac{360° \times (n + 2)}{2n}$$
 
 **Index angle:**
 
-$$\text{Index} = \frac{360°}{n}$$
+$$\text{Index} = 180° - \frac{360°}{n}$$
 
 **For 6-slot Geneva:**
-- Dwell: $\frac{360° \times 4}{6} = 240°$ of driver rotation
-- Index: $\frac{360° \times 1}{6} = 60°$ of driver rotation
+- Dwell: $180° + 60° = 240°$ of driver rotation
+- Index: $180° - 60° = 120°$ of driver rotation (the wheel itself turns $360°/6 = 60°$)
 
 ---
 
@@ -1294,9 +1299,9 @@ $$\text{Index} = \frac{360°}{n}$$
 
 ### ``Geneva wheel radius seems wrong"
 
-- **Cause:** Incorrect TAN formula or units
-- **Solution:** Verify formula: =B8*TAN(180°/B2)
-- **Fix:** Check that TAN function uses degrees (or convert with RADIANS())
+- **Cause:** Incorrect tan formula or units
+- **Solution:** Verify formula: `=B8/tan(180/B2)`
+- **Fix:** Check that the angle is in degrees (write `180 deg / B2` to be explicit)
 
 ### ``Mechanism binds during motion"
 

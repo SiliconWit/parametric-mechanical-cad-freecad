@@ -335,7 +335,7 @@ Involute gears are the industry standard for power transmission, used in automot
 - Standard tooth profiles (interchangeability)
 
 **Manual modeling challenges:**
-- Involute curve is defined by integral equation
+- Involute curve is not a simple arc: it must be computed point by point from its parametric equations
 - Each tooth requires dozens of precisely calculated points
 - Changing module or tooth count = complete redesign
 
@@ -392,6 +392,11 @@ def create_involute_gear(module, num_teeth, pressure_angle=20, thickness=10):
     # Angular tooth spacing
     tooth_angle = 2 * math.pi / num_teeth
 
+    # Half angle of one tooth, measured at the base circle:
+    # half the tooth thickness at the pitch circle, plus the involute function
+    inv_alpha = math.tan(pressure_angle_rad) - pressure_angle_rad
+    half_tooth_angle = math.pi / (2 * num_teeth) + inv_alpha
+
     # Generate one tooth profile
     def involute_point(theta):
         """Generate point on involute curve"""
@@ -399,37 +404,81 @@ def create_involute_gear(module, num_teeth, pressure_angle=20, thickness=10):
         y = base_radius * (math.sin(theta) - theta * math.cos(theta))
         return (x, y)
 
-    # Build complete gear
-    teeth_wires = []
+    def rotate(x, y, angle):
+        """Rotate a point about the gear center"""
+        return (x * math.cos(angle) - y * math.sin(angle),
+                x * math.sin(angle) + y * math.cos(angle))
+
+    def polar(radius, angle):
+        return App.Vector(radius * math.cos(angle), radius * math.sin(angle), 0)
+
+    # The involute exists only outside the base circle
+    start_radius = max(base_radius, root_radius)
+    theta_start = math.sqrt((start_radius / base_radius)**2 - 1)
+    theta_end = math.sqrt((outer_radius / base_radius)**2 - 1)
+
+    # Build complete gear outline, tooth by tooth
+    edges = []
 
     for tooth_num in range(num_teeth):
         angle_offset = tooth_num * tooth_angle
 
-        # Generate involute curve points (from base circle to outer)
-        involute_points = []
-        theta_start = 0
-        theta_end = math.sqrt((outer_radius / base_radius)**2 - 1)
+        # Generate involute curve points for both flanks of this tooth
+        involute_points = []   # first flank, from root side to tip
+        mirror_points = []     # second flank, mirrored about the tooth center
 
         for i in range(20):  # 20 points per involute curve
             theta = theta_start + (theta_end - theta_start) * i / 19.0
             x, y = involute_point(theta)
 
             # Rotate to tooth position
-            x_rot = x * math.cos(angle_offset) - y * math.sin(angle_offset)
-            y_rot = x * math.sin(angle_offset) + y * math.cos(angle_offset)
-
+            x_rot, y_rot = rotate(x, y, angle_offset - half_tooth_angle)
             involute_points.append(App.Vector(x_rot, y_rot, 0))
 
-        # Create tooth profile wire
-        # (Simplified - real implementation would include root fillet, mirror, etc.)
-        tooth_curve = Part.BSplineCurve()
-        tooth_curve.interpolate(involute_points)
-        teeth_wires.append(tooth_curve.toShape())
+            x_rot, y_rot = rotate(x, -y, angle_offset + half_tooth_angle)
+            mirror_points.append(App.Vector(x_rot, y_rot, 0))
 
-    # Create gear body (simplified - circular approximation)
-    # In production code, would build precise tooth profiles
-    gear_circle = Part.makeCircle(pitch_radius)
-    gear_face = Part.Face(Part.Wire(gear_circle))
+        mirror_points.reverse()  # now from tip to root side
+
+        # Angles where the two flanks start (at start_radius)
+        flank_start = theta_start - math.atan(theta_start)
+        start_angle = angle_offset - half_tooth_angle + flank_start
+        end_angle = angle_offset + half_tooth_angle - flank_start
+        next_start_angle = start_angle + tooth_angle
+
+        # Radial line from root circle up to the start of the involute
+        if root_radius < start_radius:
+            edges.append(Part.LineSegment(polar(root_radius, start_angle),
+                                          involute_points[0]).toShape())
+
+        # First flank
+        flank = Part.BSplineCurve()
+        flank.interpolate(involute_points)
+        edges.append(flank.toShape())
+
+        # Tip arc
+        edges.append(Part.Arc(involute_points[-1],
+                              polar(outer_radius, angle_offset),
+                              mirror_points[0]).toShape())
+
+        # Second flank
+        flank = Part.BSplineCurve()
+        flank.interpolate(mirror_points)
+        edges.append(flank.toShape())
+
+        # Radial line back down to the root circle
+        if root_radius < start_radius:
+            edges.append(Part.LineSegment(mirror_points[-1],
+                                          polar(root_radius, end_angle)).toShape())
+
+        # Root arc to the next tooth
+        edges.append(Part.Arc(polar(root_radius, end_angle),
+                              polar(root_radius, (end_angle + next_start_angle) / 2),
+                              polar(root_radius, next_start_angle)).toShape())
+
+    # Create gear body from the closed tooth outline
+    gear_wire = Part.Wire(edges)
+    gear_face = Part.Face(gear_wire)
     gear_solid = gear_face.extrude(App.Vector(0, 0, thickness))
 
     return gear_solid
@@ -617,34 +666,23 @@ def create_gear(module, num_teeth):
 <InArticleAd />
 
 
-<Card title="🔬 Real Research Example" icon="star">
+<Card title="How scripted CAD is used in implant research" icon="star">
 
-**Title:** "Optimization of Lattice Structure Density Gradients for Additive Manufacturing of Load-Bearing Implants"
+This is an illustration of a workflow that research groups use. It is not a report of one study, and it gives no results, because the numbers depend on the patient, the material and the printer.
 
-**Problem:** Design hip implant with porosity matching bone stiffness to prevent stress shielding
+**Problem:** A solid titanium hip implant is far stiffer than bone. It carries the load that the bone should carry, and the unloaded bone weakens over time. This is called stress shielding. A lattice inside the implant can lower its stiffness toward that of bone.
 
-**Python Implementation:**
+**Why it needs a script:** The right lattice density is different at every point, and finding it means building and testing many variants. Nobody can draw those by hand.
 
-1. **CT scan import** - Patient femur geometry
-2. **FEA simulation** - Stress distribution analysis
-3. **Density optimization** - Python loop varying lattice density
-4. **Lattice generation** - Cubic lattice with variable cell size
-5. **Validation** - FEA on final design
+**The scripted steps:**
 
-**Results:**
-- 60% weight reduction vs. solid titanium
-- Modulus matched to bone (±10%)
-- Predicted bone ingrowth improvement: 40%
+1. **Import the geometry.** The bone shape comes from a medical scan as a mesh.
+2. **Simulate.** A finite element model gives the stress at each point under walking loads.
+3. **Set the density.** A loop assigns a lattice density to each region from the stress there.
+4. **Generate the lattice.** The script builds cells whose size follows the density map.
+5. **Check and repeat.** The new design is simulated again, and the loop runs until the stiffness target is met.
 
-**Code:** 500 lines of Python
-
-**Design variants tested:** 1,000+
-
-**Computation time:** 48 hours (automated)
-
-**Manual equivalent:** Months of work
-
-**Publication:** Journal of Biomechanical Engineering, 2024
+**What the script buys:** hundreds of design variants built and checked overnight, with every one of them reproducible from the same file.
 
 </Card>
 
@@ -662,11 +700,7 @@ def create_gear(module, num_teeth):
 Install Python packages in FreeCAD's Python environment:
 
 ```bash
-# On Windows (FreeCAD Python console)
-import pip
-pip.main(['install', 'numpy'])
-
-# On Linux/Mac
+# Use the Python that ships with FreeCAD (on Windows: python.exe in FreeCAD's bin folder)
 /path/to/freecad/python -m pip install numpy
 ```
 :::

@@ -26,7 +26,7 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 import YouTube from '../../../../components/YouTube.jsx';
 
-A single hydraulic cylinder gives you limited stroke, typically a few hundred millimeters. A scissor lift multiplies that stroke through cascaded X-shaped links: three stages can turn 100 mm of cylinder travel into 600 mm of vertical rise while keeping the footprint compact and the load centered. The challenge is that each additional stage changes the geometry of every other stage, making manual dimensioning tedious and error-prone. In this lesson you will design a scissor lift in FreeCAD where a single parameter controls the number of stages and every link updates automatically. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
+A scissor lift that is sized for its raised position stalls at the bottom. When the arms lie almost flat, the actuator must push with several times the weight of the load, and a lift drawn with all its joints as plain pins cannot move at all. Both facts come from the geometry of the crossed arms. In this lesson you model a single-stage scissor lift in FreeCAD from one arm that is used twice, with every size taken from a spreadsheet. You calculate its height and its actuator force from one angle, and you see why two of its joints must slide. #FreeCAD #ScissorLift #VerticalMotion #RepeatingGeometry
 
 :::tip[Simulate before you build]
 Before designing the 3D model, try your link lengths in the [Scissor Lift Mechanism Simulator](/product-development/scissor-lift-mechanism-simulator/) to verify force requirements, check stability at different heights, and compare actuator types. For structured kinematic and force experiments with Python analysis, see the [Scissor Lift Experiments](/education/mechanism-design-simulation/scissor-lift-experiments).
@@ -47,28 +47,13 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Scissor lift mechanisms provide vertical motion through a compact, stable structure using multiple interconnected linkages. They're fundamental to many height-adjustment and material handling applications, converting small horizontal input motion into amplified vertical displacement.
-</BionicText>
+A scissor lift raises a platform straight up with crossed arms that open and close as scissors do. Car jacks, work platforms, lifting tables and loading docks use it, because it is short when lowered and needs no tall guide.
 
 <YouTube videoId="LKaQgUK1B2M" title="Scissor Lift Mechanism Design in FreeCAD" />
 
-### Real-World Applications
-
-The scissor lift appears everywhere in engineering:
-
-:::note[Common Applications]
-- **Vehicle scissor jacks** - Compact emergency lifting for tire changes
-- **Aerial work platforms** - Construction and maintenance access at height
-- **Adjustable work tables** - Ergonomic height adjustment in manufacturing
-- **Stage platforms** - Theatrical equipment for dynamic staging
-- **Medical examination tables** - Patient positioning with smooth vertical control
-- **Warehouse loading platforms** - Material handling and dock leveling
-:::
-
 ### The Engineering Problem
 
-> **Design Challenge:** Given limited horizontal space, how do we achieve significant vertical lifting with a stable, compact mechanism that stores efficiently when collapsed?
+A platform must rise straight up from a low rest position, and the actuator has only a short horizontal travel at the base. How high does the platform go for a given arm, and how hard must the actuator push?
 
 ## Mechanism Fundamentals
 
@@ -77,105 +62,57 @@ The scissor lift appears everywhere in engineering:
 
 ### Components and Motion
 
-A scissor mechanism consists of crossed links working in harmony:
+One stage is two equal arms that cross at a center pin, between a fixed base and a top platform. Each arm has three pin holes: one at each end and one in the middle. On each platform one arm end is held by a fixed pin and the other must slide, or nothing can move:
 
-<Tabs>
-  <TabItem label="Components">
+```text
+  fixed pin    sliding pin
+      ●───────────○  ◄─►     top platform, rises
+       ╲         ╱
+        ╲       ╱
+         ╲     ╱
+          ╲   ╱
+            ●                center pin
+          ╱   ╲
+         ╱     ╲
+        ╱       ╲
+       ╱         ╲
+      ●───────────○  ◄─►     base, fixed
+  fixed pin    sliding pin
+```
 
-    **1. Scissor Arms (Links)**
-    - Crossed in X-shaped pairs
-    - Multiple pivot points per arm
-    - Connected in series for stages
+Three numbers describe the motion:
 
-    **2. Pivot Pins**
-    - End pivots connect to base/top
-    - Center pivot where arms cross
-    - Allow relative rotation
+- $L$ is the arm length between its two end pins, in mm.
+- $\theta$ is the angle of the arms from the horizontal.
+- $n$ is the number of stages, one pair of crossed arms above another.
 
-    **3. Base Platform**
-    - Fixed reference frame
-    - Mounts bottom pivots
-    - Provides stability
+Each arm is the long side of a right triangle. Its upright side is the height of one stage and its flat side is the distance between the two base pins. So the platform height $h$ and the base spread $x$ are:
 
-    **4. Top Platform**
-    - Moving platform
-    - Carries the load
-    - Rises with mechanism extension
+$$h = n \, L \sin\theta \qquad x = L \cos\theta$$
 
-</TabItem>
-  <TabItem label="Key Parameters">
+The lift works between a lowest angle of 15° to 20° and a highest angle of 60° to 70°. Above 70° the base pins stand close together under a tall platform, and the lift is no longer stable.
 
-    <Card title="⚙️ Critical Design Parameters" icon="setting">
+A horizontal actuator at the base pulls the two base pins together. When the arms lie almost flat, a small pull gives a large rise. The work put in equals the work done on the load $W$, so a large rise for a small pull needs a large force $F$:
 
-    **Arm length (L)**
-    - Length of each scissor arm
-    - Directly affects maximum height
-    - Typical range: 150-300mm for small lifts
+$$F = \frac{W \, n}{\tan\theta}$$
 
-    **Number of stages (N)**
-    - How many X-pairs in series
-    - Multiplies lift height
-    - More stages = more compact when collapsed
+This is for arms without weight and pins without friction. It is why a scissor jack is hardest to turn at the start.
 
-    **Minimum angle (θ_min)**
-    - Collapsed position angle
-    - Affects minimum height
-    - Typically 15-20 degrees
+### Dimensions for this lesson
 
-    **Maximum angle (θ_max)**
-    - Extended position angle
-    - Affects maximum height
-    - Typically 60-70 degrees
+The lesson builds one stage ($n = 1$) with arms of $L = 200 \text{ mm}$, and places the base pins 160 mm apart in the start position:
 
-    </Card>
-
-</TabItem>
-  <TabItem label="Motion Analysis">
-
-    **Height Relationship:**
-
-    $$H_{\min} = 2N \times L \times \sin(\theta_{\min})$$
-
-    $$H_{\max} = 2N \times L \times \sin(\theta_{\max})$$
-
-    $$\frac{H_{\max}}{H_{\min}} = \frac{\sin(\theta_{\max})}{\sin(\theta_{\min})}$$
-
-    **Design Guidelines:**
-    - N ≥ 2 for significant lift height
-    - L/W ratio ≥ 4 for stable geometry
-    - θ_max ≤ 70° to avoid instability
-
-    :::tip[Engineering Insight]
-    The scissor lift's mechanical advantage varies with angle. At shallow angles (collapsed), it provides maximum force amplification but requires more horizontal input. At steep angles (extended), it moves faster vertically but with less force multiplication. This is why scissor jacks feel easier at the start!
-    :::
-
-</TabItem>
-</Tabs>
+1. Arm angle: $\cos\theta = 160 / 200 = 0.80$, so $\theta = 36.9^\circ$ ✅
+2. Height at the start: $h = 200 \times \sin 36.9^\circ = 200 \times 0.60 = 120 \text{ mm}$ ✅
+3. Lowest and highest: $200 \times \sin 15^\circ = 51.8 \text{ mm}$ and $200 \times \sin 70^\circ = 187.9 \text{ mm}$ ✅
+4. Actuator force at the start: $F = W / \tan 36.9^\circ = 1.33\,W$. At 15° it is $W / \tan 15^\circ = 3.73\,W$ ✅
 
 ## What You'll Build
 
 <InArticleAd />
 
 
-By completing this lesson, you'll create:
-
-<CardGrid>
-  <Card title="Parametric Scissor Arm" icon="pencil">
-    A single link with three pin connections controlled by spreadsheet
-  </Card>
-
-  <Card title="Platform Components" icon="puzzle">
-    Base and top platforms with pin mount arrays
-  </Card>
-
-  <Card title="Working Assembly" icon="star">
-    Complete single-stage mechanism that actually lifts
-  </Card>
-
-  <Card title="Scalable Design" icon="setting">
-    Change parameters, entire mechanism updates automatically
-  </Card>
-</CardGrid>
+One arm, a base and a top platform, an assembly of one stage that rises and falls, and a drawing with a parts list.
 
 ## Part 1: Design Strategy and Planning
 
@@ -184,51 +121,11 @@ By completing this lesson, you'll create:
 
 ### Understanding Scissor Geometry
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The scissor lift uses the same arm design multiple times. This repeating geometry pattern is key to scalable parametric design: design once, use everywhere, control centrally.
-</BionicText>
+Both arms of a stage are the same part. If you model two arms separately, a later change to one is easily forgotten in the other, and then the center pins no longer meet. So you model **one** arm and place it in the assembly twice. A change to the arm then reaches every copy.
 
-### Our Design Approach
+The center hole must stay exactly in the middle of the arm at every arm length, or the platform tilts as it rises. A typed distance of 100 mm is right only while the arm is 200 mm long. A midpoint constraint is right at every length.
 
-<Card title="🎯 Repeating Geometry Philosophy" icon="rocket">
-
-We'll control the **entire scissor lift** with parametric design:
-
-**ArmLength** = 200 mm
-**ArmWidth** = 30 mm
-**StageCount** = 2 (for documentation)
-
-Design ONE perfect arm → Use it four times (for 2-stage lift)!
-
-This is industrial-strength parametric methodology.
-
-</Card>
-
-### Design Workflow
-
-<Steps>
-
-1. **Create Spreadsheet** (parameter table)
-
-2. **Design Scissor Arm** (one link, three holes)
-
-3. **Create Base Platform** (mount points)
-
-4. **Create Top Platform** (load carrier)
-
-5. **Assemble single stage** with constraints
-
-6. **Test parametric control**
-
-7. **Create technical drawing**
-
-8. **Extension** - add second stage
-
-</Steps>
-
-:::note[Why Symmetric Design Matters]
-Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetrically about a centerline and using midpoint constraints, we ensure the mechanism will function correctly no matter how we change the parameters.
-:::
+The order of work: spreadsheet, arm, base, top platform, assembly, drawing, and then tests of the parameters.
 
 ## Part 2: Creating the Parameter Spreadsheet
 
@@ -245,19 +142,13 @@ Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetri
 
    Save it as `ScissorLift.FCStd`
 
-2. **Switch to Part Design workbench**
-
-   Use the workbench dropdown at top
+2. **Switch to Spreadsheet workbench**
 
 3. **Insert a spreadsheet**
 
-   Insert → Spreadsheet
+   Spreadsheet → Create Spreadsheet
 
-   A "Spreadsheet" object appears in the left tree
-
-4. **Double-click to open the spreadsheet**
-
-   Click on "Spreadsheet" in the tree
+4. **Double-click "Spreadsheet" in the tree to open it**
 
 </Steps>
 
@@ -266,46 +157,28 @@ Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetri
 <Tabs>
   <TabItem label="Setup">
 
-    In the spreadsheet, create this table:
+    Type this table. ArmLength is the $L$ of the calculation, and it alone sets the motion. The other values are sizes for strength and fit.
 
-    | Cell | Value | Meaning |
-    |------|-------|---------|
-    | **A1** | Parameter | Header |
-    | **B1** | Value | Header |
-    | **C1** | Unit | Header |
-    | **A2** | ArmLength | Parameter name |
-    | **B2** | 200 | Numeric value |
-    | **C2** | mm | Unit (documentation) |
-    | **A3** | ArmWidth | Parameter name |
-    | **B3** | 30 | Numeric value |
-    | **C3** | mm | Unit |
-    | **A4** | ArmThickness | Parameter name |
-    | **B4** | 8 | Numeric value |
-    | **C4** | mm | Unit |
-    | **A5** | PinDiameter | Parameter name |
-    | **B5** | 8 | Numeric value |
-    | **C5** | mm | Unit |
-    | **A6** | PinRadius | Parameter name |
-    | **B6** | =B5/2 | Formula |
-    | **C6** | mm | Unit |
-    | **A7** | StageCount | Parameter name |
-    | **B7** | 2 | Numeric value |
-    | **C7** | count | Unit |
-    | **A8** | BaseWidth | Parameter name |
-    | **B8** | 400 | Numeric value |
-    | **C8** | mm | Unit |
-    | **A9** | BaseThickness | Parameter name |
-    | **B9** | 15 | Numeric value |
-    | **C9** | mm | Unit |
+    | | A | B | C |
+    |---|---|---|---|
+    | **1** | Parameter | Value | Unit |
+    | **2** | ArmLength | 200 | mm |
+    | **3** | ArmWidth | 30 | mm |
+    | **4** | ArmThickness | 8 | mm |
+    | **5** | PinDiameter | 8 | mm |
+    | **6** | PinRadius | =B5/2 | mm |
+    | **7** | StageCount | 2 | count |
+    | **8** | BaseWidth | 400 | mm |
+    | **9** | BaseThickness | 15 | mm |
+
+    Cell B6 holds a formula, not a number. A sketch needs the radius of a hole, and a workshop buys pins by diameter. With the formula you type the diameter once and the radius follows.
+
+    StageCount is only a note in this lesson: the assembly you build has one stage, and the value does not drive the model.
 
 </TabItem>
   <TabItem label="Creating Aliases">
 
-    **Why Aliases?**
-
-    Aliases let you reference cells by name instead of "B2", making formulas readable and professional.
-
-    **Create aliases:**
+    FreeCAD knows the cell that holds 200 only as B2. An **alias** gives the cell a name, so that a sketch can ask for `Spreadsheet.ArmLength`.
 
     <Steps>
 
@@ -313,46 +186,14 @@ Scissor mechanisms rely on perfect symmetry. By constraining our sketch symmetri
     2. Right-click → **Properties**
     3. In "Alias" field, type: `ArmLength`
     4. Click **OK**
-
-    5. Click cell **B3**
-    6. Right-click → **Properties**
-    7. In "Alias" field, type: `ArmWidth`
-    8. Click **OK**
-
-    9. Repeat for all parameters:
-       - B4: `ArmThickness`
-       - B5: `PinDiameter`
-       - B6: `PinRadius`
-       - B7: `StageCount`
-       - B8: `BaseWidth`
-       - B9: `BaseThickness`
+    5. Repeat for B3 to B9, each with the name in column A of its row. The alias works on the formula cell B6 as on any other
 
     </Steps>
-
-    Now you can use `Spreadsheet.ArmLength` anywhere in your model!
-
-</TabItem>
-  <TabItem label="Calculated Values">
-
-    **Note the PinRadius formula:**
-
-    Cell B6 contains: `=B5/2`
-
-    This automatically calculates radius from diameter!
-
-    :::tip[Spreadsheet Calculations]
-    - Use **formulas** for dependent values (radius from diameter)
-    - Use **aliases** on calculated cells too
-    - FreeCAD recalculates automatically
-    - This creates intelligent parameter relationships
-    :::
 
 </TabItem>
 </Tabs>
 
 **Close the spreadsheet** when done (click the Close button).
-
-Your parameter foundation is ready!
 
 ## Part 3: Creating the Scissor Arm
 
@@ -361,16 +202,9 @@ Your parameter foundation is ready!
 
 ### Design Intent
 
-<Card title="⚙️ Scissor Arm Requirements" icon="document">
+The arm is a flat bar with three pin holes: one at each end, for the base and the top platform, and one in the middle, where the two arms cross. The sketch starts with a **centerline**, a line of length ArmLength that makes no solid. The three holes and the outline take their positions from this line, so one dimension places everything.
 
-The scissor arm is a rectangular link with three holes:
-
-- **End hole 1** (left) - Connects to base or adjacent stage
-- **Center hole** (middle) - Where arms cross (intersection pivot)
-- **End hole 2** (right) - Connects to top platform or adjacent stage
-- **Parametric control** - All dimensions driven by spreadsheet
-
-</Card>
+A sketch is exact only when its **constraints** (rules such as "this point is on that line" or "this distance is 200 mm") fix every point. Until then the solver reports **degrees of freedom**, the ways in which the sketch can still move. A sketch with degrees of freedom left can change shape without warning when a value changes.
 
 ### Step-by-Step: Scissor Arm Part
 
@@ -404,7 +238,7 @@ The scissor arm is a rectangular link with three holes:
 
     <Steps>
 
-    1. **Line tool** (press L)
+    1. **Line tool** (press G, L)
 
     2. Click at **origin** (0, 0)
 
@@ -456,15 +290,13 @@ The scissor arm is a rectangular link with three holes:
 
     1. **Select the line** (click on it)
 
-    2. Press **G** key (or click Construction Mode button)
+    2. Press **G, N** (or click Construction Mode button)
 
     3. The line turns **blue/dashed**
 
     </Steps>
 
-    :::note[What is Construction Geometry?]
-    Construction geometry is reference-only: it helps constrain your design but won't become part of the final 3D shape. Perfect for centerlines, reference axes, and symmetry lines!
-    :::
+    Construction geometry guides other geometry and does not become part of the solid.
 
 </TabItem>
 </Tabs>
@@ -478,7 +310,7 @@ The scissor arm is a rectangular link with three holes:
 
     <Steps>
 
-    1. **Circle tool** (press C)
+    1. **Circle tool** (press G, C)
 
     2. Click somewhere near the **middle** of the line
 
@@ -602,11 +434,7 @@ The scissor arm is a rectangular link with three holes:
 
     </Steps>
 
-    The rectangle is now perfectly centered vertically!
-
-    :::tip[Symmetry is Powerful]
-    The symmetric constraint maintains equal distance above and below the centerline. When you change ArmWidth, the rectangle expands equally in both directions. This is parametric design at its finest!
-    :::
+    The symmetric constraint keeps the two long edges at equal distances from the centerline. When ArmWidth changes, the bar grows equally on both sides and the holes stay in the middle.
 
 </TabItem>
   <TabItem label="Width Dimension">
@@ -634,16 +462,16 @@ The scissor arm is a rectangular link with three holes:
 </TabItem>
   <TabItem label="Length Lock">
 
-    **The rectangle length is automatically constrained!**
+    **The rectangle length still needs two constraints!**
 
-    Because the rectangle corners will be coincident with or near the end hole centers (which are already positioned at the centerline endpoints), the rectangle length is implicitly defined.
+    The symmetric and width constraints fix the rectangle only in the vertical direction. The solver still shows 2 degrees of freedom: the positions of the left and right edges. These edges must lie beyond the end holes, otherwise the holes cut through the ends of the arm.
 
-    If the solver shows degrees of freedom, add:
+    To remove the 2 degrees of freedom, add:
 
-    - **Coincident:** Rectangle left edge → passes through left hole center
-    - **Coincident:** Rectangle right edge → passes through right hole center
+    - **Distance:** Left hole center → rectangle left edge = `Spreadsheet.ArmWidth / 2`
+    - **Distance:** Right hole center → rectangle right edge = `Spreadsheet.ArmWidth / 2`
 
-    Or simply ensure the rectangle extends to the endpoints.
+    The arm is now ArmLength + ArmWidth long overall (230 mm), with 200 mm between the end holes.
 
 </TabItem>
 </Tabs>
@@ -693,24 +521,7 @@ The scissor arm is a rectangular link with three holes:
 
     </Steps>
 
-    **You now have a 3D scissor arm!**
-
-</TabItem>
-  <TabItem label="Viewing Your Part">
-
-    **Navigate the 3D view:**
-
-    - Press **V** then **F** to fit all
-    - Rotate view with middle mouse button
-    - See the rectangular link with three holes!
-
-    :::note[What You Created]
-    - A parametric 3D scissor link
-    - Three precision-positioned pin holes
-    - Perfectly symmetric about centerline
-    - Controlled by spreadsheet
-    - Ready for multiple use in assembly
-    :::
+    Press **V** then **F** to fit the view. You see a bar with three holes.
 
 </TabItem>
 </Tabs>
@@ -722,16 +533,7 @@ The scissor arm is a rectangular link with three holes:
 
 ### Design Intent
 
-The base provides stable mounting for the bottom pivots of the scissor mechanism.
-
-<Card title="🏗️ Base Platform Requirements" icon="puzzle">
-
-- **Wide footprint** - Stability when mechanism extends
-- **Pin mount holes** - For bottom pivots of arms
-- **Parametric width** - Controlled by `Spreadsheet.BaseWidth`
-- **Appropriate thickness** - Structural integrity
-
-</Card>
+The base is a bar of length `Spreadsheet.BaseWidth` with two pin holes for the lower ends of the arms. Each hole is 80 mm from the center, so the two are 160 mm apart. This is the base spread of the calculation: it sets the arms at 36.9° and the platform at 120 mm in the start position. The left hole holds a fixed pin. The right hole only marks where the sliding end starts.
 
 ### Creating the Base
 
@@ -810,30 +612,17 @@ The base provides stable mounting for the bottom pivots of the scissor mechanism
 
     **Right pin hole:**
 
+    The right hole is the mirror image of the left one, so let two constraints say so. Then one dimension places both holes.
+
     <Steps>
 
     1. Draw another circle on the right
 
-    2. **Horizontal constraint:** Circle center and origin
-
-    3. **Distance from origin:** `80` mm
-
-    4. **Radius:** ƒx → `Spreadsheet.PinRadius`
-
-    </Steps>
-
-    Or better - use **Equal and Symmetric** constraints:
-
-    <Steps>
-
-    1. After creating both circles
     2. **Equal constraint:** Both circles (equal radii)
+
     3. **Symmetric constraint:** Both circle centers, Y-axis
-    4. **Distance:** One circle center to Y-axis = `80` mm
 
     </Steps>
-
-    This ensures perfect symmetry!
 
 </TabItem>
   <TabItem label="Check & Finish">
@@ -906,32 +695,26 @@ Similar to the base, but this platform moves vertically and carries the load.
 
 </Steps>
 
-:::tip[Reusing Design Patterns]
-Notice the top platform is almost identical to the base. In professional CAD, you might create one and mirror/copy it. For learning, creating both reinforces the constraint workflow!
-:::
-
-**Top platform complete!**
-
 ## Part 6: Assembly - Single Stage
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where your individual parts come together as a functioning mechanism. The scissor lift assembly uses the same arm part twice in a crossed configuration, demonstrating how parametric parts can be reused in different orientations.
-</BionicText>
+An assembly joins the parts with constraints between parts, so that you can drag the platform and watch it rise. The arm is placed twice: once rising from left to right, and once from right to left.
+
+:::caution[Which Assembly workbench these steps use]
+These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The lesson names Assembly4 and A2plus, but the constraint names it uses (Fixed, Axial Align, point-on-line) are nearest to the **Assembly3** add-on (Axial Alignment, Points on Line). A2plus calls them axisCoincident and pointOnLine, and Assembly4 has no constraints of this kind. FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground the base where this lesson says Fixed, and use a **Revolute** joint where it says Axial Align.
+:::
 
 ### Assembly Strategy
 
-<Card title="🎯 Single-Stage Assembly Plan" icon="rocket">
+The base is fixed. The first arm rises from the left base pin to the right end of the top platform. The second arm rises from the right end of the base to the left pin of the top platform. The two arms share the center pin.
 
-1. **Base Platform:** Fixed (ground reference)
-2. **First Scissor Arm:** Left-to-right rising diagonal
-3. **Second Scissor Arm:** Right-to-left rising diagonal
-4. **Center crossing:** Arms pivot where they cross
-5. **Top Platform:** Rises with mechanism extension
+:::caution[One end of each platform must slide]
+Count the joints before you assemble. There are 4 links (base, two arms, top platform). If all five connections are fixed pin joints, the mobility is $3(4-1) - 2(5) = -1$: the assembly is a rigid frame and cannot lift. With the holes 160 mm apart and 200 mm arms it fits only at one height, $\sqrt{200^2 - 160^2} = 120 \text{ mm}$.
 
-</Card>
+A real scissor lift lets one end of each platform slide (a roller or a pin in a horizontal slot). Here the two right-hand connections slide: the second arm on the base, and the first arm on the top platform. A pin in a slot removes one degree of freedom, not two, so the mobility becomes $3(4-1) - 2(3) - 1(2) = 1$. In the assembly, do not use Axial Align for these two connections. Use a constraint that keeps the arm hole axis on the line through the two platform holes (a point-on-line or slot type constraint), and in a part you intend to build, replace the right-hand hole of each platform with a horizontal slot.
+:::
 
 ### Creating the Assembly
 
@@ -1008,7 +791,7 @@ Assembly is where your individual parts come together as a functioning mechanism
 
     2. Select the **right pin hole axis** of the BasePlatform
 
-    3. Click **Axial Align constraint**
+    3. Click **Axial Align constraint** to place the arm, then replace it with the sliding (point-on-line) constraint described in the caution above, so this end can move along the base
 
     </Steps>
 
@@ -1043,7 +826,7 @@ Assembly is where your individual parts come together as a functioning mechanism
     <Steps>
 
     1. First arm's **right end hole** → TopPlatform **right pin hole**
-       - Axial Align constraint
+       - Sliding (point-on-line) constraint, so this end can move along the platform
 
     2. Second arm's **right end hole** → TopPlatform **left pin hole**
        - Axial Align constraint
@@ -1068,7 +851,7 @@ Assembly is where your individual parts come together as a functioning mechanism
     - Check that only BasePlatform is Fixed
     - All pin joints should be Axial Align (not Fixed!)
     - Remove any redundant constraints
-    - Verify you have 4 arm-to-platform connections + 1 crossing connection
+    - Verify you have 4 arm-to-platform connections + 1 crossing connection, and that the two right-hand platform connections slide (five fixed pins lock the lift at 120 mm)
     :::
 
 </TabItem>
@@ -1442,7 +1225,7 @@ Ready for more? Try these enhancements:
     :::caution[Solution]
     - All holes must use same `Spreadsheet.PinRadius`
     - Check spacing matches collapsed geometry
-    - For single stage: platform holes ~80mm from center
+    - For single stage: platform holes 80 mm from center (the sliding ends move away from this position as the lift rises or falls)
     - Verify all radius constraints reference parameter
     :::
 
