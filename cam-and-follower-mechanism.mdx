@@ -45,9 +45,7 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Cam and follower mechanisms convert continuous rotary motion into precisely controlled reciprocating or oscillating motion. They're fundamental to timing and sequencing in mechanical systems, with the cam profile acting as a geometric program that defines the follower's motion.
-</BionicText>
+A cam and follower turns continuous rotation into a controlled back-and-forth or rocking motion, so machines use it for timing and sequencing. The cam outline is the program: like the pins on the turning drum of a music box, which store the tune, the outline stores the motion.
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
@@ -76,11 +74,11 @@ Cam and follower mechanisms power critical timing and sequencing operations acro
 
 <CardGrid>
   <Card title="Motion Programming" icon="star">
-    The cam surface directly determines follower motion. As the cam rotates, its profile shape pushes the follower through a prescribed path.
+    As the cam turns, its profile pushes the follower through a set path.
   </Card>
 
   <Card title="Design Flexibility" icon="setting">
-    Change the cam profile geometry, change the motion. One rotating input creates unlimited possible output motions.
+    Change the profile and you change the motion, with the same rotating input.
   </Card>
 </CardGrid>
 
@@ -96,40 +94,18 @@ A cam and follower system consists of three essential elements:
 <Tabs>
 <TabItem label="Components">
 
-**1. Cam: Rotating Driver**
-- Plate cam (disk) with profiled edge
-- Rotates continuously at constant speed
-- Profile shape programs the motion
-
-**2. Follower: Moving Output**
-- Translates or oscillates
-- Maintains contact with cam surface
-- Executes programmed motion
-
-**3. Frame: Fixed Reference**
-- Provides cam shaft bearing
-- Guides follower motion
-- Maintains alignment
+1. **Cam, the rotating driver:** a plate (disk) with a profiled edge that turns at constant speed. Its shape programs the motion.
+2. **Follower, the moving output:** it slides or rocks, and stays in contact with the cam surface.
+3. **Frame, the fixed reference:** it carries the cam shaft bearing, guides the follower and keeps the parts aligned.
 
 </TabItem>
 <TabItem label="Follower Types">
 
 <Card title="⚙️ Follower Configurations" icon="puzzle">
 
-**Roller Follower (Most Common)**
-- Rolling contact reduces friction
-- Suitable for high-speed operation
-- Used in this lesson
-
-**Flat-Faced Follower**
-- Flat contact surface
-- Simple geometry
-- Good for low-speed applications
-
-**Knife-Edge Follower**
-- Point contact (theoretical)
-- Impractical due to high wear
-- Used in analysis only
+- **Roller follower (most common, used in this lesson):** rolling contact lowers friction, so it suits high speeds.
+- **Flat-faced follower:** a flat contact face of simple geometry, good for low speeds.
+- **Knife-edge follower:** point contact in theory. It wears too fast for real use and serves only in analysis.
 
 </Card>
 
@@ -138,28 +114,15 @@ A cam and follower system consists of three essential elements:
 
 **Standard Cam Cycle:**
 
-A complete 360° rotation typically includes four phases:
+A complete 360° turn usually has four phases:
 
-**Rise: Outward Motion**
-- Follower moves away from cam center
-- Lift distance: $L$
-- Rise angle: typically 90-120°
-
-**Dwell: High Position**
-- Follower remains stationary at maximum lift
-- Cam continues rotating
-- Constant radius circular arc
-
-**Return: Inward Motion**
-- Follower moves back toward cam center
-- Return angle: typically 90-120°
-
-**Dwell: Low Position**
-- Follower remains at base position
-- Ready for next cycle
+- **Rise:** the follower moves away from the cam center by the lift $L$, typically over 90-120°.
+- **High dwell:** the follower stays still at maximum lift while the cam keeps turning. This part is a circular arc of constant radius.
+- **Return:** the follower moves back toward the cam center, typically over 90-120°.
+- **Low dwell:** the follower stays at the base position, ready for the next cycle.
 
 :::tip[Engineering Insight]
-The rise and return sections require careful motion law selection. Sudden velocity changes cause vibration and wear. Professional cam design uses harmonic, cycloidal, or polynomial motion curves to ensure smooth acceleration profiles.
+Choose the motion law of the rise and return with care: sudden changes of velocity cause vibration and wear. Harmonic, cycloidal or polynomial curves keep the acceleration smooth.
 :::
 
 </TabItem>
@@ -170,38 +133,17 @@ The rise and return sections require careful motion law selection. Sudden veloci
 <Tabs>
 <TabItem label="Geometric Parameters">
 
-**Base Circle Radius ($R_b$)**
-- Minimum cam radius
-- Determines minimum follower position
-- Foundation of cam geometry
-
-**Lift (L)**
-- Maximum follower displacement
-- Distance from base to peak position
-- Critical design parameter
-
-**Prime Circle Radius ($R_p$)**
-- $R_p = R_b + L$
-- Maximum cam radius (cam textbooks use the name "prime circle" for the base radius plus the roller radius; in this lesson the name means the maximum radius)
-- Defines peak follower position
+- **Base circle radius ($R_b$):** the smallest cam radius. It sets the lowest follower position.
+- **Lift (L):** the largest follower displacement, from the base position to the peak.
+- **Prime circle radius ($R_p$):** $R_p = R_b + L$, the largest cam radius, which sets the peak follower position. (Cam textbooks use the name "prime circle" for the base radius plus the roller radius; in this lesson the name means the maximum radius.)
 
 </TabItem>
 <TabItem label="Timing Parameters">
 
-**Rise Angle**
-- Angular duration of outward motion
-- Typical: 90-120°
-- Affects acceleration
-
-**Dwell Angles**
-- High dwell: follower at maximum lift
-- Low dwell: follower at base position
-- Total angles must sum to 360°
-
-**Return Angle**
-- Angular duration of inward motion
-- Often mirrors rise angle
-- Affects deceleration
+- **Rise angle:** the cam turn over which the follower moves out, typically 90-120°. A shorter rise means a steeper profile, larger accelerations and a larger pressure angle (the lean of the cam's push away from the line of the follower; keep it below about 30°).
+- **Dwell angles:** the high dwell (at maximum lift) and the low dwell (at the base position).
+- **Return angle:** the cam turn over which the follower moves back, often equal to the rise angle. It sets the deceleration.
+- All four angles must sum to 360°.
 
 </TabItem>
 <TabItem label="Motion Laws">
@@ -281,7 +223,7 @@ By completing this lesson, you'll create:
 
    Save as `CamFollower.FCStd` in your project folder
 
-   Good Practice - Save early, save often!
+   Save early and often.
 
 </Steps>
 
@@ -326,8 +268,6 @@ For this lesson, you'll use:
 | **View front** | Press "1" on numpad |
 | **View top** | Press "2" |
 
-Practice Now!
-
 </TabItem>
 </Tabs>
 
@@ -336,9 +276,7 @@ Practice Now!
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Cam design requires thinking in terms of motion profiles first, then translating those profiles into geometry. The cam surface is literally a physical encoding of the desired motion: every point on the profile corresponds to a specific follower position at a specific rotation angle.
-</BionicText>
+Decide the motion first, then turn it into geometry: every point on the profile gives one follower position at one cam angle.
 
 ### Our Motion Profile
 
@@ -350,8 +288,6 @@ Cam design requires thinking in terms of motion profiles first, then translating
 - **120° to 180°:** Dwell (follower remains at maximum lift)
 - **180° to 300°:** Return (follower descends 20mm using simple harmonic motion)
 - **300° to 360°:** Dwell (follower remains at base position)
-
-This creates smooth, repeatable motion with predictable timing.
 
 </Card>
 
@@ -482,13 +418,8 @@ Now you can use `Spreadsheet.BaseCircleRadius` anywhere in your model!
 
 **Notice the formulas in B4 and B8:**
 
-**PrimeCircleRadius = BaseCircleRadius + Lift**
-- This ensures the maximum cam radius automatically updates when you change base radius or lift
-- Central concept of parametric design: relationships, not fixed values
-
-**ShaftRadius = ShaftDiameter / 2**
-- Convenience calculation
-- Changes to shaft diameter automatically propagate to shaft radius
+- **PrimeCircleRadius = BaseCircleRadius + Lift:** the maximum cam radius updates by itself when you change the base radius or the lift. Parametric design stores relationships, not fixed values.
+- **ShaftRadius = ShaftDiameter / 2:** a change of shaft diameter reaches the shaft radius by itself.
 
 :::tip[Spreadsheet Best Practices]
 - **Use formulas for derived values** - Don't duplicate manual entries
@@ -502,8 +433,6 @@ Now you can use `Spreadsheet.BaseCircleRadius` anywhere in your model!
 
 **Close the spreadsheet** when done (click the Close button).
 
-Your parametric foundation is ready!
-
 ## Part 4: Designing the Cam Profile
 
 <InArticleAd />
@@ -511,9 +440,7 @@ Your parametric foundation is ready!
 
 ### Understanding Cam Profile Design
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The cam profile must be designed relative to the follower position. For a roller follower, we actually design the pitch curve: the path traced by the roller center. Then the actual cam surface is offset inward by the roller radius. This ensures the roller maintains proper contact throughout the cycle.
-</BionicText>
+For a roller follower, the exact method designs the pitch curve, the path of the roller center, and moves it inward by the roller radius to get the cam surface, so the roller keeps contact through the cycle. This lesson sketches the surface directly as $R_b + s(\theta)$, which for these values is within about 0.4 mm of the exact surface.
 
 ### Design Approach
 
@@ -558,17 +485,8 @@ $$
 
 **Two Approaches:**
 
-**Option A: B-Spline Through Calculated Points** (Accurate)
-- Calculate exact positions using motion law formulas
-- Place points at key angles
-- Connect with smooth B-spline curve
-- Most accurate representation
-
-**Option B: Circular Arc Approximation** (Simplified)
-- Use circular arcs to approximate smooth curves
-- Easier to construct and constrain
-- Acceptable for demonstration and low-speed applications
-- We'll use this approach for simplicity
+- **Option A, B-spline through calculated points (accurate):** calculate positions from the motion law at key angles and join them with a smooth B-spline.
+- **Option B, circular arc approximation (simplified, used here):** circular arcs stand in for the smooth curves. They are easier to construct and constrain, and acceptable for demonstration and low-speed use.
 
 :::note[Production vs. Learning]
 Professional cam design often uses specialized software or Python scripts to generate exact profiles from motion equations. For learning FreeCAD fundamentals, we'll use the approximation method to focus on CAD techniques rather than mathematical complexity.
@@ -579,30 +497,12 @@ Professional cam design often uses specialized software or Python scripts to gen
 
 **Cam Profile Construction:**
 
-**Base Circle:**
-- Circle centered at origin
-- Radius = BaseCircleRadius (40mm)
-- Represents dwell at base position
-
-**Rise Section (0° to 120°):**
-- Smooth curve from 40mm to 60mm radius
-- Approximate with arc or B-spline
-
-**High Dwell (120° to 180°):**
-- Circular arc at PrimeCircleRadius (60mm)
-- Constant radius maintains follower at max lift
-
-**Return Section (180° to 300°):**
-- Mirror of rise section
-- Smooth curve from 60mm back to 40mm
-
-**Low Dwell (300° to 360°):**
-- Circular arc at BaseCircleRadius (40mm)
-- Completes the cycle
-
-**Shaft Hole:**
-- Circle at origin
-- Radius = ShaftRadius (10mm)
+- **Base circle:** centered at the origin, radius BaseCircleRadius (40mm), the reference for the base position
+- **Rise (0° to 120°):** a smooth curve from 40mm to 60mm radius, an arc or a B-spline
+- **High dwell (120° to 180°):** an arc at PrimeCircleRadius (60mm) centered on the origin, so the follower stays at maximum lift
+- **Return (180° to 300°):** the mirror of the rise, from 60mm back to 40mm
+- **Low dwell (300° to 360°):** an arc at BaseCircleRadius (40mm) that completes the cycle
+- **Shaft hole:** a circle at the origin, radius ShaftRadius (10mm)
 
 </TabItem>
 </Tabs>
@@ -649,8 +549,6 @@ Professional cam design often uses specialized software or Python scripts to gen
    - Click the **ƒx** button in the dimension dialog
    - Type: `Spreadsheet.BaseCircleRadius`
    - Press **Enter**
-
-   Base circle is now parametrically controlled!
 
    Now select the circle and press **G, N** to make it construction geometry. The base circle is only a reference: the closed cam outline is built from the four sections below, and a full circle left inside that outline would be padded as a hole.
 
@@ -729,8 +627,6 @@ This horizontal line at 0° is our angular reference.
    - Press **Enter**
 
 </Steps>
-
-The rise section is now constrained!
 
 </TabItem>
 <TabItem label="Rise Spline (Advanced)">
@@ -936,8 +832,6 @@ The profile is now a complete closed curve!
 
 </Steps>
 
-**Your parametric cam is complete!**
-
 ## Part 5: Creating the Follower System
 
 <InArticleAd />
@@ -949,19 +843,9 @@ The profile is now a complete closed curve!
 
 The follower system consists of three parts:
 
-**Roller**
-- Cylindrical rolling element
-- Maintains contact with cam surface
-- Reduces friction
-
-**Follower Stem**
-- Rectangular shaft
-- Translates vertically
-- Transfers motion to load
-
-**Guide Mount** (part of frame)
-- Constrains lateral motion
-- Allows only vertical translation
+- **Roller:** a cylinder that rolls on the cam surface, for low friction.
+- **Follower stem:** a rectangular bar that slides vertically and carries the motion to the load.
+- **Guide mount** (part of the frame): it stops sideways motion and allows only vertical sliding.
 
 </Card>
 
@@ -1009,14 +893,7 @@ The follower system consists of three parts:
 
 <Card title="📦 Revolve Operation" icon="document">
 
-**Revolve** creates 3D solids by rotating a 2D profile around an axis, like a lathe operation.
-
-Perfect for:
-- Cylinders
-- Shafts
-- Pulleys
-- Wheels
-- Any rotationally symmetric part
+**Revolve** makes a solid by turning a 2D profile about an axis, as a lathe does. Use it for any rotationally symmetric part: cylinders, shafts, pulleys, wheels.
 
 </Card>
 
@@ -1037,8 +914,6 @@ Perfect for:
 4. **Click OK**
 
 </Steps>
-
-**You now have a cylindrical roller!**
 
 </TabItem>
 </Tabs>
@@ -1077,8 +952,6 @@ Perfect for:
    - OK
 
 </Steps>
-
-**Follower stem complete!**
 
 ### Optional: Connecting the Roller to Stem
 
@@ -1167,16 +1040,12 @@ The frame provides:
 
 </Steps>
 
-**Frame complete!**
-
 ## Part 7: Assembly
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly transforms individual parts into a functioning mechanism. For the cam and follower, we must establish rotational motion for the cam while constraining the follower to pure vertical translation. The roller maintains contact with the cam surface through careful positioning.
-</BionicText>
+In the assembly the cam may only turn, the follower may only slide vertically, and the roller is placed so that it touches the cam surface.
 
 ### Assembly Strategy
 
@@ -1345,9 +1214,7 @@ For learning and design verification, manual positioning demonstrates the motion
 
 ### Creating Motion Documentation
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Cam mechanism drawings require more than standard part views. They must clearly communicate the motion profile, angular zones, and follower displacement. Essentially, they document the programmed motion encoded in the cam geometry.
-</BionicText>
+A cam drawing needs more than part views: it must also show the angular zones and the follower displacement, the motion that the geometry stores.
 
 ### Step-by-Step: Cam Drawing
 
@@ -1449,18 +1316,7 @@ Cam mechanism drawings require more than standard part views. They must clearly 
 
 <Card title="📊 Follower Displacement Diagram" icon="document">
 
-A displacement diagram is essential for cam documentation. It's a graph showing follower position vs. cam rotation angle.
-
-**Axes:**
-- X-axis: Cam rotation angle (0° to 360°)
-- Y-axis: Follower displacement (0 to 20mm)
-
-**Profile:**
-- Horizontal at 0mm (0° to 0°)
-- Rising curve (0° to 120°)
-- Horizontal at 20mm (120° to 180°)
-- Descending curve (180° to 300°)
-- Horizontal at 0mm (300° to 360°)
+A displacement diagram plots follower displacement (0 to 20mm) against cam angle (0° to 360°): a rising curve from 0° to 120°, flat at 20mm to 180°, a falling curve to 300°, and flat at 0mm to 360°.
 
 </Card>
 
@@ -1546,9 +1402,7 @@ Plot these points and connect smoothly.
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The true test of parametric design: change a parameter, watch the entire mechanism update correctly. This is where hours of careful constraint work pay off with instant design iterations.
-</BionicText>
+Change a parameter and check that the whole mechanism updates correctly.
 
 ### Verification Tests
 
@@ -1665,7 +1519,7 @@ Once you have printed or machined this cam, instrument it to see whether the rea
 <InArticleAd />
 
 
-**Congratulations!** By completing this lesson, you have:
+By completing this lesson, you have:
 
 <CardGrid>
   <Card title="✅ Designed Cam Profiles" icon="pencil">
@@ -1692,8 +1546,6 @@ Once you have printed or machined this cam, instrument it to see whether the rea
     Displacement diagrams and annotated zones
   </Card>
 </CardGrid>
-
-**Most importantly:** You've designed a motion-programming mechanism: geometry that directly controls motion characteristics!
 
 ## Design Verification Checklist
 
@@ -1904,7 +1756,6 @@ In the next lesson on **Geneva Mechanism**, you'll explore:
   </Card>
 </CardGrid>
 
-Each lesson builds your parametric CAD mastery while exploring fundamental mechanisms!
 
 
 

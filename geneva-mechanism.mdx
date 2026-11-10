@@ -24,7 +24,7 @@ import { Card, CardGrid, Badge, Steps, LinkButton, FileTree } from '@astrojs/sta
 
 
 
-Master parametric CAD design by creating a Geneva mechanism: the precision indexing system that powers film projectors, machine tool changers, and precise rotary positioning. Learn FreeCAD through intermittent motion engineering. #FreeCAD #GenevaDrive #IntermittentMotion #IndexingMechanism
+A rotary table that stops a little off its station, or creeps while a tool works on the part, spoils every part that follows. A Geneva mechanism turns a motor that never stops into exact steps with a firm lock between them, as in film projectors and machine tool changers. In this lesson you build one in FreeCAD, with the slot count and every radius driven by a spreadsheet. #FreeCAD #GenevaDrive #IntermittentMotion #IndexingMechanism
 
 ## Learning Objectives
 
@@ -41,9 +41,7 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The Geneva mechanism (also called Maltese cross mechanism) provides precise, intermittent rotary motion. The driven wheel indexes to exact positions while the driver rotates continuously, with self-locking dwell periods between each precise angular step.
-</BionicText>
+The Geneva mechanism (also called the Maltese cross mechanism) gives intermittent rotary motion: the driver turns continuously, and the driven wheel steps to exact positions and is locked still between steps.
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
@@ -81,41 +79,19 @@ A Geneva mechanism consists of three key elements working together:
 <Tabs>
   <TabItem label="Components">
 
-    **1. Driver (Crank)**
-    - Rotates continuously
-    - Has a pin protruding from it
-    - Includes locking arc on periphery
-
-    **2. Driven Wheel (Geneva Wheel)**
-    - Has radial slots (typically 4, 5, 6, or 8)
-    - Indexes when pin engages slot
-    - Remains stationary during dwell
-
-    **3. Locking Arc**
-    - Circular arc on driver
-    - Engages driven wheel's periphery
-    - Prevents rotation during dwell phase
+    1. **Driver (crank):** turns continuously and carries a pin and a locking arc on its periphery.
+    2. **Driven wheel (Geneva wheel):** has radial slots (typically 4, 5, 6 or 8). It turns one step when the pin is in a slot and stays still during the dwell.
+    3. **Locking arc:** a circular arc on the driver that bears on the periphery of the driven wheel and stops it from turning during the dwell.
 
 </TabItem>
   <TabItem label="Operation Phases">
 
-    **Phase 1: Dwell (Locked Position)**
-    - Driver's locking arc engages driven wheel's periphery
-    - Driven wheel prevented from rotating
-    - No motion despite driver rotation
-
-    **Phase 2: Index (Motion)**
-    - Driver pin enters driven wheel slot
-    - Driven wheel rotates to next position
-    - Precise angular movement occurs
-
-    **Phase 3: Return to Dwell**
-    - Pin exits slot
-    - Locking arc re-engages
-    - Driven wheel held stationary again
+    1. **Dwell (locked):** the locking arc bears on the periphery of the driven wheel, so the wheel stays still while the driver turns.
+    2. **Index (motion):** the pin enters a slot and turns the wheel to the next position.
+    3. **Return to dwell:** the pin leaves the slot and the locking arc holds the wheel again.
 
     :::tip[Engineering Insight]
-    The locking arc is critical! Without it, the driven wheel could drift or vibrate during dwell, destroying precision. This self-locking feature is what makes Geneva mechanisms superior to simple indexing cams.
+    Without the locking arc, the driven wheel could drift or vibrate during the dwell and lose its position. This self-locking is the advantage of a Geneva mechanism over a simple indexing cam.
     :::
 
 </TabItem>
@@ -228,10 +204,6 @@ By completing this lesson, you'll create:
   </Card>
 </CardGrid>
 
-:::tip[Rotary Indexing Fundamentals]
-This lesson covers polar geometry, angular constraints, and circular patterns. Every concept is explained thoroughly. By the end, you'll have mastered **rotary indexing design**.
-:::
-
 ## Part 1: Getting Started with FreeCAD
 
 <InArticleAd />
@@ -284,12 +256,7 @@ This lesson covers polar geometry, angular constraints, and circular patterns. E
 
     <Card title="🔄 Polar Geometry Focus" icon="star">
 
-    Geneva mechanisms are fundamentally about polar geometry:
-    - **Angular patterns** - Slots arranged in circular arrays
-    - **Radial symmetry** - Features distributed around a center
-    - **Circular constraints** - Angular spacing and positioning
-
-    This introduces powerful rotational CAD techniques!
+    A Geneva design is polar geometry: slots in circular arrays, features spread round a center, and constraints of angular spacing and position.
 
     </Card>
 
@@ -301,9 +268,7 @@ This lesson covers polar geometry, angular constraints, and circular patterns. E
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Geneva mechanisms are parameter-driven by nature. Change the number of slots, and everything else must recalculate geometrically. This makes them perfect for practicing intelligent parametric design where formulas and relationships drive the entire model.
-</BionicText>
+Change the number of slots of a Geneva, and every other dimension must be calculated again, so formulas in the spreadsheet drive the whole model.
 
 ### Our Design Approach
 
@@ -320,8 +285,6 @@ From these, FreeCAD will **automatically calculate**:
 - Driven wheel radius (geometric formula)
 - Index angle per step
 - Slot width (with clearance)
-
-This is intelligent parametric design!
 
 </Card>
 
@@ -363,12 +326,7 @@ We'll design a **6-slot external Geneva mechanism**:
   <TabItem label="Why This Configuration?">
 
     :::note[6-Slot Selection Rationale]
-    **Why 6 slots?**
-    - **Balanced geometry** - 60° angles are easy to visualize and verify
-    - **Good dwell ratio** - 67% of cycle is stationary (ideal for many applications)
-    - **Not too complex** - Clear patterns without overwhelming detail
-    - **Real-world relevance** - Common in machine tool indexers
-    - **Easy to modify** - Change to 4 or 8 slots to see principles apply universally
+    60° angles are easy to see and check, the wheel is still for 67% of the cycle, the pattern stays simple, 6 slots are common in machine tool indexers, and you can change to 4 or 8 slots later to see the same rules at work.
     :::
 
 </TabItem>
@@ -534,8 +492,6 @@ We'll design a **6-slot external Geneva mechanism**:
 
 **Close the spreadsheet** when done.
 
-Your intelligent parameter foundation is ready!
-
 ## Part 4: Creating the Driver Wheel
 
 <InArticleAd />
@@ -545,12 +501,7 @@ Your intelligent parameter foundation is ready!
 
 <Card title="⚙️ Driver Requirements" icon="document">
 
-The driver wheel is a rotating disc with:
-
-- **Central shaft hole** - For mounting on fixed pivot
-- **Driving pin** - Offset at radius R_d, engages Geneva slots
-- **Locking arc** - Circular periphery that locks Geneva wheel during dwell
-- **Parametric control** - All dimensions driven by spreadsheet
+The driver wheel is a rotating disc with a central shaft hole for its fixed pivot, a driving pin at radius $R_d$ that engages the Geneva slots, and a circular periphery that serves as the locking arc. The spreadsheet drives every dimension.
 
 </Card>
 
@@ -620,8 +571,6 @@ The driver wheel is a rotating disc with:
        - Press **Enter**
     </Steps>
 
-    Shaft hole is now parametric!
-
 </TabItem>
   <TabItem label="Driving Pin">
 
@@ -655,8 +604,6 @@ The driver wheel is a rotating disc with:
        - Press **Enter**
     </Steps>
 
-    The driving pin is now fully parametric!
-
 </TabItem>
   <TabItem label="Check Constraints">
 
@@ -668,7 +615,7 @@ The driver wheel is a rotating disc with:
     - All dimensions linked to spreadsheet
 
     :::tip[Locking Arc Note]
-    For simplicity, the driver disk's outer periphery acts as the locking arc. The driver disk (radius 50 mm) and the Geneva wheel (radius 69 mm) overlap at a center distance of 80 mm, so place the driver disk on a level below the wheel in the assembly, with the pin rising into the slots. In advanced designs, you'd create a specific arc geometry, but the circular disk works perfectly for our 6-slot Geneva!
+    For simplicity, the driver disk's outer periphery acts as the locking arc. The driver disk (radius 50 mm) and the Geneva wheel (radius 69 mm) overlap at a center distance of 80 mm, so place the driver disk on a level below the wheel in the assembly, with the pin rising into the slots. This simple build shows the indexing, but a disk on a lower level does not touch the wheel, so nothing locks the wheel during the dwell. A working Geneva has a locking disc on the driver, about three quarters of the driver radius, that sits in matching hollows cut between the slots of the wheel, and a cut-away on the pin side of the disc that lets the wheel turn during the index.
     :::
 
 </TabItem>
@@ -694,9 +641,7 @@ The driver wheel is a rotating disc with:
 
 </Steps>
 
-**You now have a parametric 3D driver wheel!**
-
-Press **V** then **F** to fit view and admire your work.
+Press **V** then **F** to fit the view to the 3D driver wheel.
 
 ## Part 5: Creating the Geneva Wheel (Driven Wheel)
 
@@ -707,12 +652,7 @@ Press **V** then **F** to fit view and admire your work.
 
 <Card title="🔧 Geneva Wheel Requirements" icon="puzzle">
 
-The Geneva wheel is the heart of the mechanism with:
-
-- **n radial slots** - 6 slots for our design, arranged in perfect polar pattern
-- **Central shaft hole** - For mounting on fixed pivot
-- **Locking periphery** - Circular edge between slots for driver locking arc
-- **Parametric control** - Number of slots drives entire geometry!
+The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft hole for its fixed pivot, and a circular edge between the slots for the locking arc. The number of slots drives the whole geometry.
 
 </Card>
 
@@ -781,8 +721,6 @@ The Geneva wheel is the heart of the mechanism with:
        - Press **Enter**
     </Steps>
 
-    Shaft hole complete!
-
 </TabItem>
   <TabItem label="First Slot">
 
@@ -836,7 +774,7 @@ The Geneva wheel is the heart of the mechanism with:
 
     <Card title="🔄 Creating the Polar Pattern" icon="star">
 
-    This is where polar geometry shines! We'll copy the slot around the circle automatically.
+    The polar pattern copies the slot round the circle.
 
     </Card>
 
@@ -863,10 +801,10 @@ The Geneva wheel is the heart of the mechanism with:
 
     </Steps>
 
-    **Six perfectly spaced slots appear!**
+    Six evenly spaced slots appear.
 
     :::caution[Pattern Limitation]
-    Unfortunately, FreeCAD's polar pattern in Sketcher doesn't directly accept spreadsheet formulas for count. For a fully parametric version, you'd need to use PartDesign's Circular Pattern feature after padding, but for learning purposes, manually entering 6 works perfectly!
+    The Sketcher polar pattern does not accept a spreadsheet formula for the count. For a fully parametric version, use the PartDesign Circular Pattern feature after padding. For learning, entering 6 by hand is enough.
     :::
 
 </TabItem>
@@ -910,9 +848,7 @@ The Geneva wheel is the heart of the mechanism with:
 
 </Steps>
 
-**The Geneva wheel is complete!**
-
-Rotate the view to see the 6 radial slots cutting through the wheel!
+Rotate the view to see the 6 radial slots cutting through the wheel.
 
 ## Part 6: Creating the Base Frame
 
@@ -925,10 +861,7 @@ The frame provides the fixed reference for both rotating wheels:
 
 <Card title="📐 Frame Requirements" icon="setting">
 
-- **Fixed mounting** - Stationary base for entire mechanism
-- **Two shaft bearings** - For driver and Geneva wheel pivots
-- **Precise center distance** - Controlled by `DriverCenterDistance` parameter
-- **Mounting provisions** - Bolt holes for securing to machine
+A stationary base with two shaft bearings (driver and Geneva wheel) at the center distance set by `DriverCenterDistance`, and bolt holes to fix it to the machine.
 
 </Card>
 
@@ -980,18 +913,14 @@ The frame provides the fixed reference for both rotating wheels:
 
 </Steps>
 
-**Frame complete!**
-
-All three parts are now ready for assembly!
+All three parts are now ready for assembly.
 
 ## Part 7: Assembly
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where the Geneva mechanism comes alive! You'll see discrete indexing: the Geneva wheel jumps from position to position while dwelling perfectly still between indexes. This is precision intermittent motion in action.
-</BionicText>
+In the assembly you see the indexing: the Geneva wheel steps from position to position and stands still between steps.
 
 ### Assembly Strategy
 
@@ -1099,22 +1028,11 @@ Assembly is where the Geneva mechanism comes alive! You'll see discrete indexing
 
     Try manually rotating the driver in the assembly view:
 
-    **Phase 1: Dwell**
-    - Driver rotates
-    - Pin not in slot
-    - Geneva wheel **stationary** (locked by driver periphery)
+    1. **Dwell:** the driver turns, the pin is out of the slots, and the Geneva wheel stays **stationary**.
+    2. **Index:** the pin enters a slot and the Geneva wheel turns 60°.
+    3. **Return to dwell:** the pin leaves the slot and the wheel stops in its new position.
 
-    **Phase 2: Index**
-    - Pin enters slot
-    - Geneva wheel rotates 60°
-    - Precise angular step!
-
-    **Phase 3: Return to Dwell**
-    - Pin exits slot
-    - Geneva wheel stops again
-    - Locked in new position
-
-    **Repeat for all 6 positions!**
+    Repeat for all 6 positions.
 
     :::tip[Troubleshooting Motion]
     **If mechanism won't move properly:**
@@ -1158,7 +1076,7 @@ Assembly is where the Geneva mechanism comes alive! You'll see discrete indexing
    Add dimensions for center distance, slot angle (60°), pin diameter, and number of slots
 
 6. **Add Timing Diagram**
-   Sketch a diagram showing X-axis as driver rotation (0° to 360°), Y-axis as Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°), and mark dwell periods (horizontal lines) and index periods (vertical jumps)
+   Sketch a diagram showing X-axis as driver rotation (0° to 360°), Y-axis as Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°), and mark dwell periods (horizontal lines) and index periods (S-shaped rises, each 60° high and 120° of driver rotation wide; they are not vertical jumps)
 
 7. **Export to PDF**
    File → Export → Select PDF format
@@ -1316,7 +1234,7 @@ $$\text{Index} = 180° - \frac{360°}{n}$$
 <InArticleAd />
 
 
-In the final lesson on **Scotch Yoke Mechanism**, we'll explore:
+In the lesson on the **Scotch Yoke Mechanism**, we'll explore:
 
 - Slot-driven motion
 - Sinusoidal motion profiles

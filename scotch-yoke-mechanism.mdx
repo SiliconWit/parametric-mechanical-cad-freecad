@@ -41,9 +41,7 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The Scotch yoke mechanism converts rotary motion to linear motion with perfect sinusoidal characteristics. Unlike the slider-crank mechanism, which produces approximate sinusoidal motion, the Scotch yoke creates mathematically pure sinusoidal displacement, velocity, and acceleration through its elegant slot-driven design.
-</BionicText>
+The Scotch yoke turns rotation into straight-line motion whose displacement, velocity and acceleration are pure sine waves; a slider crank gives only an approximate sine. Think of the shadow of a pin on a turning wheel, lit from the side: the shadow only goes up and down, and the slot of the yoke does the same as the light.
 
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <TailwindWrapper>
@@ -73,21 +71,10 @@ The Scotch yoke delivers pure sinusoidal motion where precision matters:
 <Tabs>
 <TabItem label="Key Parts">
 
-**1. Rotating Crank**
-- Circular disk with eccentric pin
-- Pin offset determines stroke
-
-**2. Yoke (Slider)**
-- Block with horizontal slot
-- Constrained to linear motion
-
-**3. Pin-in-Slot Connection**
-- Pin slides within yoke slot as crank rotates
-- Continuous sliding contact
-
-**4. Guide Rails**
-- Constrain yoke to linear motion only
-- Prevent rotation
+1. **Rotating crank:** a disk with an eccentric pin. The pin offset sets the stroke.
+2. **Yoke (slider):** a block with a horizontal slot, constrained to straight-line motion.
+3. **Pin-in-slot connection:** the pin slides along the slot as the crank turns, in continuous sliding contact.
+4. **Guide rails:** they keep the yoke on its line and stop it from rotating.
 
 </TabItem>
 <TabItem label="Motion Analysis">
@@ -108,7 +95,7 @@ Where:
 **Key Characteristic:** Yoke displacement is exactly proportional to $\sin(\theta)$, where $\theta$ is crank angle.
 
 :::tip[Engineering Insight]
-The acceleration being proportional and opposite to displacement is the hallmark of simple harmonic motion. This is the same physics governing pendulums, springs, and waves!
+Acceleration proportional and opposite to displacement is the mark of simple harmonic motion, as in a mass on a spring or a pendulum.
 :::
 
 </TabItem>
@@ -275,9 +262,7 @@ You'll switch between workbenches frequently. Use the dropdown or keyboard short
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Slot-driven mechanisms require careful attention to clearances and dimensional relationships. Our parametric approach will automatically calculate slot dimensions from crank radius and clearance specifications, ensuring smooth operation at any stroke length.
-</BionicText>
+A slot-driven mechanism depends on its clearances, so the spreadsheet calculates the slot from the crank radius and the clearance, for any stroke.
 
 ### Our Design Approach
 
@@ -294,7 +279,7 @@ We'll control the Scotch yoke with:
 - **SlotWidth** = PinDiameter + 2 mm clearance (automatic)
 - **SlotLength** = Stroke + 30 mm margin (automatic)
 
-Change crank radius → entire mechanism updates with proper clearances maintained!
+Change the crank radius and the whole mechanism updates with its clearances.
 
 </Card>
 
@@ -321,7 +306,7 @@ Change crank radius → entire mechanism updates with proper clearances maintain
 </Steps>
 
 :::note[Why Formulas Matter]
-By using spreadsheet formulas for dependent dimensions (Stroke = 2r, SlotWidth = PinDia + clearance), we ensure geometric relationships remain correct when parameters change. This is intelligent design automation!
+Formulas for the dependent dimensions (Stroke = 2r, SlotWidth = PinDia + clearance) keep the geometry correct when parameters change.
 :::
 
 ## Part 3: Creating the Parameter Spreadsheet
@@ -475,8 +460,6 @@ Now you can reference `Spreadsheet.CrankRadius` throughout your model!
 
 **Close the spreadsheet** when done (click the Close button).
 
-Your parametric foundation with intelligent formulas is ready!
-
 ## Part 4: Creating the Crank
 
 <InArticleAd />
@@ -540,7 +523,7 @@ The crank is a rotating disk with:
    - Type: `Spreadsheet.CrankDiskRadius`
    - Press **Enter**
 
-   Circle now shows 60mm and will update with parameters!
+   The circle now shows 60mm.
 
 </Steps>
 
@@ -607,7 +590,7 @@ The crank is a rotating disk with:
    - Type: `Spreadsheet.CrankRadius`
    - Press **Enter**
 
-   **Pin is now 40mm from center. This IS the crank radius!**
+   The pin is now 40mm from the center: this distance is the crank radius.
 
 4. **Set pin radius**
 
@@ -647,8 +630,6 @@ The distance from origin to pin center is THE crank radius. When you change Cran
    - Click **Pad** tool
    - Length: Click **ƒx** → `Spreadsheet.CrankThickness`
    - Click **OK**
-
-   **3D crank disk created!**
 
 </Steps>
 
@@ -711,14 +692,10 @@ We'll create it as a separate pad feature on the crank face.
    - Length: `25` mm (enough to engage yoke slot)
    - Click **OK**
 
-   **Protruding pin created!**
-
 </Steps>
 
 </TabItem>
 </Tabs>
-
-Crank is complete with rotating disk and eccentric protruding pin!
 
 ## Part 5: Creating the Yoke
 
@@ -800,8 +777,6 @@ The yoke is a sliding block with:
    - Enter (80mm)
 
 </Steps>
-
-Outer yoke body is now defined and centered!
 
 </TabItem>
 <TabItem label="Horizontal Slot">
@@ -891,8 +866,6 @@ This creates rounded "racetrack" slot shape for reduced wear.
    - Length: Click **ƒx** → `Spreadsheet.YokeThickness`
    - Click **OK**
 
-   **3D yoke with slot created!**
-
 </Steps>
 
 View the yoke in 3D (rotate view) - you should see a block with a horizontal slot through it!
@@ -958,7 +931,7 @@ Two parallel rails that:
    - Direction: Ensure it extrudes along Y (yoke travel direction)
    - Click **OK**
 
-   **Left guide rail created spanning 200mm!**
+   The left guide rail spans 200mm.
 
 </Steps>
 
@@ -992,8 +965,6 @@ You can either:
    - Click **OK**
 
 </Steps>
-
-**Both guide rails complete!**
 
 </TabItem>
 <TabItem label="Positioning Tips">
@@ -1075,8 +1046,6 @@ Fixed mounting base with:
 
 </Steps>
 
-**Frame complete!**
-
 All four parts are now ready for assembly!
 
 ## Part 8: Assembly
@@ -1084,9 +1053,7 @@ All four parts are now ready for assembly!
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where individual parts become a functioning mechanism. For the Scotch yoke, we'll fix the frame, allow the crank to rotate, and constrain the yoke to pure linear motion along the guides.
-</BionicText>
+In the assembly the frame is fixed, the crank may turn, and the yoke may only slide along the guides.
 
 ### Assembly Strategy
 
@@ -1155,7 +1122,7 @@ Assembly is where individual parts become a functioning mechanism. For the Scotc
 </Steps>
 
 :::note[Why Axial Align?]
-Axial Align constraint makes two cylindrical axes coincident, allowing rotation about that shared axis while preventing translation. Perfect for rotating shafts!
+Axial Align constraint makes two cylindrical axes coincident, allowing rotation about that shared axis while preventing translation.
 :::
 
 </TabItem>
@@ -1383,9 +1350,7 @@ Professional engineering documentation complete!
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The true test of parametric design: changing a single parameter should intelligently update the entire mechanism while maintaining all design relationships and clearances.
-</BionicText>
+Change one parameter and check that the whole mechanism updates and keeps its clearances.
 
 ### Verification Tests
 
@@ -1484,10 +1449,8 @@ The true test of parametric design: changing a single parameter should intellige
 
 </Steps>
 
-All relationships maintain correctly across the range!
-
 :::tip[Design Exploration]
-Try different crank radii to understand how stroke affects the mechanism's size and motion characteristics. This is the power of parametric design: instant design iteration!
+Try different crank radii to see how the stroke sets the size of the mechanism.
 :::
 
 </TabItem>
@@ -1514,7 +1477,7 @@ Try different crank radii to understand how stroke affects the mechanism's size 
 
 </Steps>
 
-**Critical insight:** By using formulas for clearances, you can instantly explore tighter or looser fits without manual recalculation!
+With a formula for the clearance, you can try tighter or looser fits without calculating by hand.
 
 </TabItem>
 </Tabs>
@@ -1524,7 +1487,7 @@ Try different crank radii to understand how stroke affects the mechanism's size 
 <InArticleAd />
 
 
-**Congratulations!** By completing this lesson, you have:
+By completing this lesson, you have:
 
 <CardGrid>
   <Card title="✅ Designed Slot Mechanisms" icon="puzzle">
@@ -1551,8 +1514,6 @@ Try different crank radii to understand how stroke affects the mechanism's size 
     Created technical drawings showing clearances and motion
   </Card>
 </CardGrid>
-
-**Most importantly:** You've mastered advanced parametric control using formulas and designed a mechanism demonstrating perfect simple harmonic motion!
 
 ## Design Verification Checklist
 
@@ -1947,16 +1908,16 @@ Ready for more? Try these enhancements:
 
 ### Complete Mechanism Library
 
-🎉 Congratulations! You've now designed eight fundamental mechanisms:
+You have now designed eight fundamental mechanisms:
 
-1. ✅ **Slider Crank** - Rotary to linear conversion
-2. ✅ **Four-Bar Linkage** - Controlled motion paths
-3. ✅ **Scissor Lift** - Motion amplification
-4. ✅ **Toggle Clamp** - Over-center locking
-5. ✅ **Pantograph** - Motion scaling
-6. ✅ **Cam and Follower** - Programmed motion
-7. ✅ **Geneva Mechanism** - Intermittent indexing
-8. ✅ **Scotch Yoke** - Pure sinusoidal motion
+1. **Slider Crank:** rotary to linear conversion
+2. **Four-Bar Linkage:** controlled motion paths
+3. **Scissor Lift:** motion amplification
+4. **Toggle Clamp:** over-center locking
+5. **Pantograph:** motion scaling
+6. **Cam and Follower:** programmed motion
+7. **Geneva Mechanism:** intermittent indexing
+8. **Scotch Yoke:** pure sinusoidal motion
 
 ### Skills Mastered
 
@@ -1986,9 +1947,7 @@ Ready for more? Try these enhancements:
 - Mechanism design books - Deepen theoretical knowledge
 :::
 
-Thank you for completing this course! You now have the foundation to design sophisticated mechanical systems with professional parametric CAD methodology.
-
-**Happy designing!**
+The last lesson of the course, [Python Scripting for Advanced CAD](/education/parametric-mechanical-cad-freecad/python-scripting-advanced-cad/), shows how to build such models from code.
 
 
 

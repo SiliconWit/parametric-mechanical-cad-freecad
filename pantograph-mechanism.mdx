@@ -149,10 +149,7 @@ You will build a spreadsheet in which formulas calculate every length from BaseL
 
 1. **Download FreeCAD 0.21 or later**
 
-   Visit [www.freecad.org](https://www.freecad.org/)
-
-   Free & Open Source
-   Cross-Platform
+   Visit [www.freecad.org](https://www.freecad.org/). It is free, open source and runs on Linux, macOS and Windows.
 
 2. **Create new document**
 
@@ -183,15 +180,8 @@ You will build a spreadsheet in which formulas calculate every length from BaseL
   <TabItem label="New Concepts">
 
     :::tip[New in This Lesson]
-    **Master Sketch Approach:**
-    - Create one reference sketch defining all key points
-    - Parts reference this sketch using External Geometry
-    - Changes propagate automatically to all parts
-
-    **Expression-Based Design:**
-    - Use formulas in spreadsheet cells
-    - Automatic calculation of dependent dimensions
-    - Mathematical relationships encoded in design
+    - **Master sketch:** one reference sketch defines all key points; the parts refer to it with External Geometry, so a change reaches every part.
+    - **Expressions:** formulas in spreadsheet cells calculate the dependent dimensions.
     :::
 
   </TabItem>
@@ -202,9 +192,7 @@ You will build a spreadsheet in which formulas calculate every length from BaseL
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The pantograph is our first ratio-driven mechanism where geometric relationships are more complex. We'll use a master sketch to define the kinematic layout, then reference it from all parts. This ensures geometric consistency and simplifies the parametric control to just two values: base length and scaling ratio.
-</BionicText>
+This is the first mechanism of the course driven by a ratio. One master sketch defines the layout and every part refers to it, so two values control the whole model: base length and scaling ratio.
 
 ### Our Design Approach
 
@@ -215,7 +203,7 @@ We'll control the **entire pantograph mechanism** with just two parameters:
 **BaseLength** = 100 mm
 **ScalingRatio** = 2
 
-All other dimensions calculated automatically using expressions!
+Expressions calculate all other dimensions:
 
 $$\text{InputLength} = \text{BaseLength} \times \text{ScalingRatio}$$
 
@@ -224,8 +212,6 @@ $$\text{OutputLength} = \text{BaseLength} \times \text{ScalingRatio}$$
 $$\text{CrossLink} = \text{BaseLength} \times \text{ScalingRatio}$$
 
 The short dimensions ($OA$, $AI$, $BQ$) are equal to BaseLength. The long dimensions ($AQ$, $BP$, $OB$) are InputLength, OutputLength and CrossLink.
-
-This is parametric design at its most powerful.
 
 </Card>
 
@@ -283,13 +269,7 @@ This is parametric design at its most powerful.
   <TabItem label="Why Master Sketch?">
 
     :::note[Master Sketch Benefits]
-    **For Complex Mechanisms like Pantographs:**
-    - Multiple parts share exact geometric points
-    - Similar triangle relationships must be maintained
-    - Master sketch ensures all parts stay coordinated
-    - Change one sketch, all parts update correctly
-
-    **Think of it as:** The master sketch is the kinematic blueprint; individual parts are the physical implementation.
+    Several parts share exact points, and the similar triangles must hold in all of them. With one master sketch, a change in that sketch reaches every part. The master sketch is the plan of the mechanism; the parts are its physical form.
     :::
 
   </TabItem>
@@ -345,7 +325,7 @@ This is parametric design at its most powerful.
   </TabItem>
   <TabItem label="Calculated Values">
 
-    **Now the powerful part - expressions!**
+    **Expressions for the long bars:**
 
     | Cell | Value | Formula | Meaning |
     |------|-------|---------|---------|
@@ -365,7 +345,7 @@ This is parametric design at its most powerful.
     With the default values, BaseLength is 100 mm and the three calculated values are each 200 mm.
 
     :::tip[Expression Power]
-    The expressions in column B ensure the similar triangle relationships are maintained automatically! Change BaseLength or ScalingRatio, all dependent values update instantly.
+    The expressions in column B keep the similar-triangle relationships: change BaseLength or ScalingRatio and every dependent value follows.
     :::
 
     :::caution[Keep k greater than 1]
@@ -420,8 +400,6 @@ This is parametric design at its most powerful.
 </Tabs>
 
 **Close the spreadsheet** when done (click the Close button).
-
-Your expression-based parameter foundation is ready!
 
 ## Part 4: Creating the Master Sketch
 
@@ -693,8 +671,6 @@ Think of it as the "blueprint" that all parts will reference.
 
 </Steps>
 
-**Master sketch complete!** This defines all key points for the entire mechanism.
-
 ## Part 5: Creating Link OA
 
 <InArticleAd />
@@ -756,8 +732,6 @@ Link from fixed pivot O to moving pivot A:
 
 </Steps>
 
-**Link OA complete!**
-
 ## Part 6: Creating Link OB
 
 <InArticleAd />
@@ -782,8 +756,6 @@ Same process as Link OA, but reference points O and B. This link is longer: its 
 5. **Pad:** LinkThickness
 
 </Steps>
-
-**Link OB complete!**
 
 ## Part 7: Creating Link AB
 
@@ -827,7 +799,7 @@ $$M = 3(n - 1) - 2j$$
 Each hinge joins two bars with one pin. No bar is pinned twice to the same bar. Two pins between the same two bars make them one rigid body.
 :::
 
-**Mobility check complete!** The pantograph needs four moving parts, not five.
+The pantograph needs four moving parts, not five.
 
 ## Part 8: Creating Input Arm (OI)
 
@@ -876,8 +848,6 @@ This arm carries the input point I (input stylus). It does not touch O. It runs 
 
 With the default values the holes are at 0 mm (A), 100 mm (I) and 200 mm (Q) along the arm.
 
-**Input Arm complete!**
-
 ## Part 9: Creating Output Arm (OP)
 
 <InArticleAd />
@@ -908,8 +878,6 @@ This arm carries the output point P (output tracer). It does not touch O. It run
 </Steps>
 
 With the default values the holes are at 0 mm (B), 100 mm (Q) and 200 mm (P) along the arm. The hole spacing is the same as on the Input Arm.
-
-**Output Arm complete!**
 
 ## Part 10: Creating the Base
 
@@ -962,16 +930,12 @@ Fixed mounting plate providing:
 
 </Steps>
 
-**Base complete!** All parts are now ready for assembly!
-
 ## Part 11: Assembly
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Assembly is where the pantograph comes to life! With five separate parts and five hinges, proper constraint strategy is critical. We'll use axial alignment to create one revolute joint at each hinge while maintaining the parallelogram geometry.
-</BionicText>
+The assembly has five parts and five hinges. Each hinge is one axial alignment, a revolute joint, and the parallelogram keeps its shape from the hole positions.
 
 ### Assembly Strategy
 
@@ -1068,8 +1032,6 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     </Steps>
 
-    Point A is now a complete pin joint!
-
   </TabItem>
   <TabItem label="Joint at B">
 
@@ -1082,8 +1044,6 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
        - Axial Align
 
     </Steps>
-
-    Point B is now a complete pin joint!
 
   </TabItem>
   <TabItem label="Joint at Q">
@@ -1142,9 +1102,7 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-The true test of a pantograph is its scaling accuracy. We'll verify both the geometric construction and the parametric control to ensure the mechanism works correctly at any scaling ratio.
-</BionicText>
+Check the scaling ratio in the assembly, then check it again after a change of the ratio.
 
 ### Verification Methods
 
@@ -1208,8 +1166,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
        - OutputLength now = 300mm ($100 \times 3$)
        - CrossLink now = 300mm
        - Link OA and the distances AI and BQ stay at 100mm
-       - All parts update geometry!
-       - Assembly adjusts automatically!
+       - All parts and the assembly update
 
     5. **Test motion again**
 
@@ -1247,7 +1204,7 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
     </Steps>
 
     :::tip[Perfect Geometry]
-    If your measurements match the math, your pantograph is geometrically perfect! The similar triangle relationships are working correctly.
+    If your measurements match the calculation, the similar triangles are built correctly.
     :::
 
   </TabItem>
@@ -1307,16 +1264,12 @@ The true test of a pantograph is its scaling accuracy. We'll verify both the geo
 
 </Steps>
 
-You now have professional documentation for your parametric pantograph!
-
 ## Part 14: Testing Parametric Control
 
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-This is where expression-based parametric design really shines. Watch as a single parameter change recalculates all dependent dimensions and updates the entire mechanism automatically.
-</BionicText>
+Change one parameter and watch the expressions recalculate every dependent dimension.
 
 ### Parametric Experiments
 
