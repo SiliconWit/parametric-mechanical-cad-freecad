@@ -660,8 +660,6 @@ The base is a bar of length `Spreadsheet.BaseWidth` with two pin holes for the l
 
 </Steps>
 
-**Base platform complete!**
-
 ## Part 5: Creating the Top Platform
 
 <InArticleAd />
@@ -800,8 +798,6 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 </TabItem>
   <TabItem label="Center Crossing">
 
-    **This is the critical scissor pivot!**
-
     <Steps>
 
     1. Select the **center hole axis** of first ScissorArm
@@ -812,10 +808,10 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
     </Steps>
 
-    The arms now cross and can pivot relative to each other!
+    The arms now cross and pivot on each other.
 
     :::caution[Assembly Critical Point]
-    This center crossing constraint is what makes it a "scissor" mechanism. Without this, the arms would be independent. With it, they work together to amplify motion!
+    Without this center constraint the two arms move independently. With it they act as a scissor and amplify the motion.
     :::
 
 </TabItem>
@@ -832,8 +828,6 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
        - Axial Align constraint
 
     </Steps>
-
-    The mechanism is now complete!
 
 </TabItem>
   <TabItem label="Testing Motion">
@@ -915,9 +909,7 @@ You now have professional engineering documentation!
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-This is where parametric design proves its worth! A truly parametric model updates correctly when you change parameters. Let's verify your scissor lift is intelligent and responsive to design changes.
-</BionicText>
+A parametric model must update correctly when a parameter changes. These tests check that your scissor lift does.
 
 ### Verification Tests
 
@@ -942,14 +934,14 @@ This is where parametric design proves its worth! A truly parametric model updat
 
     4. **Observe changes:**
 
-       - All scissor arms are now longer!
-       - Maximum lift height increases!
-       - Pin holes remain properly positioned!
-       - Assembly maintains all constraints!
+       - All scissor arms are longer
+       - The maximum lift height increases
+       - The pin holes stay in their places
+       - The assembly keeps all its constraints
 
     </Steps>
 
-    ✅ **Success!** Your mechanism scales with arm length!
+    ✅ The mechanism scales with arm length.
 
 </TabItem>
   <TabItem label="Test 2: Arm Width">
@@ -965,14 +957,14 @@ This is where parametric design proves its worth! A truly parametric model updat
 
     3. **Verify:**
 
-       - Scissor arms are now wider (more robust!)
+       - The scissor arms are wider and stronger
        - Symmetric constraints maintained
        - All holes still centered
        - Assembly still functions
 
     </Steps>
 
-    ✅ **Your arms are parametric!**
+    ✅ The arms follow the spreadsheet.
 
 </TabItem>
   <TabItem label="Test 3: Pin Size">
@@ -990,11 +982,11 @@ This is where parametric design proves its worth! A truly parametric model updat
 
        - All holes in arms are now larger
        - All holes in platforms match
-       - Formula-driven PinRadius worked!
+       - PinRadius followed its formula
 
     </Steps>
 
-    ✅ **Calculated parameters work perfectly!**
+    ✅ The calculated parameters update.
 
 </TabItem>
   <TabItem label="Test 4: Base Width">
@@ -1006,13 +998,13 @@ This is where parametric design proves its worth! A truly parametric model updat
 
     </Steps>
 
-    **Platforms expand for wider stance!**
+    The platforms grow wider.
 
     Try extreme values:
     - ArmLength = 150, ArmWidth = 20 (compact design)
     - ArmLength = 300, ArmWidth = 50 (heavy-duty version)
 
-    Everything should update cleanly!
+    Everything should update without errors.
 
     :::caution[If Updates Fail]
     **Problem:** Some parts don't update
@@ -1032,7 +1024,7 @@ This is where parametric design proves its worth! A truly parametric model updat
 <InArticleAd />
 
 
-**Congratulations!** By completing this lesson, you have:
+In this lesson you have:
 
 <CardGrid>
   <Card title="✅ Designed Symmetric Parts" icon="approve-check">
@@ -1059,8 +1051,6 @@ This is where parametric design proves its worth! A truly parametric model updat
     Verified parametric updates across assembly
   </Card>
 </CardGrid>
-
-**Most importantly:** You've designed a mechanism with repeating geometry using professional parametric methodology!
 
 ## Design Verification Checklist
 
@@ -1250,7 +1240,7 @@ Ready for more? Try these enhancements:
 - **Run experiments:** Follow the [Scissor Lift Experiments](/education/mechanism-design-simulation/scissor-lift-experiments) for nine structured lab exercises with Python data analysis.
 - **Read more:** See the [2D Mechanisms Analyzer](/product-development/2d-mechanisms-analyzer/scissor-lift-mechanism-simulator) for a full overview of the simulator's capabilities and downloadable resources.
 
-In **Lesson 4: Toggle Clamp Mechanism**, you'll explore:
+In the lesson on the **Toggle Clamp Mechanism**, you'll explore:
 
 <CardGrid>
   <Card title="Over-Center Locking" icon="star">
@@ -1269,8 +1259,6 @@ In **Lesson 4: Toggle Clamp Mechanism**, you'll explore:
     Designing cam surfaces and follower paths
   </Card>
 </CardGrid>
-
-Each lesson builds on parametric fundamentals while introducing new mechanisms and CAD techniques!
 
 
 

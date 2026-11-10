@@ -41,9 +41,7 @@ By the end of this lesson, you will be able to:
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-While GUI-based CAD is perfect for manually designing individual parts, Python scripting unlocks an entirely different capability: algorithmic design. Instead of drawing geometry, you define mathematical rules that generate geometry. This enables design exploration, optimization, and complexity that would be impractical or impossible with mouse and keyboard alone.
-</BionicText>
+The GUI is good for drawing one part at a time. A Python script does something different, algorithmic design: you write the mathematical rules, and the script generates the geometry. That makes design exploration, optimization and geometry too complex to draw with a mouse practical.
 
 ### When Python Beats GUI
 
@@ -186,11 +184,11 @@ While GUI-based CAD is perfect for manually designing individual parts, Python s
 
 <Card title="💡 Paradigm Change" icon="star">
 
-**GUI CAD:** You are the designer, you create every feature manually
+**GUI CAD:** you create every feature yourself.
 
-**Python CAD:** You are the programmer, you teach the computer how to design
+**Python CAD:** you write the rules once, and the computer applies them.
 
-**Result:** The computer can now explore thousands of design variants, handle mathematical complexity you couldn't calculate by hand, and automate workflows that would take weeks manually.
+**Result:** the computer can build thousands of design variants, do calculations too long to do by hand, and repeat work that would take weeks.
 
 </Card>
 
@@ -322,9 +320,7 @@ import numpy as np
 <InArticleAd />
 
 
-<BionicText method="advanced" intensity="medium" class="highlight">
-Involute gears are the industry standard for power transmission, used in automotive transmissions, industrial gearboxes, and precision machinery. Creating mathematically-perfect involute profiles manually is tedious and error-prone. Python generates them flawlessly from equations.
-</BionicText>
+Involute gears are the standard for power transmission, in car transmissions, industrial gearboxes and precision machinery. An exact involute is slow and error-prone to draw by hand; a script computes it from its equations.
 
 ### Why Involute Gears?
 
@@ -501,7 +497,7 @@ print(f"  Number of teeth: 24")
    ```python
    def create_involute_gear(module, num_teeth, ...):
    ```
-   Makes the code reusable—change parameters, get new gear!
+   Makes the code reusable: change the parameters to get a new gear.
 
 2. **Mathematical calculations**
    ```python
@@ -513,7 +509,7 @@ print(f"  Number of teeth: 24")
    ```python
    for tooth_num in range(num_teeth):
    ```
-   Generates all teeth—whether 10 or 100 teeth, same code!
+   Generates all teeth: the same code makes 10 teeth or 100.
 
 4. **Point-by-point curve building**
    ```python
@@ -525,7 +521,7 @@ print(f"  Number of teeth: 24")
    ```python
    return gear_solid
    ```
-   Result is a normal FreeCAD Part—can use in assemblies!
+   The result is a normal FreeCAD Part, which you can use in assemblies.
 
 </TabItem>
   <TabItem label="Usage Examples">
@@ -556,7 +552,7 @@ for teeth in [12, 18, 24, 30, 36]:
     print(f"Created gear with {teeth} teeth")
 ```
 
-Generates 5 different gears in seconds!
+This generates 5 different gears in seconds.
 
 </TabItem>
   <TabItem label="Real-World Applications">

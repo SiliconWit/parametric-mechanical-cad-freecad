@@ -414,6 +414,18 @@ We'll design a **6-slot external Geneva mechanism**:
     | **B13** | =B5*2.5 | **Formula!** |
     | **C13** | mm | |
     | **D13** | Pin clearance | |
+    | **A14** | LockRadius | Locking disc radius |
+    | **B14** | =B8*0.75 | **Formula!** |
+    | **C14** | mm | |
+    | **D14** | 30 mm for 6 slots | |
+    | **A15** | HollowRadius | Hollow in the wheel |
+    | **B15** | =B14+0.5 | **Formula!** |
+    | **C15** | mm | |
+    | **D15** | 0.5 mm clearance round the disc | |
+    | **A16** | ReliefRadius | Cut-away on the disc |
+    | **B16** | =B9+1.5 | **Formula!** |
+    | **C16** | mm | |
+    | **D16** | 1.5 mm clearance for the wheel | |
 
 </TabItem>
   <TabItem label="Understanding Formulas">
@@ -471,6 +483,9 @@ We'll design a **6-slot external Geneva mechanism**:
        - B11 → `ShaftDiameter`
        - B12 → `ShaftRadius`
        - B13 → `SlotWidth`
+       - B14 → `LockRadius`
+       - B15 → `HollowRadius`
+       - B16 → `ReliefRadius`
 
     </Steps>
 
@@ -501,7 +516,7 @@ We'll design a **6-slot external Geneva mechanism**:
 
 <Card title="⚙️ Driver Requirements" icon="document">
 
-The driver wheel is a rotating disc with a central shaft hole for its fixed pivot, a driving pin at radius $R_d$ that engages the Geneva slots, and a circular periphery that serves as the locking arc. The spreadsheet drives every dimension.
+The driver wheel is a rotating disc with a central shaft hole for its fixed pivot, a driving pin at radius $R_d$ that engages the Geneva slots, and a locking disc whose circular edge serves as the locking arc. The spreadsheet drives every dimension.
 
 </Card>
 
@@ -615,7 +630,7 @@ The driver wheel is a rotating disc with a central shaft hole for its fixed pivo
     - All dimensions linked to spreadsheet
 
     :::tip[Locking Arc Note]
-    For simplicity, the driver disk's outer periphery acts as the locking arc. The driver disk (radius 50 mm) and the Geneva wheel (radius 69 mm) overlap at a center distance of 80 mm, so place the driver disk on a level below the wheel in the assembly, with the pin rising into the slots. This simple build shows the indexing, but a disk on a lower level does not touch the wheel, so nothing locks the wheel during the dwell. A working Geneva has a locking disc on the driver, about three quarters of the driver radius, that sits in matching hollows cut between the slots of the wheel, and a cut-away on the pin side of the disc that lets the wheel turn during the index.
+    The driver disk (radius 50 mm) and the Geneva wheel (radius 69 mm) overlap at a center distance of 80 mm, so this disk sits on a level below the wheel and does not touch it. It does not lock the wheel. The lock is a smaller locking disc on top of this disk, at the level of the wheel, which sits in matching hollows cut between the slots of the wheel. A cut-away on the pin side of the locking disc lets the wheel turn during the index. You add both after the pad below.
     :::
 
 </TabItem>
@@ -643,6 +658,22 @@ The driver wheel is a rotating disc with a central shaft hole for its fixed pivo
 
 Press **V** then **F** to fit the view to the 3D driver wheel.
 
+### Adding the Locking Disc and the Pin
+
+The pin circle in the first sketch made a hole, not a pin. These steps add the locking disc, its cut-away and a pin that stands up into the level of the wheel. Each new sketch goes on the **top face** of the solid below it (select the face, then **Create Sketch**).
+
+<Steps>
+
+1. **Locking disc:** on the top face of the driver disk, draw a circle on the origin with radius `Spreadsheet.LockRadius` (30 mm). **Pad** it by `Spreadsheet.WheelThickness`.
+
+2. **Cut-away:** on the top face of the locking disc, draw a circle whose center is on the horizontal axis, on the pin side, at `Spreadsheet.DriverCenterDistance` (80 mm) from the origin. Give it the radius `Spreadsheet.ReliefRadius` (70.78 mm). **Pocket** it, Length `Spreadsheet.WheelThickness`. This removes the part of the locking disc that faces the wheel while the pin drives it.
+
+3. **Pin:** on **XY_Plane**, draw a circle at the pin position (horizontal constraint with the origin, distance `Spreadsheet.DriverRadius`) with radius `Spreadsheet.PinRadius`. **Pad** it by `2 * Spreadsheet.WheelThickness` (30 mm). It fills the pin hole and stands 15 mm above the driver disk.
+
+</Steps>
+
+The cut-away must face the same way as the pin. Its edge meets the locking disc 61.5° each side of the pin, a little more than the 60° each side in which the pin drives the wheel.
+
 ## Part 5: Creating the Geneva Wheel (Driven Wheel)
 
 <InArticleAd />
@@ -652,7 +683,7 @@ Press **V** then **F** to fit the view to the 3D driver wheel.
 
 <Card title="🔧 Geneva Wheel Requirements" icon="puzzle">
 
-The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft hole for its fixed pivot, and a circular edge between the slots for the locking arc. The number of slots drives the whole geometry.
+The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft hole for its fixed pivot, and a hollow in the rim between each pair of slots, where the locking arc sits. The number of slots drives the whole geometry.
 
 </Card>
 
@@ -823,9 +854,9 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
     - Slots evenly distributed (60° spacing)
     - Solver shows "Fully constrained" (or close - some redundancy is OK for patterns)
 
-    **The locking periphery:**
-    - The circular area between slots provides the locking surface
-    - Driver's locking arc will ride on this during dwell!
+    **The locking surface:**
+    - The rim between the slots will carry the hollows, cut after the pad
+    - The driver's locking disc sits in a hollow during the dwell
 
 </TabItem>
 </Tabs>
@@ -849,6 +880,22 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
 </Steps>
 
 Rotate the view to see the 6 radial slots cutting through the wheel.
+
+### Cutting the Hollows for the Locking Disc
+
+<Steps>
+
+1. **Sketch on the top face** of the wheel.
+
+2. **First hollow:** draw a circle with its center at `Spreadsheet.DriverCenterDistance` (80 mm) from the origin, on the line halfway between two slots (30° from a slot for 6 slots). Radius: `Spreadsheet.HollowRadius` (30.5 mm). In the dwell the driver's center sits exactly at this point, so the locking disc fits the hollow with 0.5 mm all round.
+
+3. **Polar pattern** the circle about the origin, 6 copies (the same count as the slots).
+
+4. **Pocket**, Type **Through all**.
+
+</Steps>
+
+Each hollow cuts a concave arc into the rim between two slots. Checked over a full driver turn for 4, 6 and 8 slots, with these formulas the locking disc and the pin never touch the wheel, and in the dwell the wheel cannot turn more than about 0.4°.
 
 ## Part 6: Creating the Base Frame
 
@@ -1014,6 +1061,7 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
     **Position for first index:**
 
     Manually drag parts so that:
+    - The Geneva wheel sits at the height of the **locking disc**, above the driver disk
     - **Driver pin** is entering one of the **Geneva wheel slots**
     - This is the starting position for indexing motion
 
