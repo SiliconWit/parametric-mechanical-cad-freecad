@@ -212,20 +212,14 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
 1. **Create a Body**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Body** button (or Body → Create body)
-   - A "Body" object appears in the tree
+   - In the **Part Design workbench**, click **New Body**
    - Right-click → Rename → type `ScissorArm`
 
 2. **Create a Sketch**
 
-   - Select the "ScissorArm" body in tree
-   - Click **Create Sketch** button
-   - Dialog asks: Choose a plane
-   - Select **XY_Plane**
-   - Click **OK**
+   - Select the "ScissorArm" body, click **New Sketch**, select **XY_Plane**, **OK**
 
-   You're now in **Sketcher workbench** (automatic switch)
+   FreeCAD changes to the **Sketcher workbench** by itself
 
 </Steps>
 
@@ -254,8 +248,6 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     </Steps>
 
-    You now have a horizontal line from the origin!
-
 </TabItem>
   <TabItem label="Parametric Length">
 
@@ -263,23 +255,11 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     <Steps>
 
-    1. **Distance constraint** tool
+    1. Select the line, press **K, D** (distance)
 
-    2. Click the **left endpoint** of the line
-
-    3. Click the **right endpoint** of the line
-
-    4. A dimension dialog appears
-
-    5. Click the small **ƒx** button
-
-    6. In the formula editor, type: `Spreadsheet.ArmLength`
-
-    7. Press **Enter**
+    2. Click the small **ƒx** button, type `Spreadsheet.ArmLength`, press **Enter**
 
     </Steps>
-
-    Line is now 200mm and parametric!
 
 </TabItem>
   <TabItem label="Make Construction">
@@ -318,11 +298,9 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     4. Press **Escape**
 
-    5. **Midpoint constraint:**
-       - Click **Midpoint constraint** tool
-       - Click the **circle center**
-       - Click the **centerline** (the construction line)
-       - Circle center snaps to line midpoint!
+    5. **Center on the midpoint:**
+       - Click the **left endpoint** of the centerline, then its **right endpoint**, then the **circle center**
+       - Press **S** (symmetric): the two ends are symmetric about the circle center, so the center sits at the midpoint. Sketcher has no separate midpoint tool
 
     6. **Radius dimension:**
        - Radius constraint tool
@@ -333,7 +311,6 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     </Steps>
 
-    Center hole is perfectly positioned and parametric!
 
 </TabItem>
   <TabItem label="Left End Hole">
@@ -354,7 +331,6 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
        - Coincident tool
        - Click **circle center**
        - Click **left endpoint** of centerline
-       - Circle locks to origin!
 
     6. **Radius:**
        - Radius constraint
@@ -363,8 +339,6 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
        - Enter
 
     </Steps>
-
-    Left hole positioned at origin!
 
 </TabItem>
   <TabItem label="Right End Hole">
@@ -389,8 +363,6 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     </Steps>
 
-    All three holes are now positioned and dimensioned!
-
 </TabItem>
 </Tabs>
 
@@ -413,28 +385,20 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     </Steps>
 
-    Don't worry about exact positioning yet. Constraints will fix it!
-
 </TabItem>
   <TabItem label="Symmetric Constraint">
 
-    **Center the rectangle about centerline:**
+    **Center the rectangle on the center hole:**
 
     <Steps>
 
-    1. Click **Symmetric constraint** tool
+    1. Click the **top left corner**, then the **bottom right corner**, then the **center of the middle hole**
 
-    2. Click the **top edge** of the rectangle
-
-    3. Click the **bottom edge** of the rectangle
-
-    4. Click the **horizontal centerline** (construction line)
-
-    5. Press **Escape**
+    2. Press **S** (symmetric)
 
     </Steps>
 
-    The symmetric constraint keeps the two long edges at equal distances from the centerline. When ArmWidth changes, the bar grows equally on both sides and the holes stay in the middle.
+    The two opposite corners are now symmetric about the middle hole, so the bar is centered on it both ways. When ArmWidth changes, the bar grows equally on both sides and the holes stay in the middle. Do not make the top and bottom edges symmetric about the centerline: the Rectangle tool already holds its sides vertical, so that constraint repeats one, and the solver reports a redundant constraint and stops.
 
 </TabItem>
   <TabItem label="Width Dimension">
@@ -443,35 +407,20 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     <Steps>
 
-    1. **Distance constraint** tool
+    1. Click the **bottom left corner**, then the **top left corner**, press **I** (vertical distance)
 
-    2. Click the **top edge** of rectangle
-
-    3. Click the **bottom edge** of rectangle
-
-    4. ƒx button
-
-    5. Type: `Spreadsheet.ArmWidth`
-
-    6. Enter
+    2. **ƒx**, type `Spreadsheet.ArmWidth`, **Enter**
 
     </Steps>
-
-    Arm width is now 30mm and parametric!
 
 </TabItem>
   <TabItem label="Length Lock">
 
-    **The rectangle length still needs two constraints!**
+    The solver still shows 1 degree of freedom: the length of the bar. Its ends must lie beyond the end holes, or the holes cut through the ends of the arm.
 
-    The symmetric and width constraints fix the rectangle only in the vertical direction. The solver still shows 2 degrees of freedom: the positions of the left and right edges. These edges must lie beyond the end holes, otherwise the holes cut through the ends of the arm.
+    - Click the **bottom left corner**, then the **bottom right corner**, press **L**, **ƒx**: `Spreadsheet.ArmLength + Spreadsheet.ArmWidth`
 
-    To remove the 2 degrees of freedom, add:
-
-    - **Distance:** Left hole center → rectangle left edge = `Spreadsheet.ArmWidth / 2`
-    - **Distance:** Right hole center → rectangle right edge = `Spreadsheet.ArmWidth / 2`
-
-    The arm is now ArmLength + ArmWidth long overall (230 mm), with 200 mm between the end holes.
+    The arm is now ArmLength + ArmWidth long overall (230 mm), with 200 mm between the end holes and 15 mm of bar beyond each.
 
 </TabItem>
 </Tabs>
@@ -523,6 +472,8 @@ A sketch is exact only when its **constraints** (rules such as "this point is on
 
     Press **V** then **F** to fit the view. You see a bar with three holes.
 
+    **Check it:** one solid 230 × 30 × 8 mm. **Tools → Measure** on the two end hole edges reads 200 mm, and on the left and middle hole edges 100 mm. If the middle reads 100 now but not after ArmLength changes, the center was placed by a typed distance, not by the symmetric constraint.
+
 </TabItem>
 </Tabs>
 
@@ -541,14 +492,11 @@ The base is a bar of length `Spreadsheet.BaseWidth` with two pin holes for the l
 
 1. **Create new Body**
 
-   - Part Design workbench
-   - Create Body
-   - Rename: `BasePlatform`
+   - Part Design workbench, **New Body**, rename it `BasePlatform`
 
 2. **Create Sketch**
 
-   - Select BasePlatform body
-   - Create Sketch → XY_Plane
+   - Select BasePlatform body, **New Sketch** → XY_Plane
 
 </Steps>
 
@@ -565,10 +513,7 @@ The base is a bar of length `Spreadsheet.BaseWidth` with two pin holes for the l
 
     3. Press **Escape**
 
-    4. **Symmetric constraints:**
-       - Symmetric: left edge, right edge, Y-axis
-       - Symmetric: top edge, bottom edge, X-axis
-       - This centers the rectangle perfectly!
+    4. **Center it:** the **bottom left corner**, the **top right corner**, then the **origin**, press **S**
 
     5. **Width dimension:**
        - Distance: left edge to right edge
@@ -701,7 +646,7 @@ Similar to the base, but this platform moves vertically and carries the load.
 An assembly joins the parts with constraints between parts, so that you can drag the platform and watch it rise. The arm is placed twice: once rising from left to right, and once from right to left.
 
 :::caution[Which Assembly workbench these steps use]
-These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The lesson names Assembly4 and A2plus, but the constraint names it uses (Fixed, Axial Align, point-on-line) are nearest to the **Assembly3** add-on (Axial Alignment, Points on Line). A2plus calls them axisCoincident and pointOnLine, and Assembly4 has no constraints of this kind. FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground the base where this lesson says Fixed, and use a **Revolute** joint where it says Axial Align.
+These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1. In 0.21 you install an add-on: in Assembly3 a Revolute joint is Axial Alignment and the sliding end is Points on Line; in A2plus they are axisCoincident and pointOnLine.
 :::
 
 ### Assembly Strategy
@@ -711,7 +656,7 @@ The base is fixed. The first arm rises from the left base pin to the right end o
 :::caution[One end of each platform must slide]
 Count the joints before you assemble. There are 4 links (base, two arms, top platform). If all five connections are fixed pin joints, the mobility is $3(4-1) - 2(5) = -1$: the assembly is a rigid frame and cannot lift. With the holes 160 mm apart and 200 mm arms it fits only at one height, $\sqrt{200^2 - 160^2} = 120 \text{ mm}$.
 
-A real scissor lift lets one end of each platform slide (a roller or a pin in a horizontal slot). Here the two right-hand connections slide: the second arm on the base, and the first arm on the top platform. A pin in a slot removes one degree of freedom, not two, so the mobility becomes $3(4-1) - 2(3) - 1(2) = 1$. In the assembly, do not use Axial Align for these two connections. Use a constraint that keeps the arm hole axis on the line through the two platform holes (a point-on-line or slot type constraint), and in a part you intend to build, replace the right-hand hole of each platform with a horizontal slot.
+A real scissor lift lets one end of each platform slide (a roller or a pin in a horizontal slot). Here the two right-hand connections slide: the second arm on the base, and the first arm on the top platform. A pin in a slot removes one degree of freedom, not two, so the mobility becomes $3(4-1) - 2(3) - 1(2) = 1$. In the assembly, do not use a Revolute joint for these two connections. Use a joint that keeps the arm's pin on the line through the two platform holes and lets it slide (in FreeCAD 1.1, a Distance joint from the pin hole to the platform face, below), and in a part you intend to build, replace the right-hand hole of each platform with a horizontal slot.
 :::
 
 ### Creating the Assembly
@@ -723,20 +668,20 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
     1. **Switch to Assembly workbench**
 
-       Use workbench dropdown (Assembly4 or A2plus recommended)
+       Use workbench dropdown
 
     2. **Create new assembly**
 
-       Assembly → Create Assembly
+       Assembly → **New Assembly**
 
     3. **Add parts**
 
-       You need to add:
+       **Insert Component** (**I**):
        - BasePlatform (once)
-       - ScissorArm (twice - same part, two instances!)
+       - ScissorArm (twice: two links to the same part)
        - TopPlatform (once)
 
-       Use "Add Part" or drag from tree, adding ScissorArm twice
+       In the list, click ScissorArm twice: each click adds one more copy
 
     </Steps>
 
@@ -747,7 +692,7 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
     1. Select **BasePlatform** in assembly tree
 
-    2. Click **Fixed constraint** button
+    2. Click **Toggle Grounded** (**G**)
 
     3. Base is now locked in place (ground link)
 
@@ -764,15 +709,11 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
     <Steps>
 
-    1. Select the **left end hole axis** of the first ScissorArm
+    1. **Revolute Joint** (**R**): the **left pin hole** edge on the front face of the BasePlatform, then the **left end hole** edge on the back face of the first ScissorArm
 
-    2. Select the **left pin hole axis** of the BasePlatform
-
-    3. Click **Axial Align constraint**
+    2. The arm now lies flat along the base. Drag its free end up until it leans up to the right
 
     </Steps>
-
-    The first arm's left end is now connected to the base!
 
     :::tip[Naming Parts]
     Rename your ScissorArm instances in the assembly to "ScissorArm_Left" and "ScissorArm_Right" to avoid confusion!
@@ -781,34 +722,20 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 </TabItem>
   <TabItem label="Second Arm Position">
 
-    **Position the right-rising arm:**
+    **Position the right-rising arm.** Join the crossing first, then the sliding end:
 
     <Steps>
 
-    1. Select the **left end hole axis** of the second ScissorArm
+    1. **Center:** **Revolute Joint**, the **center hole** edge on the front face of the first arm, then the **center hole** edge on the back face of the second. The second arm now lies exactly on the first. Drag its end round the center pin until the two arms cross, the second rising from the right of the base to the left
 
-    2. Select the **right pin hole axis** of the BasePlatform
-
-    3. Click **Axial Align constraint** to place the arm, then replace it with the sliding (point-on-line) constraint described in the caution above, so this end can move along the base
+    2. **Sliding end on the base:** **Distance Joint** (**D**), the **cylindrical wall** of the second arm's left end hole, then the **upper long face** of the BasePlatform (the face toward the top platform). Distance `26` mm: the pin line is 30 mm below that face, and the hole wall is 4 mm from the pin line. The pin now stays on the line of the base holes and can slide along it
 
     </Steps>
-
-    The second arm's left end connects to the right side of the base!
 
 </TabItem>
   <TabItem label="Center Crossing">
 
-    <Steps>
-
-    1. Select the **center hole axis** of first ScissorArm
-
-    2. Select the **center hole axis** of second ScissorArm
-
-    3. Click **Axial Align constraint**
-
-    </Steps>
-
-    The arms now cross and pivot on each other.
+    The center joint was made in the step before. Check that the arms cross at their middle holes and pivot on each other.
 
     :::caution[Assembly Critical Point]
     Without this center constraint the two arms move independently. With it they act as a scissor and amplify the motion.
@@ -821,11 +748,11 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
     <Steps>
 
-    1. First arm's **right end hole** → TopPlatform **right pin hole**
-       - Sliding (point-on-line) constraint, so this end can move along the platform
+    1. Second arm's **right end hole** → TopPlatform **left pin hole**
+       - **Revolute Joint**. If the platform turns with the arm, drag it level
 
-    2. Second arm's **right end hole** → TopPlatform **left pin hole**
-       - Axial Align constraint
+    2. First arm's **right end hole** → TopPlatform
+       - **Distance Joint**, the cylindrical wall of the hole, then the **lower long face** of the TopPlatform, Distance `26` mm, so this end can slide along the platform
 
     </Steps>
 
@@ -837,13 +764,14 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
     Try dragging the top platform or an arm in the assembly view:
     - Arms should rotate about their pivots
     - Center crossing should move
-    - Top platform should rise and fall!
-    - Motion should be smooth and coordinated
+    - Top platform should rise and fall, and stay level
+
+    **Check it:** drag the first arm. **Tools → Measure** from the base left hole edge to the TopPlatform left hole edge gives the height $h = 200 \sin\theta$. In FreeCAD 1.1 this model gave 51.8 mm at 15°, 120.0 mm at 36.9° (the start, with the base pins 160 mm apart) and 187.9 mm at 70°, with the platform level and no part touching another. A platform that tilts as it rises means a sliding joint is on the wrong face; arms that lie on each other mean the second arm was not dragged into the cross before the next joint.
 
     :::tip[Troubleshooting Motion]
     **If mechanism won't move:**
-    - Check that only BasePlatform is Fixed
-    - All pin joints should be Axial Align (not Fixed!)
+    - Check that only BasePlatform is grounded
+    - The three fixed pins are Revolute joints (not Fixed), the two sliding ends are Distance joints
     - Remove any redundant constraints
     - Verify you have 4 arm-to-platform connections + 1 crossing connection, and that the two right-hand platform connections slide (five fixed pins lock the lift at 120 mm)
     :::
@@ -864,19 +792,19 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
 2. **Create a page:**
 
-   - Insert Page
-   - Choose template: A3_Landscape (assembly drawings need space)
+   - **New Page From Template** (Insert Page in 0.21)
+   - Choose an A3 landscape template (assembly drawings need space)
 
 3. **Add assembly views:**
 
-   - Insert View → Select entire assembly
+   - Select the assembly, then **New View**
    - Create **Front view** (collapsed position)
    - Create **Side view**
    - Position views by dragging
 
 4. **Add detail view of arm:**
 
-   - Insert View → Select ScissorArm body
+   - Select the ScissorArm body, then **New View**
    - Show dimensions and hole positions
    - Use Dimension tools: Horizontal, Vertical, Radius
 
@@ -898,11 +826,9 @@ A real scissor lift lets one end of each platform slide (a roller or a pin in a 
 
 7. **Export:**
 
-   - Right-click page → Export as PDF
+   - **Export Page as PDF** (TechDraw menu)
 
 </Steps>
-
-You now have professional engineering documentation!
 
 ## Part 8: Testing Parametric Control
 
@@ -974,7 +900,7 @@ A parametric model must update correctly when a parameter changes. These tests c
     1. **Change PinDiameter**
 
        - Cell B5: Type `10`
-       - Enter (note: PinRadius updates automatically!)
+       - Enter (PinRadius follows its formula). If your two sliding joints use 26 mm, set them to 25 mm (30 less the new 5 mm hole radius)
 
     2. **Recompute**
 
@@ -1162,19 +1088,17 @@ Ready for more? Try these enhancements:
     **"Center hole not at midpoint"**
 
     :::caution[Solution]
-    - Use **Midpoint constraint**, not approximate positioning
-    - Select circle center → Select construction line
-    - Apply Midpoint constraint from toolbar
-    - Verify constraint icon appears on line
+    - Use the **Symmetric** constraint, not approximate positioning
+    - Select the two ends of the centerline, then the circle center, press **S**
+    - Verify the constraint icon appears
     :::
 
     **"Rectangle not symmetric"**
 
     :::caution[Solution]
-    - Use **Symmetric constraint** on edges
-    - Select top edge, bottom edge, then centerline
-    - Order matters: two objects, then reference line
-    - Check that centerline is construction geometry
+    - Use **Symmetric** on two opposite corners, then the center hole
+    - Order matters: two corners, then the center
+    - If the solver says "redundant", a symmetric constraint repeats a side the Rectangle tool already holds vertical
     :::
 
 </TabItem>
@@ -1205,7 +1129,7 @@ Ready for more? Try these enhancements:
 
     :::caution[Solution]
     - Verify center hole exists on both arms
-    - Check Axial Align constraint on center holes
+    - Check the Revolute joint on the center holes
     - Ensure arms are oriented correctly (one rises left, one rises right)
     - May need to flip one arm orientation
     :::
@@ -1222,10 +1146,9 @@ Ready for more? Try these enhancements:
     **"Can't add ScissorArm twice"**
 
     :::caution[Solution]
-    - Use assembly workbench "Add Part" button twice
-    - Or right-click body → "Duplicate Object" before assembly
-    - Assembly4: Use "Insert Link" for same part multiple times
-    - A2plus: Import the same part file twice
+    - In **Insert Component**, click ScissorArm twice
+    - Do not duplicate the body: a copy no longer follows the original
+    - A2plus (0.21): import the same part file twice
     :::
 
 </TabItem>

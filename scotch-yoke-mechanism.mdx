@@ -204,7 +204,7 @@ By completing this lesson, you'll create:
 
 1. **Launch FreeCAD**
 
-   FreeCAD 0.21 or later
+   FreeCAD 1.0 or later. These steps were checked in 1.1
 
 2. **Create new document**
 
@@ -484,18 +484,12 @@ The crank is a rotating disk with:
 
 1. **Create a Body**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Body** button
-   - A "Body" object appears in the tree
+   - In the **Part Design workbench**, click **New Body**
    - Right-click → Rename → type `Crank`
 
 2. **Create a Sketch**
 
-   - Select the "Crank" body in tree
-   - Click **Create Sketch** button
-   - Dialog asks: Choose a plane
-   - Select **XY_Plane**
-   - Click **OK**
+   - Select the "Crank" body, click **New Sketch**, select **XY_Plane**, **OK**
 
    You're now in **Sketcher workbench**
 
@@ -660,8 +654,7 @@ We'll create it as a separate pad feature on the crank face.
 1. **Create new sketch**
 
    - Select **Crank** body in tree
-   - Click **Create Sketch**
-   - Select the **flat face** of the crank disk (the top surface)
+   - Select the **flat face** of the crank disk (the top surface), then click **New Sketch**
    - Click **OK**
 
 2. **Draw pin circle**
@@ -721,7 +714,7 @@ The yoke is a sliding block with:
 
 1. **Create Body**
 
-   - Create Body → Rename to `Yoke`
+   - **New Body** → Rename to `Yoke`
 
 2. **Create Sketch on XY_Plane**
 
@@ -748,31 +741,18 @@ The yoke is a sliding block with:
 
    You need the rectangle symmetric about both axes.
 
-   **Method 1: Symmetric constraints**
-   - Select **left edge** of rectangle
-   - Select **right edge** of rectangle
-   - Select **Y-axis** (vertical line through origin)
-   - Click **Symmetric constraint**
-   - Repeat for top/bottom edges about X-axis
-
-   **Method 2: Constrain center point**
-   - Click **Coincident constraint**
-   - Click rectangle **center point**
-   - Click **origin**
+   - Click the **bottom left corner**, the **top right corner**, then the **origin**, and press **S** (Symmetric)
+   - Not two edges symmetric about an axis: the Rectangle tool already holds its edges horizontal and vertical, so that repeats a rule and the solver reports a redundant constraint. A plain rectangle has no center point to make coincident
 
 3. **Dimension width (horizontal)**
 
-   - **Distance constraint**
-   - Click left edge
-   - Click right edge
+   - Click the bottom left corner, then the bottom right corner, press **L**
    - Click **ƒx** → `Spreadsheet.YokeWidth`
    - Enter (140mm = SlotLength + 30mm, so that the 110mm slot stays inside the yoke)
 
 4. **Dimension height (vertical)**
 
-   - **Distance constraint**
-   - Click top edge
-   - Click bottom edge
+   - Click the bottom right corner, then the top right corner, press **I**
    - Click **ƒx** → `Spreadsheet.YokeHeight`
    - Enter (80mm)
 
@@ -791,26 +771,19 @@ The yoke is a sliding block with:
 
 2. **Center slot on yoke**
 
-   - **Symmetric constraint**
-   - Select slot **left edge**, slot **right edge**, **Y-axis**
-   - **Symmetric constraint**
-   - Select slot **top edge**, slot **bottom edge**, **X-axis**
+   - **Symmetric**: the slot's bottom left corner, its top right corner, then the origin
 
    Slot is now centered both horizontally and vertically
 
 3. **Dimension slot length (horizontal direction)**
 
-   - **Distance constraint**
-   - Click slot left edge
-   - Click slot right edge
+   - Slot bottom left corner, then bottom right corner, **L**
    - Click **ƒx** → `Spreadsheet.SlotLength`
    - Enter (110mm = Stroke + 30mm margin)
 
 4. **Dimension slot width (vertical direction)**
 
-   - **Distance constraint**
-   - Click slot top edge
-   - Click slot bottom edge
+   - Slot bottom right corner, then top right corner, **I**
    - Click **ƒx** → `Spreadsheet.SlotWidth`
    - Enter (14mm = PinDiameter + 2mm clearance)
 
@@ -868,7 +841,9 @@ This creates rounded "racetrack" slot shape for reduced wear.
 
 </Steps>
 
-View the yoke in 3D (rotate view) - you should see a block with a horizontal slot through it!
+View the yoke in 3D (rotate view): a block 140 × 80 × 20 mm with a horizontal slot 110 × 14 mm through it.
+
+**Check it:** **Tools → Measure** on the slot's long edge reads 110 mm. The pin travels 80 mm along the slot plus its own 12 mm, 92 mm, so 9 mm is left at each end. A slot rectangle that touches or crosses the outline does not make a clean hole: keep it inside.
 
 </TabItem>
 </Tabs>
@@ -900,7 +875,7 @@ Two parallel rails that:
 
 1. **Create Body**
 
-   - Create Body → Rename to `GuideRail_Left`
+   - **New Body** → Rename to `GuideRail_Left`
 
 2. **Create Sketch on XZ_Plane** (vertical plane)
 
@@ -948,7 +923,7 @@ You can either:
 
 1. **Create Body**
 
-   - Create Body → Rename to `GuideRail_Right`
+   - **New Body** → Rename to `GuideRail_Right`
 
 2. **Create Sketch on XZ_Plane**
 
@@ -979,7 +954,7 @@ The rails should be positioned so that:
 You may need to iterate positioning based on your assembly.
 :::
 
-**Alternative approach:** Sketch rails on the same plane as simple rectangles at appropriate X-positions, then pad both in same body. This ensures perfect parallelism.
+**Alternative approach, used in the assembly below (FreeCAD 1.1):** sketch both rails in the **Frame** body, after the base plate: on **XZ_Plane**, two rectangles 15 × 25 mm standing on the plate (bottom edge 20 mm above the origin, the top of the plate), their inner edges `Spreadsheet.YokeWidth / 2 + 1` (71 mm) each side of the origin. **Pad** with **Symmetric to plane**, Length `Spreadsheet.GuideLength`, so they run from -100 to +100 mm along Y. The rails then join the plate, are exactly parallel, and need no joints. The yoke travels -80 to +80 mm (its 40 mm half height plus the 40 mm crank radius), inside them.
 
 </TabItem>
 </Tabs>
@@ -1007,7 +982,7 @@ Fixed mounting base with:
 
 1. **Create Body**
 
-   - Create Body → Rename to `Frame`
+   - **New Body** → Rename to `Frame`
 
 2. **Create Sketch on XY_Plane**
 
@@ -1016,7 +991,7 @@ Fixed mounting base with:
    - **Rectangle tool**
    - Width: 250mm
    - Height: 150mm
-   - Centered at origin (use Symmetric constraints)
+   - Centered at origin (Symmetric: bottom left corner, top right corner, origin)
 
 4. **Add crank shaft hole**
 
@@ -1059,7 +1034,7 @@ In the assembly the frame is fixed, the crank may turn, and the yoke may only sl
 
 <Card title="🎯 Assembly Constraints Plan" icon="rocket">
 
-1. **Frame:** Fixed (ground reference)
+1. **Frame:** grounded (ground reference), with the rails padded on it
 2. **Crank:** Rotates about shaft axis on frame
 3. **Yoke:** Constrained to linear motion along the Y-axis (at a right angle to its slot) by guide rails
 4. **Pin-in-slot:** Conceptual connection (pin travels within slot)
@@ -1075,24 +1050,19 @@ In the assembly the frame is fixed, the crank may turn, and the yoke may only sl
 
 1. **Switch to Assembly workbench**
 
-   Use workbench dropdown
-
-   Assembly 4 or A2plus
-
-   (Instructions assume Assembly workbench availability)
+   Use workbench dropdown. These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1 (in a 0.21 add-on a Revolute joint is Axial Alignment or axisCoincident)
 
 2. **Create new assembly**
 
-   Assembly → Create Assembly
+   Assembly → **New Assembly**
 
 3. **Add parts**
 
-   Drag from tree or use "Add Part" button:
-   - Frame
+   **Insert Component** (**I**):
+   - Frame (with the rails in it)
    - Crank
    - Yoke
-   - GuideRail_Left
-   - GuideRail_Right
+   - If you made the rails as separate bodies, insert them too and ground each one beside the yoke
 
 </Steps>
 
@@ -1103,17 +1073,15 @@ In the assembly the frame is fixed, the crank may turn, and the yoke may only sl
 
 1. **Fix the frame**
 
-   - Select **Frame** in assembly tree
-   - Click **Fixed constraint** button
+   - Select **Frame** in the assembly
+   - Click **Toggle Grounded** (**G**)
    - Frame is now locked in place
 
 2. **Allow crank rotation**
 
-   - Select **crank shaft hole axis**
-   - Select **frame shaft hole axis**
-   - Click **Axial Align constraint**
+   - **Revolute Joint** (**R**): the shaft hole edge on the top face of the plate, then the shaft hole edge on the back face of the crank
 
-   This aligns the axes and allows rotation!
+   The crank now lies on the plate and turns about the shaft
 
 3. **Test crank rotation**
 
@@ -1121,8 +1089,8 @@ In the assembly the frame is fixed, the crank may turn, and the yoke may only sl
 
 </Steps>
 
-:::note[Why Axial Align?]
-Axial Align constraint makes two cylindrical axes coincident, allowing rotation about that shared axis while preventing translation.
+:::note[Why a Revolute joint?]
+A Revolute joint makes two hole axes coincident and holds the two faces together, allowing rotation about that shared axis while preventing translation.
 :::
 
 </TabItem>
@@ -1136,20 +1104,12 @@ Axial Align constraint makes two cylindrical axes coincident, allowing rotation 
 
 2. **Constrain yoke to guides**
 
-   **Option A: Plane constraints**
-   - Select **yoke bottom face**
-   - Select **frame top face**
-   - Apply **Plane coincident** constraint
+   - **Distance Joint** (**D**): the top face of the plate, then the bottom face of the yoke, Distance `15` mm (CrankThickness). The yoke lies just above the crank disk, and the pin reaches into its slot
 
-   **Option B: Linear motion constraint**
-   - If your assembly workbench supports it
-   - Define linear motion along Y-axis only
+3. **Add the guide constraint**
 
-3. **Add guide rail constraints**
-
-   - Constrain yoke side faces to guide rail inner faces
-   - Allow sliding along Y-axis
-   - Prevent rotation and X-axis movement
+   - **Distance Joint**: the left side face of the frame plate, then the left side face of the yoke, Distance `55` mm (125 less 70). The yoke sits 1 mm from each rail
+   - Two flat faces at a fixed distance stay parallel, so the yoke cannot turn or move along X
 
 </Steps>
 
@@ -1159,19 +1119,17 @@ The yoke should now only be able to move in one direction (along the Y-axis)!
 <TabItem label="Pin-in-Slot Connection">
 
 :::caution[Assembly Limitation]
-In standard FreeCAD assembly, continuous sliding contact (pin in slot) is not automatically simulated like pivoting joints.
+FreeCAD has no pin-in-slot joint, and it does not detect contact. In FreeCAD 1.1 a **Distance Joint** between a cylinder and a flat face keeps the cylinder tangent to the face at a set distance, and that is enough here:
 
-**Workarounds:**
+1. **Distance Joint**: the lower long face of the slot, then the **cylindrical face** of the pin
+2. Distance `1` mm: half the 2 mm clearance, so the pin runs in the middle of the slot
 
-1. **Manual positioning:** Position yoke at several crank angles manually to verify geometry
-2. **Animation plugin:** Some FreeCAD animation tools can drive one part and calculate others
-3. **Physical prototype:** The geometry is correct; in a real mechanism, the pin is physically captured in the slot
-
+Now a drag on the crank moves the yoke. In a real mechanism the pin is captured by both walls of the slot.
 :::
 
 **For verification:**
 
-Position the crank at different angles (0°, 90°, 180°, 270°) and manually position the yoke to match. The pin should always be within the slot bounds!
+Position the crank at different angles (0°, 90°, 180°, 270°) and read the yoke position. The pin should always be within the slot bounds.
 
 </TabItem>
 </Tabs>
@@ -1224,8 +1182,10 @@ Here x is the yoke displacement $x = r \sin\theta$, measured along its direction
 </Steps>
 
 :::tip[Success Criteria]
-If the stroke equals exactly 2 × CrankRadius, your parametric design is working perfectly!
+If the stroke equals exactly 2 × CrankRadius, your parametric design is working.
 :::
+
+**Check it:** in FreeCAD 1.1, with the joints above, this model gave a yoke position of exactly $40 \sin\theta$ at every 10° of a full crank turn: 34.64 mm at 60°, 40.00 mm at 90°, a stroke of 80.0 mm, and no part touching another. Measure the yoke with **Tools → Measure** from a frame edge to a yoke edge. A yoke that does not move when you drag the crank has no pin-in-slot joint; one that moves along X has lost its side Distance joint.
 
 </TabItem>
 </Tabs>
@@ -1243,17 +1203,17 @@ If the stroke equals exactly 2 × CrankRadius, your parametric design is working
 
 2. **Create a page**
 
-   - Insert Page
-   - Choose template: **A3_Landscape** (mechanism needs space)
+   - **New Page From Template** (Insert Page in 0.21)
+   - Choose an A3 landscape template (mechanism needs space)
 
 3. **Add assembly view**
 
-   - Insert View → Select assembly
+   - Select the assembly, then **New View**
    - Position: Front view showing slot and pin engagement
 
 4. **Add side view**
 
-   - Insert View → Side view
+   - **New View** again, set to the side direction
    - Shows thickness of components
 
 5. **Add section view (critical!)**
@@ -1331,7 +1291,7 @@ Add text annotations:
 
 2. **Export as PDF**
 
-   - Right-click page → Export as PDF
+   - **Export Page as PDF** (TechDraw menu)
    - Save as `ScotchYoke_Assembly.pdf`
 
 3. **Optional: Export as DXF**

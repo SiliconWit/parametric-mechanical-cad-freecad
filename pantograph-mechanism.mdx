@@ -147,9 +147,9 @@ You will build a spreadsheet in which formulas calculate every length from BaseL
 
 <Steps>
 
-1. **Download FreeCAD 0.21 or later**
+1. **Download FreeCAD 1.0 or later**
 
-   Visit [www.freecad.org](https://www.freecad.org/). It is free, open source and runs on Linux, macOS and Windows.
+   Visit [www.freecad.org](https://www.freecad.org/). It is free, open source and runs on Linux, macOS and Windows. These steps were checked in FreeCAD 1.1.
 
 2. **Create new document**
 
@@ -284,13 +284,13 @@ The short dimensions ($OA$, $AI$, $BQ$) are equal to BaseLength. The long dimens
 
 <Steps>
 
-1. **Ensure you're in Part Design workbench**
+1. **Switch to the Spreadsheet workbench**
 
    Use the workbench dropdown at top
 
-2. **Insert a spreadsheet**
+2. **Create a spreadsheet**
 
-   Insert → Spreadsheet
+   Spreadsheet → Create Spreadsheet
 
    A "Spreadsheet" object appears in the left tree
 
@@ -426,10 +426,9 @@ Think of it as the "blueprint" that all parts will reference.
 
 1. **Create standalone sketch**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Sketch** (don't create a Body first!)
-   - Select **XY_Plane**
-   - This sketch won't belong to any body - it's purely reference geometry
+   - Switch to the **Sketcher workbench**, with no body in the file yet
+   - Click **New Sketch**, select the **XY plane**
+   - This sketch belongs to no body: it is reference geometry only (a sketch made with Part Design is put inside a body)
 
 </Steps>
 
@@ -451,7 +450,7 @@ Think of it as the "blueprint" that all parts will reference.
 
     <Steps>
 
-    1. **Line tool** (press L)
+    1. **Line tool** (press G, L)
     2. Click at **origin** $(0, 0)$
     3. Draw at approximately $45^\circ$ upward-right
     4. Click to place endpoint
@@ -596,23 +595,7 @@ Think of it as the "blueprint" that all parts will reference.
   </TabItem>
   <TabItem label="Construction Mode">
 
-    **Make everything reference geometry:**
-
-    <Steps>
-
-    1. Press **Ctrl+A** to select all geometry
-
-    2. Press **G** to toggle construction mode
-
-    3. All lines turn blue/dashed - they're now construction geometry
-
-    </Steps>
-
-    :::tip[Why Construction Mode?]
-    Construction geometry is **reference only** - it won't be extruded into 3D. It's perfect for master sketches that define layout but aren't physical parts themselves.
-    :::
-
-    **Optional:** Add small circles (radius 2mm) at points O, A, B, I, Q, P for visualization
+    **Leave the master lines as normal lines.** Construction mode (**G, N**, blue dashed lines) is for guide lines inside one sketch. A construction line is not part of the sketch's shape, so the parts could not pick it, and they would have nothing to copy. The master sketch is never padded, so normal lines make no solid.
 
   </TabItem>
   <TabItem label="Verify Constraints">
@@ -695,35 +678,37 @@ Link from fixed pivot O to moving pivot A:
 1. **Create Body**
 
    - Part Design workbench
-   - Click **Create Body** button
+   - Click **New Body**
    - Right-click → Rename → `Link_OA`
 
-2. **Create Sketch**
+2. **Bind the master sketch**
+
+   - Select **MasterSketch** in the tree and click **Sub-Shape Binder** (Part Design toolbar). A `Binder` appears in the body
+   - A sketch in a body may not take external geometry straight from an object outside it: FreeCAD 1.1 refuses with "not allowed as external geometry". The binder is a copy inside the body that follows the master sketch
+   - Hide MasterSketch (**Space**) so that you pick the binder
+
+3. **Create Sketch**
 
    - Select Link_OA body
-   - Create Sketch → **XY_Plane**
+   - New Sketch → **XY_Plane**
 
-3. **Reference master sketch points**
+4. **Reference the master line**
 
-   - Click **External Geometry** tool (or press E)
-   - In the tree, find and select **MasterSketch**
-   - Click on points **O** and **A** in the 3D view
-   - They appear as **purple reference points**
+   - Click the **External Geometry** tool (**G, X**)
+   - Click the **line OA** of the binder in the 3D view
+   - The line and its end points O and A appear in **purple**. They follow the master sketch
 
-   :::tip[External Geometry Magic]
-   These purple points are **linked** to the master sketch! If the master sketch updates, these references update automatically. This is how we maintain geometric consistency across all parts.
-   :::
-
-4. **Draw the link profile**
+5. **Draw the link profile**
 
    - **Circle** at point O: Radius constraint → ƒx → `Spreadsheet.PinRadius`
    - **Circle** at point A: Radius constraint → ƒx → `Spreadsheet.PinRadius`
-   - **Rectangle** connecting them, symmetric about the OA line
-   - **Width** dimension: ƒx → `Spreadsheet.LinkWidth`
+   - **Four lines** (G, L) joined end to end around both circles. The Rectangle tool cannot follow a line at 45°: it holds its edges horizontal and vertical
+   - Long edges **parallel** (P) to the purple line, short edges **perpendicular** (N) to a long edge
+   - Four distances, ƒx → `Spreadsheet.LinkWidth / 2`: point O to each long edge and to the short edge behind it, point A to the short edge beyond it. This sets the **width** to LinkWidth and closes the outline 10 mm past each hole
 
-5. **Close sketch**
+6. **Close sketch**
 
-6. **Pad the link**
+7. **Pad the link**
 
    - Select the sketch
    - Click **Pad** tool
@@ -741,17 +726,16 @@ Same process as Link OA, but reference points O and B. This link is longer: its 
 
 <Steps>
 
-1. **Body:** Create and rename to `Link_OB`
+1. **Body:** Create and rename to `Link_OB`, with its own Sub-Shape Binder of MasterSketch
 
 2. **Sketch on XY_Plane**
 
 3. **External Geometry:**
-   - Reference MasterSketch
-   - Select points O and B
+   - The line OB of the binder (points O and B)
 
 4. **Draw profile:**
    - Circles at O and B (PinRadius)
-   - Rectangle connecting them (LinkWidth)
+   - An outline around them (LinkWidth); OB is horizontal, so the Rectangle tool works here, with the same four distances
 
 5. **Pad:** LinkThickness
 
@@ -823,13 +807,12 @@ This arm carries the input point I (input stylus). It does not touch O. It runs 
 
 <Steps>
 
-1. **Body:** Create and rename to `InputArm`
+1. **Body:** Create and rename to `InputArm`, with its own Sub-Shape Binder of MasterSketch
 
 2. **Sketch on XY_Plane**
 
 3. **External Geometry:**
-   - Reference MasterSketch
-   - Select points A, I, and Q
+   - The lines AI and IQ of the binder (points A, I and Q)
 
 4. **Draw arm profile:**
 
@@ -859,16 +842,16 @@ This arm carries the output point P (output tracer). It does not touch O. It run
 
 <Steps>
 
-1. **Body:** `OutputArm`
+1. **Body:** `OutputArm`, with its own Sub-Shape Binder
 
 2. **Sketch on XY_Plane**
 
 3. **External Geometry:**
-   - Reference B, Q, and P
+   - The lines BQ and QP of the binder (points B, Q and P)
 
 4. **Draw arm profile:**
 
-   - **Rectangle from B to P**
+   - **Four lines from B to P**, as for Link OA: this arm is at 45°
    - **Holes at B and Q** (PinRadius)
    - **Width:** LinkWidth (or narrower)
    - **Tracer mount at P:** Protruding pin or marking feature
@@ -911,7 +894,7 @@ Fixed mounting plate providing:
    - **Rectangle** centered at origin
    - Width: `150` mm
    - Height: `100` mm
-   - Use **Symmetric** constraints to center about X and Y axes
+   - Center it with one **Symmetric** constraint: bottom left corner, top right corner, then the origin (two edges about an axis repeat a rule of the Rectangle tool, and the solver reports it redundant)
 
 4. **Add pivot hole at O:**
 
@@ -935,7 +918,7 @@ Fixed mounting plate providing:
 <InArticleAd />
 
 
-The assembly has five parts and five hinges. Each hinge is one axial alignment, a revolute joint, and the parallelogram keeps its shape from the hole positions.
+The assembly has five parts and five hinges. Each hinge is one revolute joint, and the parallelogram keeps its shape from the hole positions. These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1; in a 0.21 add-on the Revolute joint is called Axial Alignment (Assembly3) or axisCoincident (A2plus).
 
 ### Assembly Strategy
 
@@ -953,7 +936,7 @@ Five joints in total. Each joint connects two parts once. This leaves two degree
 </Card>
 
 :::note[Two Levels]
-Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, and Link_OB and InputArm on the upper level. Then the two parts at every hinge are on different levels and no bar collides with another.
+Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, and Link_OB and InputArm on the upper level. Then the two parts at every hinge are on different levels and no bar collides with another. A joint sets the level: pick the hole edge on the face where the second part should rest. The front face is the top one, away from the sketch plane.
 :::
 
 ### Creating the Assembly
@@ -969,11 +952,11 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     2. **Create new assembly**
 
-       Assembly → Create Assembly
+       Assembly → **New Assembly**
 
     3. **Add all parts**
 
-       Drag from tree or use "Add Part" button:
+       **Insert Component** (**I**):
        - Base
        - Link_OA
        - Link_OB
@@ -989,7 +972,7 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     1. Select **Base** in assembly tree
 
-    2. Click **Fixed constraint** button
+    2. Click **Toggle Grounded** (**G**)
 
     3. Base is now locked in place (ground link)
 
@@ -1006,14 +989,9 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     <Steps>
 
-    1. **Link_OA to Base:**
-       - Select Link_OA hole axis at O
-       - Select Base hole axis at O
-       - **Axial Align** constraint
+    1. **Link_OA to Base:** **Revolute Joint** (**R**): Base hole edge at O on its front face, then Link_OA hole edge at O on its back face. Link_OA is on the lower level
 
-    2. **Link_OB to Base:**
-       - Link_OB hole at O → Base hole at O
-       - Axial Align
+    2. **Link_OB on Link_OA:** Revolute: Link_OA hole edge at O on its **front** face, then Link_OB hole edge at O on its back face. Link_OB is on the upper level, and turns about the same pin O
 
     </Steps>
 
@@ -1026,9 +1004,8 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     <Steps>
 
-    1. **InputArm to Link_OA:**
-       - InputArm hole at A → Link_OA hole at A
-       - Axial Align
+    1. **InputArm on Link_OA:**
+       - Revolute: Link_OA hole at A (front face) → InputArm hole at A (back face). The input arm is on the upper level
 
     </Steps>
 
@@ -1039,9 +1016,8 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     <Steps>
 
-    1. **OutputArm to Link_OB:**
-       - OutputArm hole at B → Link_OB hole at B
-       - Axial Align
+    1. **OutputArm under Link_OB:**
+       - Revolute: Link_OB hole at B on its **back** face → OutputArm hole at B on its **front** face. The output arm is on the lower level
 
     </Steps>
 
@@ -1053,15 +1029,14 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
     <Steps>
 
     1. **InputArm to OutputArm:**
-       - InputArm hole at Q → OutputArm hole at Q
-       - Axial Align
+       - **Cylindrical Joint** (**C**): InputArm hole at Q → OutputArm hole at Q
 
     </Steps>
 
-    Point Q closes the parallelogram OAQB. This is the fifth and last joint.
+    Point Q closes the parallelogram OAQB. This is the fifth and last joint, and it closes the loop, so it is Cylindrical: in 3D a fifth Revolute joint would repeat what the other four already hold.
 
     :::caution[One Joint per Hinge]
-    Do not add a second Axial Align between two parts that are already joined. Two pins between the same two parts lock them together and the pantograph stops working.
+    Do not add a second joint between two parts that are already joined. Two pins between the same two parts lock them together and the pantograph stops working.
     :::
 
   </TabItem>
@@ -1082,10 +1057,12 @@ Parallel bars can share a level. Put Link_OA and OutputArm on the lower level, a
 
     </Steps>
 
+    **Check it:** in FreeCAD 1.1 this model kept $P = 2 \times I$ exactly, with O, I and P on one line, at every angle between Link_OA and Link_OB from 5° to 175°. Measure with **Tools → Measure** from the hole at O to the hole at I and to P: 2.000 times. No two plates touch while that angle is between 12° and 165°. Below about 11.5° the upper bars Link_OB and InputArm meet (their lines are only $100 \sin\theta$ apart, less than the 20 mm width), and above about 168.5° they meet again. Drag in small steps: a large jump can let the solver close the loop the crossed way, where O, I and P are no longer in line.
+
     :::tip[Troubleshooting Motion]
     **If mechanism won't move:**
-    - Check that only Base is Fixed
-    - All pin joints should be Axial Align (not Fixed!)
+    - Check that only Base is grounded
+    - Pins at O, A and B are Revolute, the pin at Q is Cylindrical (not Fixed)
     - Remove any redundant constraints (five joints only, and no Link AB)
     - Links may need Z-offset to avoid interference
 
@@ -1225,12 +1202,12 @@ Check the scaling ratio in the assembly, then check it again after a change of t
 
 2. **Create a page**
 
-   - Insert Page
-   - Choose template: **A3_Landscape**
+   - **New Page From Template** (Insert Page in 0.21)
+   - Choose an A3 landscape template
 
 3. **Add assembly view**
 
-   - Insert View → Select assembly
+   - Select the assembly, then **New View**
    - Position: Front view showing full mechanism
    - Scale: 1:2 or 1:1 depending on size
 
@@ -1260,7 +1237,7 @@ Check the scaling ratio in the assembly, then check it again after a change of t
 
 7. **Export**
 
-   Right-click page → Export as PDF
+   **Export Page as PDF** (TechDraw menu)
 
 </Steps>
 

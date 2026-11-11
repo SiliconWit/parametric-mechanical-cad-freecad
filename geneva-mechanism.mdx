@@ -213,9 +213,9 @@ By completing this lesson, you'll create:
 
 <Steps>
 
-1. **Download FreeCAD 0.21 or later**
+1. **Download FreeCAD 1.0 or later**
 
-   Visit [www.freecad.org](https://www.freecad.org/)
+   Visit [www.freecad.org](https://www.freecad.org/). These steps were checked in FreeCAD 1.1
 
    Free & Open Source
    Cross-Platform
@@ -526,20 +526,14 @@ The driver wheel is a rotating disc with a central shaft hole for its fixed pivo
 
 1. **Create a Body**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Body** button
-   - A "Body" object appears in the tree
+   - In the **Part Design workbench**, click **New Body**
    - Right-click → Rename → type `Driver`
 
 2. **Create a Sketch**
 
-   - Select the "Driver" body in tree
-   - Click **Create Sketch** button
-   - Dialog asks: Choose a plane
-   - Select **XY_Plane**
-   - Click **OK**
+   - Select the "Driver" body, click **New Sketch**, select **XY_Plane**, **OK**
 
-   You're now in **Sketcher workbench** (automatic switch)
+   FreeCAD changes to the **Sketcher workbench** by itself
 
 </Steps>
 
@@ -589,7 +583,7 @@ The driver wheel is a rotating disc with a central shaft hole for its fixed pivo
 </TabItem>
   <TabItem label="Driving Pin">
 
-    **Draw the offset driving pin:**
+    **Draw the hole for the driving pin.** A circle inside the disk is cut out by the Pad, so this circle makes a hole. It marks where the pin goes; the pin itself is padded after the locking disc and fills this hole.
 
     <Steps>
     1. **Circle tool** (press G, C)
@@ -693,14 +687,11 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
 
 1. **Create new Body**
 
-   - Part Design workbench
-   - Create Body
-   - Rename: `GenevaWheel`
+   - Part Design workbench, **New Body**, rename it `GenevaWheel`
 
 2. **Create Sketch**
 
-   - Select GenevaWheel body
-   - Create Sketch → XY_Plane
+   - Select GenevaWheel body, **New Sketch** → XY_Plane
 
 </Steps>
 
@@ -755,87 +746,22 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
 </TabItem>
   <TabItem label="First Slot">
 
-    **Draw one radial slot (we'll pattern it later):**
-
-    This is the tricky part! We need a radial slot.
-
-    <Steps>
-
-    1. **Rectangle tool** (or draw with lines)
-    2. Draw a rectangle extending **radially outward** from near the center
-    3. Position it roughly on the **horizontal axis to the right**
-    4. Press **Escape**
-
-    5. **Make slot symmetric about horizontal axis:**
-       - Select **Symmetric constraint** tool
-       - Click rectangle **top edge**
-       - Click rectangle **bottom edge**
-       - Click **horizontal axis** (X-axis)
-       - This centers the slot!
-
-    6. **Slot width (perpendicular to radius):**
-       - **Distance constraint**
-       - Click top edge
-       - Click bottom edge
-       - Click **ƒx** button
-       - Type: `Spreadsheet.SlotWidth`
-       - Press **Enter**
-
-    7. **Slot position - inner end:**
-       - The slot should start close to the shaft hole
-       - **Distance constraint** from origin to slot inner end
-       - Type: `25` mm (or just inside the wheel radius)
-
-    8. **Slot position - outer end:**
-       - The slot should extend to or beyond the wheel periphery
-       - **Distance constraint** from origin to slot outer end
-       - Type: equal to or slightly beyond `Spreadsheet.DrivenRadius`
-       - Or simply extend past the circle (will be trimmed by wheel boundary)
-
-    </Steps>
+    **Do not draw the slot in this sketch.** A slot rectangle that crosses the outer circle makes wires that cross. FreeCAD 1.1 pads such a sketch without a message, but the solid fails FreeCAD's validity check, and later features on it can fail. The slot is cut after the pad (see "Cutting the Slots" under the Pad step below). This sketch keeps only the two circles.
 
     :::tip[Slot Geometry Tips]
     - Slot must be **radial** (pointing toward center)
     - Slot must **extend beyond** wheel periphery to ensure clean cutout
     - Width controlled by `SlotWidth` parameter (has clearance for pin)
+    - Its inner end must stay clear of the pin's deepest point, $C - R_d$ from the wheel center, less the pin radius
     :::
 
 </TabItem>
   <TabItem label="Polar Pattern">
 
-    <Card title="🔄 Creating the Polar Pattern" icon="star">
-
-    The polar pattern copies the slot round the circle.
-
-    </Card>
-
-    **Pattern the slot around the wheel:**
-
-    <Steps>
-
-    1. **Select all slot geometry**
-       - Click and drag to select the rectangle (or all 4 lines if drawn manually)
-       - All slot elements should be highlighted
-
-    2. **Apply Polar Pattern:**
-       - In Sketcher menu: **Sketch → Sketcher tools → Polar pattern**
-       - Or look for **Polar Pattern** button in toolbar
-
-    3. **Configure pattern:**
-       - **Center point:** Click the **origin**
-       - **Number of copies:** Can't use formula directly in pattern dialog
-       - Type: `6` (we'll make this fully parametric in advanced version)
-       - **Angle:** `360°` (full circle)
-       - **Equal spacing:** Checked
-
-    4. **Click OK**
-
-    </Steps>
-
-    Six evenly spaced slots appear.
+    The polar pattern copies the slot round the wheel. It is made in Part Design after the slot pocket (see "Cutting the Slots" below), not with the Sketcher polar pattern.
 
     :::caution[Pattern Limitation]
-    The Sketcher polar pattern does not accept a spreadsheet formula for the count. For a fully parametric version, use the PartDesign Circular Pattern feature after padding. For learning, entering 6 by hand is enough.
+    The Sketcher polar pattern does not accept a spreadsheet formula for the count. The Part Design **Polar Pattern** does: its Occurrences field takes the formula `Spreadsheet.NumSlots` (click **ƒx** beside the field, or type `=`), so a change of NumSlots changes the number of slots.
     :::
 
 </TabItem>
@@ -846,13 +772,10 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
     You should now see:
     - Outer circle (Geneva wheel periphery)
     - Inner circle (shaft hole)
-    - **6 radial slots** spaced 60° apart
-    - Each slot extends from near center to beyond periphery
 
     **Verify constraints:**
-    - All dimensions linked to spreadsheet where possible
-    - Slots evenly distributed (60° spacing)
-    - Solver shows "Fully constrained" (or close - some redundancy is OK for patterns)
+    - Both radii linked to the spreadsheet
+    - Solver shows "Fully constrained"
 
     **The locking surface:**
     - The rim between the slots will carry the hollows, cut after the pad
@@ -879,7 +802,15 @@ The Geneva wheel has n radial slots in a polar pattern (6 here), a central shaft
 
 </Steps>
 
-Rotate the view to see the 6 radial slots cutting through the wheel.
+**Cutting the Slots:**
+
+1. **Slot sketch** on the top face of the wheel: a rectangle on the horizontal axis to the right of the center. Constrain it with the vertical distance from its bottom left corner to the origin, `Spreadsheet.SlotWidth / 2`; its height, `Spreadsheet.SlotWidth`; its inner end from the origin, `Spreadsheet.DriverCenterDistance - Spreadsheet.DriverRadius - Spreadsheet.PinRadius - 2`; its outer end, `Spreadsheet.DrivenRadius + 5`, beyond the rim. (Do not make two edges symmetric about the axis: that repeats a rule of the Rectangle tool, and the solver reports it redundant.)
+2. **Pocket**, Type **Through all**.
+3. **Polar Pattern** (Part Design) of the pocket, about the sketch's normal axis, Angle 360°, Occurrences `Spreadsheet.NumSlots`.
+
+The inner end is 33 mm for 6 slots: the pin center comes to $80 - 40 = 40$ mm from the wheel center, so its edge to 35 mm, 2 mm short of the slot end. A typed 25 mm works for 6 slots but not for 4: there the pin edge comes to 18.4 mm and strikes the end of a 25 mm slot. The formula gives 16.4 mm for 4 slots and 42.4 mm for 8.
+
+Rotate the view to see the radial slots cutting through the wheel.
 
 ### Cutting the Hollows for the Locking Disc
 
@@ -889,13 +820,15 @@ Rotate the view to see the 6 radial slots cutting through the wheel.
 
 2. **First hollow:** draw a circle with its center at `Spreadsheet.DriverCenterDistance` (80 mm) from the origin, on the line halfway between two slots (30° from a slot for 6 slots). Radius: `Spreadsheet.HollowRadius` (30.5 mm). In the dwell the driver's center sits exactly at this point, so the locking disc fits the hollow with 0.5 mm all round.
 
-3. **Polar pattern** the circle about the origin, 6 copies (the same count as the slots).
+3. **Pocket**, Type **Through all**.
 
-4. **Pocket**, Type **Through all**.
+4. **Polar Pattern** (Part Design) of this pocket, Occurrences `Spreadsheet.NumSlots`, as for the slots.
 
 </Steps>
 
-Each hollow cuts a concave arc into the rim between two slots. Checked over a full driver turn for 4, 6 and 8 slots, with these formulas the locking disc and the pin never touch the wheel, and in the dwell the wheel cannot turn more than about 0.4°.
+Each hollow cuts a concave arc into the rim between two slots. Checked over a full driver turn for 4, 6 and 8 slots, with these formulas the locking disc and the pin never touch the wheel, and in the dwell the wheel cannot turn more than about 0.4° (0.5 mm of clearance at 80 mm); for 4 slots the play is a little larger, under 1°.
+
+**Check it:** the wheel is one solid with NumSlots slots and NumSlots hollows. Set NumSlots to 4 and recompute: four slots and four hollows appear, with no pattern to repeat by hand. In FreeCAD 1.1 a full driver turn in 1° steps gave no contact for 4, 6 and 8 slots; in the dwell, turning the wheel 1° by hand made the locking disc cut into it, which is the lock working. A wheel that turns freely in the dwell has its hollows on the slot lines, not halfway between.
 
 ## Part 6: Creating the Base Frame
 
@@ -918,14 +851,11 @@ A stationary base with two shaft bearings (driver and Geneva wheel) at the cente
 
 1. **Create new Body**
 
-   - Part Design workbench
-   - Create Body
-   - Rename: `Frame`
+   - Part Design workbench, **New Body**, rename it `Frame`
 
 2. **Create Sketch**
 
-   - Select Frame body
-   - Create Sketch → XY_Plane
+   - Select Frame body, **New Sketch** → XY_Plane
 
 3. **Draw base plate**
 
@@ -933,7 +863,7 @@ A stationary base with two shaft bearings (driver and Geneva wheel) at the cente
    - Draw centered rectangle
    - Width: `200` mm
    - Height: `120` mm
-   - Use **Symmetric constraints** to center about origin
+   - Center it with one **Symmetric** constraint: bottom left corner, top right corner, then the origin
 
 4. **Add driver shaft hole**
 
@@ -973,7 +903,7 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
 <Card title="🎯 Assembly Constraints Plan" icon="rocket">
 
-1. **Frame:** Fixed (ground reference)
+1. **Frame:** grounded (ground reference)
 2. **Driver:** Rotates continuously about left shaft
 3. **Geneva Wheel:** Rotates intermittently about right shaft
 4. **Pin engagement:** Driver pin enters Geneva slots to create indexing
@@ -993,11 +923,11 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
     2. **Create new assembly**
 
-       Assembly → Create Assembly
+       Assembly → **New Assembly** (the Assembly workbench built into FreeCAD 1.0 and later; in a 0.21 add-on a Revolute joint is called Axial Alignment or axisCoincident)
 
     3. **Add parts**
 
-       Drag parts from tree or use "Add Part" button:
+       **Insert Component** (**I**):
        - Frame
        - Driver
        - GenevaWheel
@@ -1011,7 +941,7 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
     1. Select **Frame** in assembly tree
 
-    2. Click **Fixed constraint** button
+    2. Click **Toggle Grounded** (**G**)
 
     3. Frame is now locked in place (ground reference)
 
@@ -1028,15 +958,13 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
     <Steps>
 
-    1. Select **driver shaft hole axis** (center axis)
+    1. **Revolute Joint** (**R**)
 
-    2. Select **frame driver shaft hole axis**
-
-    3. Click **Axial Align constraint**
+    2. Pick the driver shaft hole edge on the front face of the frame, then the shaft hole edge on the back face of the driver
 
     </Steps>
 
-    This aligns the axes and allows rotation! Driver can now spin continuously.
+    The driver lies on the frame and can spin continuously.
 
 </TabItem>
   <TabItem label="Geneva Rotation">
@@ -1045,15 +973,13 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
     <Steps>
 
-    1. Select **Geneva wheel shaft hole axis**
+    1. **Revolute Joint**: the right shaft hole edge on the front face of the frame, then the shaft hole edge on the back face of the wheel
 
-    2. Select **frame Geneva shaft hole axis** (the right hole)
-
-    3. Click **Axial Align constraint**
+    2. In the joint panel set **Offset** to `15` mm (WheelThickness): the wheel then sits at the level of the locking disc, above the driver disk. With 0 it sits on the frame beside the driver disk, and the two overlap
 
     </Steps>
 
-    Geneva wheel can now rotate about its axis!
+    The Geneva wheel can now rotate about its axis.
 
 </TabItem>
   <TabItem label="Initial Position">
@@ -1084,8 +1010,8 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
 
     :::tip[Troubleshooting Motion]
     **If mechanism won't move properly:**
-    - Check that only Frame is Fixed
-    - Both wheels should be Axial Align (not Fixed!)
+    - Check that only Frame is grounded
+    - Both wheels should be Revolute joints (not Fixed)
     - Verify center distance is correct
     - Ensure pin can physically enter slots
     - Check for collision interference
@@ -1109,7 +1035,7 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
    Switch to TechDraw workbench from the dropdown
 
 2. **Create Page**
-   Insert → New Page and select A3_Landscape template
+   **New Page From Template** and select an A3 landscape template
 
 3. **Add Top View**
    Insert view showing both wheels in plan view with clearly visible pin, slots, and center distance
@@ -1127,7 +1053,7 @@ In the assembly you see the indexing: the Geneva wheel steps from position to po
    Sketch a diagram showing X-axis as driver rotation (0° to 360°), Y-axis as Geneva wheel position (discrete steps at 0°, 60°, 120°, 180°, 240°, 300°), and mark dwell periods (horizontal lines) and index periods (S-shaped rises, each 60° high and 120° of driver rotation wide; they are not vertical jumps)
 
 7. **Export to PDF**
-   File → Export → Select PDF format
+   **Export Page as PDF** (TechDraw menu)
 
 </Steps>
 
@@ -1148,7 +1074,7 @@ All geometry updates:
 - Slots now 90° apart
 - Index angle = 90°
 - Driver radius and driven radius recalculated (both 56.57 mm for 4 slots)
-- 4 slots appear on Geneva wheel (after you repeat the polar pattern with 4 copies, see the Pattern Limitation note)
+- 4 slots and 4 hollows appear on the Geneva wheel (the Polar Patterns read NumSlots)
 
 **Test different values:**
 - NumSlots = 8 (45° indexing)

@@ -213,7 +213,7 @@ By completing this lesson, you'll create:
 
 1. **Launch FreeCAD**
 
-   Ensure you're using version 0.21 or later
+   Use FreeCAD 1.0 or later. These steps were checked in 1.1
 
 2. **Create new document**
 
@@ -424,8 +424,6 @@ Now you can use `Spreadsheet.BaseCircleRadius` anywhere in your model!
 :::tip[Spreadsheet Best Practices]
 - **Use formulas for derived values** - Don't duplicate manual entries
 - **Document with units** - Column C helps you remember what each value represents
-- **Organize logically** - Group geometric, motion, and structural parameters
-- **Add notes** - Use additional columns for design rationale or calculations
 :::
 
 </TabItem>
@@ -440,7 +438,7 @@ Now you can use `Spreadsheet.BaseCircleRadius` anywhere in your model!
 
 ### Understanding Cam Profile Design
 
-For a roller follower, the exact method designs the pitch curve, the path of the roller center, and moves it inward by the roller radius to get the cam surface, so the roller keeps contact through the cycle. This lesson sketches the surface directly as $R_b + s(\theta)$, which for these values is within about 0.4 mm of the exact surface.
+For a roller follower, the exact method designs the pitch curve, the path of the roller center, and moves it inward by the roller radius to get the cam surface, so the roller keeps contact through the cycle. The B-spline option below sketches the surface directly as $R_b + s(\theta)$: through five points it stays within 0.3 mm of that curve, and that curve is within about 0.4 mm of the exact surface. The single-arc option used in the steps is simpler but is not harmonic motion: its radius at 60° is 45.7 mm, not 50 mm, and it is up to 5.1 mm inside the harmonic curve.
 
 ### Design Approach
 
@@ -513,20 +511,14 @@ Professional cam design often uses specialized software or Python scripts to gen
 
 1. **Create a Body**
 
-   - Ensure you're in **Part Design workbench**
-   - Click **Create Body** button
-   - A "Body" object appears in the tree
+   - In the **Part Design workbench**, click **New Body**
    - Right-click → Rename → type `Cam`
 
 2. **Create a Sketch**
 
-   - Select the "Cam" body in tree
-   - Click **Create Sketch** button
-   - Dialog asks: Choose a plane
-   - Select **XY_Plane** (top view for cam profile)
-   - Click **OK**
+   - Select the "Cam" body, click **New Sketch**, select **XY_Plane** (top view for cam profile), **OK**
 
-   You're now in **Sketcher workbench** (automatic switch)
+   FreeCAD changes to the **Sketcher workbench** by itself
 
 </Steps>
 
@@ -607,17 +599,15 @@ This horizontal line at 0° is our angular reference.
 
 2. **Constrain start point**
 
-   - **Coincident constraint**
-   - Arc start point → Base circle
-   - Arc start point → Horizontal reference line
-   - This locks it at 0°, 40mm radius
-   - **Tangent constraint:** Arc → Base circle, so the rise leaves the base circle smoothly (with the end point fixed in the next steps, this also removes the last freedom of the arc)
+   - **Point on object:** arc start point → horizontal reference line
+   - **Tangent at the point:** click the arc **start point**, then the **base circle**, press **T**. This puts the point on the circle and makes the rise leave it smoothly, so the point is at 0°, 40mm radius
+   - Do not add a separate coincident of the start point with the base circle, or an edge-to-edge tangent: either repeats this one, and FreeCAD 1.1 reports a redundant constraint and will not pad
 
 3. **Constrain end point angle**
 
    - Draw construction line from origin at 120° angle
-   - **Angle constraint:** 120° relative to horizontal
-   - **Coincident:** Arc end point → this 120° line
+   - **Angle constraint:** 120° relative to horizontal, and a length of `70` mm, so the line has nothing loose
+   - **Point on object:** Arc end point → this 120° line
 
 4. **Constrain end point radius**
 
@@ -655,13 +645,14 @@ This horizontal line at 0° is our angular reference.
 
 4. **Connect with B-spline**
 
-   - **B-spline tool** (press S)
+   - **B-Spline From Knots** (G, B, I): it passes through the points you click
    - Click each point in sequence
    - Press **Escape** when complete
+   - Not the plain **B-Spline** tool: it uses the points as control points, and the curve misses the three middle ones
 
 </Steps>
 
-This creates a smooth curve matching the harmonic motion law exactly.
+This creates a smooth curve close to the harmonic motion law: in FreeCAD 1.1, through these five points, it stays within 0.28 mm of $R_b + s(\theta)$.
 
 </TabItem>
 </Tabs>
@@ -679,9 +670,10 @@ This creates a smooth curve matching the harmonic motion law exactly.
 
 2. **Constrain the arc**
 
-   - **Radius constraint** → Click **ƒx** → `Spreadsheet.PrimeCircleRadius`
+   - **Coincident:** Arc center → origin
    - **Coincident:** Arc start → Rise section end
-   - **Angle constraint:** Arc end at 180° from horizontal
+   - **Point on object:** Arc end → a construction line at 180° (angle and a length of `70` mm, as at 120°)
+   - No radius constraint: the rise end already sits at PrimeCircleRadius, so a radius here repeats it and the solver reports a redundant constraint
 
 </Steps>
 
@@ -717,6 +709,8 @@ High dwell maintains follower at maximum lift while cam rotates 60°.
 
 </Steps>
 
+Check the solver after the mirror. If it reports a degree of freedom, or the Pad later fails with "Wire is not closed", delete the copy and draw the return by hand (next tab). The hand-drawn return was the one checked in FreeCAD 1.1.
+
 </TabItem>
 <TabItem label="Manual Construction">
 
@@ -731,12 +725,12 @@ High dwell maintains follower at maximum lift while cam rotates 60°.
 2. **Constrain endpoints**
 
    - Start: Coincident to high dwell end
-   - End: Use construction line at 300° angle
+   - End: Point on object, a construction line at 300° (angle and a length of `70` mm)
 
-3. **Constrain radii**
+3. **Make it the mirror of the rise**
 
-   - Start radius: `Spreadsheet.PrimeCircleRadius`
-   - End radius: `Spreadsheet.BaseCircleRadius`
+   - Click the arc **end point**, then the **base circle**, press **T**: tangent at the point, which also puts the end at BaseCircleRadius
+   - No radius constraints: the start radius comes from the dwell, the end radius from the tangent
 
 </Steps>
 
@@ -756,13 +750,13 @@ High dwell maintains follower at maximum lift while cam rotates 60°.
 
 2. **Constrain the arc**
 
-   - **Radius constraint** → Click **ƒx** → `Spreadsheet.BaseCircleRadius`
    - **Coincident:** Arc start → Return section end
    - **Coincident:** Arc end → Rise section start
+   - **Point on object:** Arc center → the horizontal reference line
 
 </Steps>
 
-The profile is now a complete closed curve!
+The profile is now a closed curve. Both ends of this arc already lie on the base circle, so a radius, or a center on the origin, would repeat a rule; the center on the reference line is the one rule it still needs.
 
 ### Adding the Shaft Hole
 
@@ -789,7 +783,7 @@ The profile is now a complete closed curve!
 1. **Check the solver**
 
    Look at "Solver Messages" panel:
-   - Should say **"Fully constrained"** (or close to it)
+   - It must say **"Fully constrained"**. A cam with a free degree can open on the next recompute, and the Pad then fails with "Wire is not closed"
    - Profile should be closed (no gaps)
 
 2. **Visual verification**
@@ -828,7 +822,8 @@ The profile is now a complete closed curve!
 3. **View your cam**
 
    - Press **V** then **F** to fit all
-   - Rotate view to see the 3D cam disk!
+
+   **Check it:** one solid 15 mm thick. In the sketch, **Tools → Measure** from the origin to the profile reads 40.0 mm on the low dwell and 60.0 mm on the high dwell. On the single-arc rise the radius at 60° is 45.7 mm (the harmonic law gives 50.0 mm; the B-spline option gives 50.0). If a Pad that worked fails after a change, the sketch was not fully constrained.
 
 </Steps>
 
@@ -855,16 +850,13 @@ The follower system consists of three parts:
 
 1. **Create new Body**
 
-   - Part Design workbench
-   - Create Body
-   - Rename: `Roller`
+   - Part Design workbench, **New Body**, rename it `Roller`
 
 2. **Create Sketch on XZ_Plane**
 
    Why XZ? The roller axis is parallel to the cam shaft (Z-axis), and a revolve needs a sketch plane that contains the axis
 
-   - Select Roller body
-   - Create Sketch → **XZ_Plane**
+   - Select Roller body, **New Sketch** → **XZ_Plane**
 
 3. **Draw roller profile**
 
@@ -924,7 +916,7 @@ The follower system consists of three parts:
 
 1. **Create new Body**
 
-   - Create Body → Rename: `FollowerStem`
+   - **New Body** → Rename: `FollowerStem`
 
 2. **Create Sketch on XY_Plane** (the plane of the cam, so that the stem moves toward and away from the cam center)
 
@@ -933,15 +925,16 @@ The follower system consists of three parts:
    - **Rectangle tool**
    - Draw vertical rectangle
    - Width: 15mm
-   - Height: 80mm (long enough for full stroke plus clearance)
-   - Position: Centered horizontally, extending upward from around Y=50
+   - Height: 90mm (long enough for full stroke plus clearance)
+   - Position: Centered horizontally, extending upward from around Y=40
 
 4. **Constrain the rectangle**
 
-   - **Symmetric constraint:** Left and right edges about Y-axis (centers horizontally)
-   - **Distance constraint:** Bottom edge from origin: `50` mm (the lowest roller center: BaseCircleRadius + RollerRadius)
+   - **Horizontal distance:** origin to the left edge `7.5` mm (centers it; two edges symmetric about the axis would repeat a rule of the Rectangle tool)
+   - **Distance constraint:** Bottom edge from origin: `40` mm
    - **Distance constraint:** Width: `15` mm
-   - **Distance constraint:** Height: `80` mm
+   - **Distance constraint:** Height: `90` mm
+   - **Roller pin hole:** a circle of radius `3` mm on the Y axis, `50` mm above the origin (the lowest roller center: BaseCircleRadius + RollerRadius)
 
 5. **Close sketch**
 
@@ -958,7 +951,7 @@ The follower system consists of three parts:
 <Tabs>
 <TabItem label="Simple Approach">
 
-For this lesson, we'll position roller and stem together in assembly without a physical pin connection. This keeps the focus on cam motion.
+In the assembly the roller turns on the stem's pin hole with a Revolute joint, without a separate pin part. This keeps the focus on cam motion.
 
 </TabItem>
 <TabItem label="Advanced: Add Pin">
@@ -998,7 +991,7 @@ The frame provides:
 
 1. **Create new Body**
 
-   - Create Body → Rename: `Frame`
+   - **New Body** → Rename: `Frame`
 
 2. **Create Sketch on XY_Plane**
 
@@ -1009,7 +1002,7 @@ The frame provides:
    - Height: 100mm
    - Centered at origin
 
-   - **Symmetric constraints:** Center rectangle about both X and Y axes
+   - **Symmetric constraint:** bottom left corner, top right corner, then the origin
    - **Distance constraints:** Width = `150` mm, Height = `100` mm
 
 4. **Add cam shaft hole**
@@ -1051,10 +1044,12 @@ In the assembly the cam may only turn, the follower may only slide vertically, a
 
 <Card title="🎯 Assembly Constraints Plan" icon="rocket">
 
-1. **Frame:** Fixed (ground link)
+1. **Frame:** grounded (ground link)
 2. **Cam:** Rotates about Z-axis through shaft hole
-3. **Follower Stem:** Constrained to vertical (Y-direction, in the plane of the cam) translation only
-4. **Roller:** Positioned at bottom of stem, contacts cam surface
+3. **Follower Stem:** Constrained to vertical (Y-direction, in the plane of the cam) translation only, one layer above the cam
+4. **Roller:** turns in the stem's pin hole, in the layer of the cam, and contacts the cam surface
+
+These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1.
 
 </Card>
 
@@ -1067,17 +1062,17 @@ In the assembly the cam may only turn, the follower may only slide vertically, a
 
 1. **Switch to Assembly workbench**
 
-   Use workbench dropdown (may be labeled "Assembly 3" or "Assembly 4" depending on version)
+   Use workbench dropdown
 
 2. **Create new assembly**
 
-   Assembly → Create Assembly
+   Assembly → **New Assembly**
 
    An assembly container appears in the tree
 
 3. **Add parts**
 
-   Drag parts from tree into assembly or use "Add Part" button:
+   **Insert Component** (**I**):
    - Frame
    - Cam
    - FollowerStem
@@ -1092,9 +1087,9 @@ In the assembly the cam may only turn, the follower may only slide vertically, a
 
 1. **Select Frame** in assembly tree
 
-2. **Apply Fixed constraint**
+2. **Ground it**
 
-   Click **Fixed** or **Lock** constraint button
+   Click **Toggle Grounded** (**G**)
 
 3. **Frame is now locked in place**
 
@@ -1113,15 +1108,11 @@ Every mechanism needs a fixed reference point. The frame provides this ground li
 
 <Steps>
 
-1. **Select cam shaft hole axis**
+1. **Revolute Joint** (**R**)
 
-   Click on the circular edge or use the References panel
+2. **Pick** the shaft hole edge on the front face of the frame, then the shaft hole edge on the back face of the cam
 
-2. **Select frame shaft hole axis**
-
-3. **Apply Axial Align constraint**
-
-   This aligns the axes and allows rotation about that axis
+   The cam now lies on the frame and turns about the shaft axis
 
 </Steps>
 
@@ -1134,18 +1125,11 @@ Every mechanism needs a fixed reference point. The frame provides this ground li
 
 <Steps>
 
-1. **Select follower stem body**
+1. **Distance Joint** (**D**): the front face of the frame, then the back face of the stem, Distance `15` mm (CamThickness). The stem lies flat, one cam thickness above the frame, so it passes over the cam
 
-2. **Select frame guide surfaces**
+2. **Distance Joint**: the left side face of the frame, then the left side face of the stem, Distance `67.5` mm (75 less 7.5). The stem stays on the Y axis
 
-   You may need to select the parallel guide rails or frame top surface
-
-3. **Apply constraints for vertical sliding:**
-
-   - **Plane constraint:** Aligns stem face to frame reference
-   - **Linear motion constraint:** Allows only Y-direction movement
-
-   The exact constraint type depends on your Assembly workbench version
+   Two flat faces at a fixed distance stay parallel. These two joints leave the stem one motion: along Y
 
 </Steps>
 
@@ -1158,14 +1142,11 @@ Every mechanism needs a fixed reference point. The frame provides this ground li
 
 <Steps>
 
-1. **Select roller** and **follower stem**
+1. **Revolute Joint**: the pin hole edge on the back face of the stem, then the circular edge of the top face of the roller
 
-2. **Apply constraints:**
+2. The roller now hangs under the stem, in the layer of the cam
 
-   - **Coincident** or **Attachment:** Position roller at stem bottom
-   - Align axes if needed
-
-3. **Adjust height** so roller just touches cam base circle
+3. **Adjust height:** drag the stem down until the roller just touches the cam
 
 </Steps>
 
@@ -1194,6 +1175,8 @@ Every mechanism needs a fixed reference point. The frame provides this ground li
    - 300° to 360°: Follower stays low (dwell)
 
 </Steps>
+
+**Check it:** **Tools → Measure** on the cam shaft edge and the roller edge gives the axis distance. In FreeCAD 1.1 this model read 50.0 mm with the low dwell under the roller and 70.0 mm with the high dwell: a lift of 20.0 mm. The stem stayed on the Y axis wherever it was dragged. If the roller passes through the stem, the stem is in the cam's layer: check the 15 mm Distance joint.
 
 :::tip[Assembly Workbench Limitations]
 FreeCAD's Assembly workbench doesn't automatically simulate continuous contact between cam and follower. For full motion simulation, you would need:
@@ -1224,12 +1207,12 @@ A cam drawing needs more than part views: it must also show the angular zones an
 
 2. **Create a page**
 
-   - Insert Page
-   - Choose template: **A3_Landscape** (need space for motion diagram)
+   - **New Page From Template** (Insert Page in 0.21)
+   - Choose an A3 landscape template (need space for motion diagram)
 
 3. **Add cam top view**
 
-   - Insert View → Select Cam body
+   - Select the Cam body, then **New View**
    - Position in upper portion of page
    - Scale: Choose appropriate scale (e.g., 1:1 or 2:1)
 
@@ -1392,7 +1375,7 @@ Plot these points and connect smoothly.
 
 3. **Export**
 
-   - Right-click page → Export as PDF
+   - **Export Page as PDF** (TechDraw menu)
    - Save as "CamFollower_Drawing.pdf"
 
 </Steps>
@@ -1427,14 +1410,12 @@ Change a parameter and check that the whole mechanism updates correctly.
 
 4. **Observe changes:**
 
-   - Cam profile grows! Prime circle is now 70mm radius
+   - Prime circle is now 70mm radius
    - Rise and return sections steeper
    - Follower stroke increases to 30mm
-   - All constraints maintain!
+   - The sketch stays fully constrained
 
 </Steps>
-
-✅ **Success!** Your lift is parametric!
 
 </TabItem>
 <TabItem label="Test 2: Base Radius">
@@ -1450,15 +1431,12 @@ Change a parameter and check that the whole mechanism updates correctly.
 
 3. **Verify:**
 
-   - Entire cam scales up!
    - Base circle now 50mm
    - Prime circle automatically becomes 70mm (50 + 20)
    - Shaft hole remains centered
    - Profile proportions maintain
 
 </Steps>
-
-✅ **Your cam scales parametrically!**
 
 </TabItem>
 <TabItem label="Test 3: Cam Thickness">
@@ -1480,8 +1458,6 @@ Change a parameter and check that the whole mechanism updates correctly.
 
 </Steps>
 
-✅ **Thickness updates correctly!**
-
 </TabItem>
 <TabItem label="Design Exploration">
 
@@ -1493,8 +1469,6 @@ Change a parameter and check that the whole mechanism updates correctly.
 | Standard | 40 | 20 | Balanced (original) |
 | Extended | 50 | 30 | Large stroke, smooth |
 | Extreme | 60 | 40 | Very large motion |
-
-Watch how the cam profile adapts!
 
 :::caution[If Updates Fail]
 **Problem:** Some parts don't update correctly

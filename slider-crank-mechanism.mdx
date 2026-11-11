@@ -124,9 +124,9 @@ Four parts, an assembly that moves when you drag the crank, and a drawing of one
 
 <Steps>
 
-1. **Download FreeCAD 0.21**
+1. **Download FreeCAD 1.0 or later**
 
-   The link is in [Software Requirements and Download](/education/parametric-mechanical-cad-freecad/#software-requirements). The steps were written for version 0.21. In a later version some menus have other names, and the assembly tools differ (see the assembly part).
+   The link is in [Software Requirements and Download](/education/parametric-mechanical-cad-freecad/#software-requirements). These steps were checked in FreeCAD 1.1, which has its own Assembly workbench. Version 0.21 has none: you add one from **Tools → Addon manager**, and its tools have other names.
 
 2. **Install and launch**
 
@@ -268,7 +268,7 @@ The crank is a disc with a center hole for the shaft and a pin hole for the conn
    A Body is the container for one solid part.
 
    - Switch to **Part Design workbench**
-   - Click **Create Body** button (or Part Design → Create body)
+   - Click **New Body** (Create body in 0.21)
    - Right-click the new "Body" in the tree → Rename → type `Crank`
 
 2. **Create a Sketch**
@@ -276,7 +276,7 @@ The crank is a disc with a center hole for the shaft and a pin hole for the conn
    A sketch is a flat outline. It needs a plane to lie on.
 
    - Select the "Crank" body in tree
-   - Click **Create Sketch** button (or Sketch → Create Sketch)
+   - Click **New Sketch** (Create sketch in 0.21)
    - When the dialog asks for a plane, select **XY_Plane**
 
    FreeCAD changes to the **Sketcher workbench** by itself.
@@ -297,10 +297,8 @@ Apply the geometric constraints first. A dimension typed onto a rough shape can 
 
 1. **Draw the outer circle**
 
-   - Click **Circle tool drop down arrow** then click **Create Circle by Center** (or **press 'G' and then 'C' in quick succession**)
-   - Click at the **origin** (look for white/yellow dot at center)
-   - Move mouse outward and click to complete circle
-   - Press **Escape**
+   - **Circle by Center** (press **G**, then **C**)
+   - Click at the **origin**, move outward, click again, press **Escape**
 
 2. **Draw the shaft hole**
 
@@ -316,11 +314,11 @@ Apply the geometric constraints first. A dimension typed onto a rough shape can 
 
 ### Adding Geometric Constraints
 
-If you clicked exactly on the origin and on the horizontal line, FreeCAD added these two constraints by itself. If not, add them now:
+If you clicked exactly on the origin and on the horizontal line, FreeCAD added these constraints by itself. If not, add them now:
 
 <Steps>
 
-1. **Shaft hole on the center:** click the **Coincident constraint** tool, the **center** of the inner circle, then the **origin point**
+1. **Both centers on the origin:** click the **center** of the outer circle, then the **origin point**, and press **C** (coincident). Do the same for the **center** of the inner circle
 
 2. **Pin hole level with the center:** click the **Horizontal constraint** tool, the **center** of the offset circle, then the **origin**. The pin hole can now move only along the horizontal line through the center
 
@@ -334,7 +332,7 @@ If you clicked exactly on the origin and on the horizontal line, FreeCAD added t
     These three sizes are for fit, so you type them.
 
     <Steps>
-    1. Click the **outer circle**, then **press 'K' and 'R' in quick succession** to activate the **Radius Constraint Dimensioning Tool** (or go to Sketch → Sketcher Constraints → Constrain Radius). Type `40` and click **OK**.
+    1. Click the **outer circle**, press **K**, then **R** (Constrain Radius), type `40` and click **OK**.
     2. Click the **inner circle**, press **K, R**, type `8` and press **Enter**.
     3. Click the **offset circle**, press **K, R**, type `5` and press **Enter**.
     </Steps>
@@ -345,11 +343,10 @@ If you clicked exactly on the origin and on the horizontal line, FreeCAD added t
     This dimension sets the motion, so it must come from the spreadsheet and not from the keyboard.
 
     <Steps>
-    1. Click the **origin point**, then click the **center point of the pin hole circle**.
-    2. **Press 'L'** to activate the **Constraint Horizontal Distance Dimensioning Tool**. Do not type a number.
-    3. Click the small **fx** button and in the formula editor, start typing *Spreadsh...* and `<<Spreadsheet>>` will appear. Then, click it. Next, start typing the alias *Crank...* and `CrankRadius` will appear. Click it.
-    4. The editor shows the result, 30 mm. Click **OK**.
-    5. Click **OK** again.
+    1. Click the **origin point**, then the **center of the pin hole**.
+    2. Press **L** (horizontal distance). Do not type a number.
+    3. Click the small **ƒx** button. Type *Spreadsh...* and pick `<<Spreadsheet>>`, then a dot, then *Crank...* and pick `CrankRadius`.
+    4. The editor shows the result, 30 mm. Click **OK**, then **OK** again.
     </Steps>
 
     The dimension shows 30 mm and now follows cell B2.
@@ -397,6 +394,10 @@ Count what you removed: 2 for each of the two centers on the origin, 1 for the p
 
 Press **V** then **F** to fit the view. You see a disc 10 mm thick with two holes.
 
+:::tip[Check it]
+The tree shows `Crank` with its sketch inside `Pad`, with no red or yellow mark, and **Tools → Measure** on the outer edge reads radius 40 mm. The common mistake: the 30 mm distance is typed. It then shows no **ƒx**, and the tests at the end leave the crank as it was.
+:::
+
 ## Part 5: Creating the Connecting Rod
 
 <InArticleAd />
@@ -412,15 +413,12 @@ The connecting rod is a flat bar with a pin hole at each end. Only the distance 
 
 1. **Create new Body**
 
-   - Part Design workbench
-   - Create Body
-   - Rename: `ConnectingRod`
-   - Select `Crank`, right-click, then choose **Hide Selection** to remove the crank obstruction from the next sketch/body
+   - Part Design workbench, **New Body**, rename it `ConnectingRod`
+   - Select `Crank` and press **Space** to hide it, so it is not in the way
 
 2. **Create Sketch**
 
-   - Select ConnectingRod body
-   - Create Sketch → XY_Plane
+   - Select ConnectingRod body, **New Sketch** → XY_Plane
 
 </Steps>
 
@@ -500,7 +498,7 @@ The connecting rod is a flat bar with a pin hole at each end. Only the distance 
 
     <Steps>
     1. Click the **top face** of the rod
-    2. **Create sketch** (go to *Sketch* → *Create Sketch*)
+    2. **New Sketch**
 
     3. **Left inner hole**:
        - **G, C**
@@ -529,13 +527,14 @@ The connecting rod is a flat bar with a pin hole at each end. Only the distance 
 
     <Steps>
     1. Close sketch
-    2. Select **one hole circle sketch** (if hidden, click the **eye icon**)
-    3. Click **Hole tool**, set Depth: **Through all** and Diameter: `R × 2`, then OK
-    4. **Repeat** for the second hole
-    5. Press **V, F** to fit the view, then **Ctrl + S** to save
+    2. Select the hole sketch (if hidden, click the **eye icon**)
+    3. Click **Pocket**, set Type: **Through all**, then OK
+    4. Press **V, F** to fit the view, then **Ctrl + S** to save
     </Steps>
 
-    The Hole tool takes only the centers from the sketch and applies the diameter you type. If your two holes come out equal, use **Pocket** with **Through all**: it cuts each circle at the radius you drew.
+    Not the Hole tool: it gives every circle of a sketch the one diameter you type. Pocket cuts each circle at its own radius.
+
+    **Check it:** one solid, 118 mm over the ends (10 + 100 + 8), holes of 16 and 12 mm diameter 100 mm apart. A right hole off center in its end was not made coincident with the external arc.
 
   </TabItem>
 </Tabs>
@@ -554,15 +553,15 @@ The slider is a block 40 mm long, 30 mm high and 20 mm thick. It is drawn symmet
 <Steps>
 
 1. Hide the `ConnectingRod` by clicking the eye
-2. **Body:** go to *Part Design* → *Create Body*, then rename to `Slider`
+2. **Body:** **New Body**, rename it `Slider`
 
 3. **Sketch on XY_Plane:**
 
-   - **Sketch:** Click `Slider`, then go to *Sketch* → *Create Sketch*, click **XY-Plane**
-   - **Rectangle:** Press **G, R**, then click an arbitrary location to draw a rectangle, then **Escape** or **right click**
-   - **Symmetric constraints:** Click **top right corner**, then **bottom left corner**, then **click origin**, then press **S** to center the rectangle about X and Y axes
-   - **Length Dimension:** Click the **bottom left corner**, then the **bottom right corner**, then press **L**, then enter Length = `40` mm 
-   - **Height Dimension:** Click the **bottom left corner**, then the **top left corner**, then press **I**, then enter Height = `30` mm
+   - **Sketch:** select `Slider`, **New Sketch**, **XY_Plane**
+   - **Rectangle:** press **G, R**, draw a rectangle anywhere, **Escape**
+   - **Symmetric:** click the **top right corner**, the **bottom left corner**, then the **origin**, and press **S**: the rectangle is centered on the origin
+   - **Length:** bottom left corner, bottom right corner, **L**, `40` mm
+   - **Height:** bottom left corner, top left corner, **I**, `30` mm
 
 4. **Check:** Fully constrained, then **close** the sketch
 
@@ -570,12 +569,10 @@ The slider is a block 40 mm long, 30 mm high and 20 mm thick. It is drawn symmet
 
 6. **Circle:** At origin for pin hole
 
-   - Click the pad and select the top face
-   - Go to *Sketch* → *Create Sketch*
-   - Press **G, C** and draw a circle from the **origin**, then **Escape**
-   - Click the **circle arc**, press **K, R**, then enter radius `10` mm (any radius inside the block makes the sketch fully constrained), and **close** the sketch
-   - Click the **Hole tool**, set depth to **Through all**, and diameter to be `12 mm`, then **OK**. The circle only marks the center. The 12 mm matches the right hole of the rod (radius 6 mm)
-   - Press **Ctrl + S** to save your part design
+   - Select the top face of the pad, **New Sketch**
+   - **G, C**: a circle from the **origin**, **Escape**; **K, R**, radius `10` mm (any radius inside the block will do), close the sketch
+   - **Hole tool**: depth **Through all**, diameter `12 mm`, **OK**. The circle only marks the center; 12 mm matches the right hole of the rod
+   - **Ctrl + S** to save
 
 </Steps>
 
@@ -598,18 +595,19 @@ The frame is the fixed link. Each of its dimensions has a reason:
 
 1. **Body:** `Frame`
 
-2. **Sketch on XY_Plane:**
+2. **Guide bar,** sketch on XY_Plane: rectangle 175 × 20 mm, top edge 15 mm below the origin (**I** from the origin to a top corner), left end 15 mm left of it (**L**). **Pad** `15` mm.
 
-   - Rectangle below origin: 160mm × 20mm, with its top edge 15 mm below the origin
-   - Circle at origin: radius = `8` mm (crank pivot)
+3. **Pivot post,** second sketch on XY_Plane: rectangle 30 × 50 mm, left side 15 mm left of the origin, top 15 mm above it, bottom 35 mm below it. **Pad** `15` mm. It overlaps the bar, so the pads join into one solid.
 
-3. **Pad:** `15` mm
+4. **Pivot hole:** sketch on the front face of the post, circle at the origin, radius `8` mm, **Pocket** Through all.
 
 </Steps>
 
 :::caution[Join the pivot hole to the guide]
-A circle alone at the origin does not touch a rectangle 15 mm below it, and Pad in FreeCAD 0.21 refuses a sketch that gives two separate solids. Draw the pivot support as part of the same closed outline, for example a post that rises from the rectangle to 10 mm above the origin, with the circle inside it as the hole.
+A circle drawn in the same sketch as a rectangle it does not touch is not a hole. FreeCAD 1.1 pads it as a separate solid disc, with no error message (0.21 refuses the Pad). The post joins the pivot to the guide.
 :::
+
+**Check it:** one `Frame` body, two pads and a pocket. **Tools → Measure:** the top edge of the bar from the post to the end is 145 mm, the bottom edge 175 mm.
 
 ## Part 8: Assembly
 
@@ -619,14 +617,14 @@ A circle alone at the origin does not touch a rectangle 15 mm below it, and Pad 
 The four parts now lie on top of each other at the origin. An assembly joins them with constraints between parts: this hole shares an axis with that hole, this face lies on that face. Then you can drag the crank and see whether the slider moves as calculated.
 
 :::caution[Which Assembly workbench these steps use]
-These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The names below are nearest to the **Assembly3** add-on (Axial Alignment, Plane Coincident). A2plus calls the same two axisCoincident and planeCoincident.
-
-FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground the frame where this lesson says Fixed, use a **Revolute** joint for Axial Align, and a **Slider** joint for the slider on its guide.
+These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1. In 0.21 you install an add-on (A2plus or Assembly3), where a Revolute joint is axisCoincident or Axial Alignment, and a Distance joint of 0 on two faces is planeCoincident.
 :::
 
 ### Assembly Strategy
 
 A pin joint must leave one motion free: rotation about the pin. So at each pin you line up two hole axes, and you do not fix one part to the other. Count the freedoms in the plane: three moving parts have 3 each, 9 in all. Three pin joints remove 2 each, and the guide removes 2 (the slider cannot leave the surface and cannot turn). That leaves $9 - 6 - 2 = 1$: the crank angle. If your assembly cannot move, a constraint removes too much.
+
+In 3D a Revolute joint also holds its two parts flat against each other, so in a closed loop the last pin repeats what the other joints hold, and the solver can fail or tilt a part. Make the last pin of the loop a **Cylindrical** joint, which also lets the pin slide along its axis.
 
 ### Creating the Assembly
 
@@ -641,28 +639,30 @@ A pin joint must leave one motion free: rotation about the pin. So at each pin y
 
     2. **Create new assembly**
 
-       Assembly → Create Assembly
+       Assembly → **New Assembly**
 
     3. **Add parts**
 
-       Drag Frame, Crank, ConnectingRod and Slider from the tree, or use the "Add Part" button
+       **Insert Component** (**I**): pick Frame, Crank, ConnectingRod and Slider, click OK, and click in the 3D view to place each one apart
 
-    4. **Fix the frame**
+    4. **Ground the frame**
 
-       Select **Frame** in the assembly tree and click the **Fixed constraint** button. All motion is measured from the frame
+       Select **Frame** and click **Toggle Grounded** (**G**), or answer yes when FreeCAD asks to ground the first part. All motion is measured from the frame
 
     </Steps>
 
   </TabItem>
   <TabItem label="Three Pin Joints">
 
+    Each joint takes one pick on each part: the **circular edge** of a hole. The edge gives the axis, and its face comes to rest on the other face. The back face is the one on the sketch plane.
+
     <Steps>
 
-    1. **Frame to crank:** select the **crank center hole axis**, then the **frame pivot hole axis**, and click **Axial Align constraint**. The two holes now share one axis, and the crank can still turn about it
+    1. **Frame to crank:** **Revolute Joint** (**R**): pivot hole edge on the front face of the frame, then shaft hole edge on the back face of the crank
 
-    2. **Crank to rod:** rod left hole axis → crank offset pin hole axis, then Axial Align constraint
+    2. **Crank to rod:** **Revolute Joint**: pin hole edge on the front face of the crank, then left hole edge on the back face of the rod
 
-    3. **Rod to slider:** rod right hole axis → slider pin hole axis, then Axial Align constraint
+    3. **Rod to slider:** **Cylindrical Joint** (**C**): right hole edge of the rod, then the slider pin hole edge. It is the last pin of the loop
 
     </Steps>
 
@@ -670,12 +670,11 @@ A pin joint must leave one motion free: rotation about the pin. So at each pin y
   <TabItem label="Slider Motion">
 
     <Steps>
-    1. Select **slider bottom face**
-    2. Select **frame top face**
-    3. Apply **Plane coincident** or **Linear constraint**
+    1. **Distance Joint** (**D**): the **bottom face** of the slider (40 × 20 mm), then the **top face of the guide bar**, Distance `0`
+    2. A second **Distance Joint** of `0`: the back face of the slider and the back face of the frame. Without it the slider can slide along its Cylindrical pin
     </Steps>
 
-    The slider now stays on the guide surface and cannot turn.
+    A Distance joint of 0 on two flat faces keeps them in one plane: the slider stays on the guide and cannot turn, but it can slide. Not a **Slider Joint** on these faces: it moves a part at right angles to the faces picked, off the guide.
 
   </TabItem>
   <TabItem label="Testing">
@@ -684,6 +683,10 @@ A pin joint must leave one motion free: rotation about the pin. So at each pin y
     - The crank turns a full circle
     - The slider pin moves between 70 mm and 130 mm from the pivot, a stroke of 60 mm
     - The rod leans most, about 17.5°, when the crank stands at 90° to the guide
+
+    **Check it:** **Tools → Measure** on the pivot hole edge and the slider pin hole edge gives the distance between their axes: 130 mm with the crank pointing at the slider, 70 mm pointing away, 95.4 mm at 90° ($\sqrt{100^2 - 30^2}$). The FreeCAD solver gave these values for this model over a full turn, with no part touching another.
+
+    A common mistake: the slider sits 30 mm below the guide line, and the stroke reads about 63 mm with a lean of about 37°. A joint turned the slider over. Delete the last joint, check the slider stands upright on the guide, and make it again (**Reverse** in the joint panel works only before the loop is closed).
 
     If nothing moves, see Common Issues and Solutions below.
 
@@ -705,12 +708,12 @@ The workshop does not open your model. It reads a drawing. TechDraw makes views 
 
 2. **Create a page:**
 
-   - Insert Page
-   - Choose template: A4_Portrait
+   - **New Page From Template** (Insert Page in 0.21)
+   - Choose a template, for example `ISO/A4_Portrait_ISO5457_advanced.svg`
 
 3. **Add views:**
 
-   - Insert View → Select Crank body
+   - Select the Crank body in the tree, then **New View** (Insert View in 0.21)
    - Position the view by dragging
 
 4. **Add dimensions:**
@@ -720,14 +723,16 @@ The workshop does not open your model. It reads a drawing. TechDraw makes views 
 
 5. **Title block:**
 
-   - Double-click text fields
+   - Click the small green squares on the template: each opens one text field
    - Enter: Part name, material, scale, your name, date
 
 6. **Export:**
 
-   - Right-click page → Export as PDF
+   - **Export Page as PDF** (TechDraw menu)
 
 </Steps>
+
+**Check it:** the dimension between the shaft hole and the pin hole reads 30 mm. Set CrankRadius to 25 and recompute: it reads 25 with no edit to the drawing. If not, the recompute was not run. Set it back to 30.
 
 ## Part 10: Testing Parametric Control
 
@@ -765,6 +770,7 @@ The test of a parametric model is to change a value and see what breaks. Before 
 
        - Stroke: $2 \times 40 = 80 \text{ mm}$. The slider pin moves between $100 - 40 = 60 \text{ mm}$ and $100 + 40 = 140 \text{ mm}$
        - $l/r = 100 / 40 = 2.5$, below the rule of 3. The rod leans up to 23.6°, so this crank needs a longer rod
+       - Drag the crank round: the disc (radius 50 mm) now passes through the slider, whose near end comes to $100 - 40 - 20 = 40 \text{ mm}$ from the pivot. FreeCAD does not stop parts that touch, so look. For this model the rule is $l > 2r + 30$, which the next test meets
 
     </Steps>
 
@@ -838,7 +844,7 @@ The test of a parametric model is to change a value and see what breaks. Before 
 | Pad fails | The outline must be closed: every line must end on the next one |
 | Formula error in a dimension | The spelling of `Spreadsheet.CrankRadius` (capital letters count), and that the alias exists |
 | A part does not follow the spreadsheet | The dimension must show the ƒx sign. A typed number does not update |
-| The assembly does not move | Only the frame is Fixed. Every pin is Axial Align |
+| The assembly does not move | Only the frame is grounded; two Revolute pins, a Cylindrical last pin, the slider on Distance joints of 0, no Fixed joint |
 
 ## Related Resources
 

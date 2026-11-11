@@ -209,15 +209,11 @@ A sketch counts the ways in which it can still move as **degrees of freedom**. A
 
 <Steps>
 
-1. **Ensure you're in Part Design workbench**
+1. **Switch to the Sketcher workbench**, with no body in the file yet
 
-2. **Create new sketch on XY_Plane**
+2. **New Sketch** on the **XY plane**, then OK
 
-   - Click **Create Sketch** button
-   - Select **XY_Plane**
-   - Click **OK**
-
-   This sketch does not belong to a body. It only carries the joint positions.
+   This sketch does not belong to a body, and it makes no solid. It only carries the joint positions. (A sketch made with Part Design is put inside a body.)
 
 </Steps>
 
@@ -230,31 +226,13 @@ A sketch counts the ways in which it can still move as **degrees of freedom**. A
 
 <Steps>
 
-1. **Line tool** (press G, L)
+1. **Line tool** (G, L): click at the **origin**, move to the right, click, **Escape**
 
-2. Click at **origin** (0, 0)
+2. **Horizontal:** select the line, press **H**
 
-3. Move horizontally to the right
+3. **Start on the origin:** left endpoint, then origin, **C** (coincident)
 
-4. Click to place endpoint
-
-5. Press **Escape**
-
-6. **Make it horizontal:**
-   - Select the line
-   - Press **H** key
-
-7. **Fix the start point:**
-   - Coincident constraint
-   - Click left endpoint
-   - Click origin
-
-8. **Dimension the link:**
-   - Distance constraint
-   - Click both endpoints
-   - Click **ƒx** button
-   - Formula: `Spreadsheet.Link1`
-   - Press **Enter**
+4. **Length:** select the line, **K, D** (distance), **ƒx**, `Spreadsheet.Link1`, **Enter**
 
 </Steps>
 
@@ -267,27 +245,11 @@ This is the **ground link**. Its left end, on the origin, is joint **A** and its
 
 <Steps>
 
-1. **Line tool** (G, L)
+1. **Line tool** (G, L): start at point A, draw upward to the right, click, **Escape**
 
-2. Start at the **left endpoint** of Link 1 (point A)
+2. **Joint A:** start of the new line, then the left endpoint of Link 1, **C**
 
-3. Draw at an angle upward-right
-
-4. Click to place endpoint
-
-5. Press **Escape**
-
-6. **Constrain the link:**
-   - Coincident constraint
-   - Click start of new line
-   - Click left endpoint of Link 1 (point A)
-
-7. **Dimension the length:**
-   - Distance constraint
-   - Click both endpoints of the new line
-   - Click **ƒx** button
-   - Formula: `Spreadsheet.Link2`
-   - Press **Enter**
+3. **Length:** **K, D**, **ƒx**, `Spreadsheet.Link2`, **Enter**
 
 </Steps>
 
@@ -300,17 +262,9 @@ This is the **crank**, connecting joints **A** and **C**.
 
 <Steps>
 
-1. **Line tool** (G, L)
+1. **Line tool** (G, L): start at point B, draw upward at an angle, click, **Escape**
 
-2. Start at **right endpoint** of Link 1 (point B)
-
-3. Draw upward at an angle
-
-4. Click to place endpoint
-
-5. Press **Escape**
-
-6. **Constrain:**
+2. **Constrain:**
    - Coincident at point B
    - Distance = `Spreadsheet.Link4`
 
@@ -325,15 +279,9 @@ This is the **follower**, connecting joints **B** and **D**.
 
 <Steps>
 
-1. **Line tool** (G, L)
+1. **Line tool** (G, L): from the free end of Link 2 (point **C**) to the free end of Link 4 (point **D**), **Escape**
 
-2. Start at free end of Link 2 (point **C**)
-
-3. End at free end of Link 4 (point **D**)
-
-4. Press **Escape**
-
-5. **Constrain:**
+2. **Constrain:**
    - Coincident at point C
    - Coincident at point D
    - Distance = `Spreadsheet.Link3`
@@ -345,18 +293,7 @@ The four lines now form a closed loop.
 </TabItem>
 <TabItem label="Construction Geometry">
 
-Construction geometry is a line that guides other geometry and makes no solid. The four lines are a stick drawing, not a part, so mark them as construction:
-
-<Steps>
-
-1. **Select all four lines**
-   - Press **Ctrl+A** or box-select all lines
-
-2. **Toggle construction geometry**
-   - Press **G, N**
-   - Lines turn blue/dashed
-
-</Steps>
+Construction geometry (**G, N**, blue dashed lines) guides other geometry inside one sketch and makes no solid. Leave the four master lines as **normal lines**. A construction line is not part of the sketch's shape, so another sketch cannot pick it, and the links would have nothing to copy. The master sketch is never padded, so normal lines make no solid either.
 
 </TabItem>
 <TabItem label="Finalize">
@@ -384,6 +321,8 @@ Construction geometry is a line that guides other geometry and makes no solid. T
 
    Click **Close** button in toolbar
 
+   **Check it:** before the angle the solver says 1 degree of freedom, after it "Fully constrained". With 30° the joints are A (0, 0), B (100, 0), C (34.64, 20.00) and D (97.14, 69.94); hover a point to read its position. If the solver says 2, a coincident at C or D is missing and the loop is open.
+
 </Steps>
 
 </TabItem>
@@ -396,7 +335,9 @@ Construction geometry is a line that guides other geometry and makes no solid. T
 
 ### Design Intent
 
-Link 1 is a flat plate with a pin hole at joint A and another at joint B. Its sketch does not place the holes with dimensions of its own. It copies the two joint points from the master sketch with the **External geometry** tool, which brings geometry of another sketch into this one as a reference that follows the original.
+Link 1 is a flat plate with a pin hole at joint A and another at joint B. Its sketch does not place the holes with dimensions of its own. It copies the two joint points from the master sketch with the **External geometry** tool, which brings geometry of another object into this sketch as a reference that follows the original.
+
+A sketch in a body may not take external geometry from an object outside the body (FreeCAD 1.1: "not allowed as external geometry"). So each body first gets a **Sub-Shape Binder**: a copy of the master sketch inside the body that follows the original.
 
 ### Creating Link 1
 
@@ -404,14 +345,19 @@ Link 1 is a flat plate with a pin hole at joint A and another at joint B. Its sk
 
 1. **Create a Body**
 
-   - Click **Create Body** button
+   - Part Design workbench, **New Body**
    - Right-click Body → **Rename**
    - Type: `Link1_Ground`
 
-2. **Create a Sketch**
+2. **Bind the master sketch**
+
+   - Select `MasterSketch` in the tree, then click **Sub-Shape Binder** (Part Design toolbar, with the datum tools)
+   - A `Binder` appears in the body. Hide the master sketch (**Space**), so that you pick the binder
+
+3. **Create a Sketch**
 
    - Select Link1_Ground body
-   - Create sketch on **XY_Plane**
+   - **New Sketch** on **XY_Plane**
 
 </Steps>
 
@@ -426,17 +372,13 @@ Link 1 is a flat plate with a pin hole at joint A and another at joint B. Its sk
 
 1. **External geometry tool** (press G, X)
 
-2. Click the **master sketch** in the tree
+2. In the 3D view, click the **line A to B** of the binder (Link 1 of the master sketch)
 
-3. Select **joint A endpoint** (origin)
-
-4. Select **joint B endpoint** (right end of Link 1)
-
-5. Press **Escape**
+3. Press **Escape**
 
 </Steps>
 
-The selected points now appear in purple. They follow the master sketch, and you cannot move them here.
+The line and its two end points, joints A and B, now appear in purple. They follow the master sketch, and you cannot move them here.
 
 </TabItem>
 <TabItem label="Pin Holes">
@@ -479,21 +421,11 @@ The selected points now appear in purple. They follow the master sketch, and you
 
 3. Press **Escape**
 
-4. **Symmetric constraint:**
-   - Select top edge of rectangle
-   - Select bottom edge of rectangle
-   - Select horizontal centerline between holes
-   - This centers the rectangle on the link axis
+4. **Four distances from the joints** (select the point, then the edge, press **K, D**, click **ƒx**, `Spreadsheet.LinkWidth / 2`):
+   - joint A to the top edge, joint A to the bottom edge: this centers the plate on the link line and makes it LinkWidth wide
+   - joint A to the left edge, joint B to the right edge: each end is 10 mm beyond its hole
 
-5. **Dimension width:**
-   - Distance constraint (perpendicular to link)
-   - Click **ƒx** → `Spreadsheet.LinkWidth`
-
-6. **Lock the two ends:**
-   - Distance from the center of each hole to the short edge beyond it
-   - Click **ƒx** → `Spreadsheet.LinkWidth / 2`
-
-   Without these two, the solver reports 2 degrees of freedom: each end of the plate can slide. With them the plate is Link1 + LinkWidth long, 120 mm.
+   The rectangle had 4 freedoms (position, width and length), and these four remove them. The plate is Link1 + LinkWidth long, 120 mm.
 
 </Steps>
 
@@ -519,6 +451,8 @@ The selected points now appear in purple. They follow the master sketch, and you
 
 </Steps>
 
+**Check it:** one solid 120 × 20 × 8 mm with two holes of 8 mm diameter, 100 mm apart. If the solver message showed "Fully constrained" but the holes do not sit on A and B, a circle center was made coincident with the wrong purple point.
+
 </TabItem>
 </Tabs>
 
@@ -532,27 +466,25 @@ The selected points now appear in purple. They follow the master sketch, and you
 Links 2, 3 and 4 repeat the steps of Link 1 with other joint points.
 
 :::caution[These links are not horizontal]
-In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined. The Rectangle tool makes sides that are held horizontal and vertical, so its rectangle cannot follow an inclined link. Draw the outline with four lines, and make the long sides parallel to the line between the two joints.
+In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined. The Rectangle tool makes sides that are held horizontal and vertical, so its rectangle cannot follow an inclined link. Draw the outline with four lines (**G, L**) joined end to end, and constrain them: top and bottom edges **parallel** (**P**) to the purple link line, the two end edges **perpendicular** (**N**) to the top edge, then the same four distances as Link 1. Four lines have 8 freedoms when joined; parallel and perpendicular remove 4, the distances the other 4.
 :::
 
 <Steps>
 
-1. **Create Body → Rename to `Link2_Crank`**
+1. **New Body → Rename to `Link2_Crank`**, and a **Sub-Shape Binder** of `MasterSketch` in it
 
-2. **Create Sketch on XY_Plane**
+2. **New Sketch on XY_Plane**
 
 3. **Reference Master Sketch Geometry:**
    - External geometry tool (G, X)
-   - Select master sketch from tree
-   - Click **Link 2 endpoints** (point A and point C)
-   - Purple reference points appear
+   - Click the **line A to C** of the binder
+   - The line and the purple points A and C appear
 
 4. **Draw the Link:**
    - Circle at point A, radius = `Spreadsheet.PinRadius`
    - Circle at point C, radius = `Spreadsheet.PinRadius`
-   - Rectangle connecting them
-   - Symmetric constraint about Link 2 centerline
-   - Width = `Spreadsheet.LinkWidth`
+   - Four lines around them, parallel and perpendicular to the link line
+   - Width = `Spreadsheet.LinkWidth`: `LinkWidth / 2` from A to each long edge
    - Each end `Spreadsheet.LinkWidth / 2` beyond its hole center
 
 5. **Verify fully constrained and Close sketch**
@@ -571,16 +503,15 @@ In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined.
 
 <Steps>
 
-1. **Body:** Create and rename to `Link3_Coupler`
+1. **Body:** Create and rename to `Link3_Coupler`, with its own Sub-Shape Binder of the master sketch
 
 2. **Sketch on XY_Plane**
 
-3. **Reference points C and D** from master sketch (External geometry tool)
+3. **Reference the line C to D** of the binder (External geometry tool)
 
 4. **Draw the link:**
    - Circles at both ends
-   - Rectangle connecting them
-   - Symmetric constraint
+   - Four lines, as for the crank
    - All dimensions from spreadsheet
 
 5. **Pad** with thickness parameter
@@ -600,10 +531,10 @@ In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined.
 
 2. **Sketch on XY_Plane**
 
-3. **Reference points B and D** from master sketch
+3. **Reference the line B to D** of its own binder of the master sketch
 
 4. **Draw the link:**
-   - Circles, rectangle, symmetric constraint
+   - Circles, four lines as for the crank
    - Spreadsheet-driven dimensions
 
 5. **Pad** with thickness parameter
@@ -618,12 +549,12 @@ In the master sketch Link 2 stands at 30°, and Links 3 and 4 are also inclined.
 The master sketch shows the linkage in one position. An assembly joins the four plates with constraints between parts, so that you can drag the crank and watch the motion that the theorem predicts.
 
 :::caution[Which Assembly workbench these steps use]
-These steps were written for FreeCAD 0.21, which has no assembly workbench of its own: you install one from **Tools → Addon manager**. The names below (Create Assembly, Fixed, Axial Align) are nearest to the **Assembly3** add-on, which says Axial Alignment. A2plus calls the same constraint axisCoincident. FreeCAD 1.0 and later have a built-in Assembly workbench with other names: ground Link 1 where this lesson says Fixed, and use a **Revolute** joint where it says Axial Align.
+These steps use the Assembly workbench built into FreeCAD 1.0 and later, run in 1.1. In 0.21 you install an add-on (A2plus or Assembly3), where a Revolute joint is called axisCoincident or Axial Alignment.
 :::
 
 ### Assembly Strategy
 
-Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation free. So at each joint you line up two hole axes with **Axial Align**, and you never fix one moving link to another.
+Link 1 is grounded. Each of the four joints is a pin, and a pin must leave rotation free. So at each joint you line up two hole axes with a **Revolute** joint, and you never fix one moving link to another. As in the slider crank, the last pin of the loop, D, is a **Cylindrical** joint, because in 3D a fourth Revolute joint would repeat what the other three already hold.
 
 ### Creating the Assembly
 
@@ -638,11 +569,11 @@ Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation
 
 2. **Create new assembly**
 
-   Assembly → Create Assembly
+   Assembly → **New Assembly**
 
 3. **Add all four parts**
 
-   Drag from tree or use "Add Part" button:
+   **Insert Component** (**I**):
    - Link1_Ground
    - Link2_Crank
    - Link3_Coupler
@@ -655,9 +586,9 @@ Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation
 
 <Steps>
 
-1. Select **Link1_Ground** in assembly tree
+1. Select **Link1_Ground** in the assembly
 
-2. Click **Fixed constraint** button
+2. Click **Toggle Grounded** (**G**)
 
 3. Link 1 is now locked in place. All motion is measured from it
 
@@ -666,31 +597,21 @@ Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation
 </TabItem>
 <TabItem label="Pin Joints">
 
-**Apply Axial Align constraints at all four joints:**
+**Join the holes at all four joints.** For each joint pick the circular hole edge on the front face of the first link, then the hole edge on the back face (the sketch plane side) of the second: the second link comes to rest on the first.
 
 <Steps>
 
-1. **Joint A (Link 1 - Link 2):**
-   - Select hole axis from Link 1 at point A
-   - Select hole axis from Link 2 at point A
-   - Click **Axial Align** constraint
+1. **Joint A (Link 1 - Link 2):** **Revolute Joint** (**R**), Link 1 hole at A, then Link 2 hole at A
 
-2. **Joint B (Link 1 - Link 4):**
-   - Link 1 hole at B
-   - Link 4 hole at B
-   - Axial Align
+2. **Joint B (Link 1 - Link 4):** Revolute, Link 1 hole at B, then Link 4 hole at B
 
-3. **Joint C (Link 2 - Link 3):**
-   - Link 2 hole at C
-   - Link 3 hole at C
-   - Axial Align
+3. **Joint C (Link 2 - Link 3):** Revolute, Link 2 hole at C, then Link 3 hole at C
 
-4. **Joint D (Link 3 - Link 4):**
-   - Link 3 hole at D
-   - Link 4 hole at D
-   - Axial Align
+4. **Joint D (Link 4 - Link 3):** **Cylindrical Joint** (**C**), Link 4 hole at D, then Link 3 hole at D
 
 </Steps>
+
+The plates now stand in three layers: Link 1, then the crank and the follower (which never meet), then the coupler.
 
 </TabItem>
 <TabItem label="Testing">
@@ -710,10 +631,12 @@ Link 1 is fixed. Each of the four joints is a pin, and a pin must leave rotation
 
 This is the crank-rocker that the sum test predicted from the lengths alone.
 
+**Check it:** in FreeCAD 1.1 this model turned a full crank turn with no two plates overlapping. The follower swung between its two limits through 69.8°, and the angle between coupler and follower (the transmission angle) stayed between 46.6° and 137.8°, inside the usual 40° to 140°. **Tools → Measure** on the hole edges at C and D reads 80 mm in every position. A common mistake: the model will not drag at all, because a joint is Fixed or the crank is grounded as well as Link 1.
+
 :::caution[If Mechanism Won't Move]
-- Check that **only Link 1** has Fixed constraint
-- All pin joints should be **Axial Align** (not Fixed!)
-- Remove any redundant constraints
+- Check that **only Link 1** is grounded
+- Joints A, B and C are **Revolute**, D is **Cylindrical** (not Fixed)
+- Remove any redundant joints
 - Ensure proper hole alignment
 :::
 
@@ -733,12 +656,12 @@ This is the crank-rocker that the sum test predicted from the lengths alone.
 
 2. **Create a page:**
 
-   - Insert Page
+   - **New Page From Template** (Insert Page in 0.21)
    - Choose template: **A4_Portrait**
 
 3. **Add views:**
 
-   - Insert View → Select **Link3_Coupler** body
+   - Select the **Link3_Coupler** body, then **New View**
    - Position the view by dragging
    - Add additional projections: top view, side view
 
@@ -759,7 +682,7 @@ This is the crank-rocker that the sum test predicted from the lengths alone.
 
 6. **Export:**
 
-   - Right-click page → **Export as PDF**
+   - **Export Page as PDF** (TechDraw menu)
 
 </Steps>
 
@@ -877,8 +800,8 @@ The CAD model predicts how the output rocker swings for a given crank angle; ins
 
 | Problem | What to check |
 |---------|---------------|
-| Parts do not line up in the assembly | Every part sketch must take its two points from the same master sketch, with the External Geometry tool (G, X) |
-| The assembly does not move | Only Link 1 is Fixed. Every joint is Axial Align, and no moving link is fixed to another |
+| Parts do not line up in the assembly | Every part sketch must take its two points from a Sub-Shape Binder of the same master sketch, with the External Geometry tool (G, X) |
+| The assembly does not move | Only Link 1 is grounded. A, B and C are Revolute, D is Cylindrical, and no moving link is fixed to another |
 | The master sketch has more than 1 degree of freedom | Each line needs its length, and the left end of Link 1 must be on the origin |
 | A part does not follow the spreadsheet | The dimension must show the ƒx sign. Check that the alias exists |
 | The master sketch gives a solver error after a change | The four lengths cannot close at this crank angle. Check the sums, or change the angle |

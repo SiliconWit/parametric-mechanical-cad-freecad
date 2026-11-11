@@ -488,6 +488,12 @@ print(f"  Pitch diameter: {2.5 * 24} mm")
 print(f"  Number of teeth: 24")
 ```
 
+**Run it:** paste the whole script into the Python console, or save it as a macro and **Execute**. It was run in FreeCAD 1.1.
+
+**Check it:** the console prints the three lines, and the tree shows `InvoluteGear`. **Part → Check geometry** on it reports one valid solid. **Tools → Measure** gives a tip radius of 32.5 mm (pitch radius 30 plus one module, 2.5) and a root radius of 26.875 mm (30 less 1.25 modules). On the pitch circle each tooth is 3.93 mm thick, half the circular pitch ($\pi \times 2.5 / 2$). Each flank is a B-spline through 20 computed points; in FreeCAD 1.1 it stays within 0.00002 mm of the true involute, and the usage examples (12 to 48 teeth) each gave one valid solid. If `Part.Face` raises an error, the outline is not closed: an edge was added out of order.
+
+This script draws a straight radial line below the base circle. A gear cut by a rack cutter with 20° teeth and fewer than 17 teeth is **undercut** there: the cutter removes part of the flank. The model then shows a tooth stronger than the real one.
+
 </TabItem>
   <TabItem label="Understanding the Code">
 
@@ -649,6 +655,7 @@ def create_gear(module, num_teeth):
     if module <= 0:
         raise ValueError("Module must be positive")
     if num_teeth < 4:
+        # A guard against nonsense input; with 20 deg teeth, under 17 teeth the real gear is undercut
         raise ValueError("Need at least 4 teeth")
 
     # ... rest of code ...
